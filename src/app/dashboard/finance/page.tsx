@@ -1,259 +1,341 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  DollarSign,
-  BarChart4,
-  PieChart,
-  ArrowUpRight,
-  ArrowDownRight,
-  FileCheck,
-  Clock,
-  CreditCard,
-  Download,
-  Filter,
-  MoreHorizontal
+  DollarSign, BarChart4, PieChart, ArrowUpRight, ArrowDownRight,
+  FileCheck, Clock, CreditCard, Download, Filter, MoreHorizontal,
+  Coins, Banknote, Wallet, ReceiptSquare, Users, Activity,
+  ChevronRight, Plus, Gavel, ArrowRight, ShieldCheck, Building, AlertCircle,
+  Search
 } from '@/components/shared/Icons';
 
-const FinanceCard = ({ label, value, trend, trendType, icon: Icon, delay }: { label: string, value: string, trend: string, trendType: 'up' | 'down', icon: React.ElementType, delay: number }) => (
+const FinanceCard = ({ label, value, trend, trendType, icon: Icon, delay }: { label: string, value: string, trend?: string, trendType?: 'up' | 'down', icon: React.ElementType, delay: number }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.5 }}
-    className="glass-card p-6"
+    className="glass-card p-6 border-gold-dark/10"
   >
     <div className="flex justify-between items-start mb-4">
       <div className="p-3 bg-gold-primary/10 rounded-lg">
         <Icon size={20} className="text-gold-primary" />
       </div>
-       <div className={`flex items-center gap-1 text-[10px] font-bold ${trendType === 'up' ? 'text-green-500' : 'text-red-500'}`}>
-        {trendType === 'up' ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-        {trend}
-      </div>
+       {trend && (
+         <div className={`flex items-center gap-1 text-[10px] font-bold ${trendType === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+          {trendType === 'up' ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+          {trend}
+        </div>
+       )}
     </div>
     <h3 className="text-gray-500 text-[10px] tracking-widest uppercase mb-1 font-inter font-bold">{label}</h3>
     <p className="text-3xl font-bold text-white font-playfair">{value}</p>
   </motion.div>
 );
 
-const InvoiceRow = ({ invoice, index }: { invoice: { id: string, client: string, matter: string, date: string, amount: string, status: string }, index: number }) => (
-  <motion.tr 
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.2 + (index * 0.05) }}
-    className="hover:bg-white/[0.02] border-b border-gold-dark/5 transition-colors group cursor-pointer"
+const TabButton = ({ active, onClick, label, icon: Icon }: { active: boolean, onClick: () => void, label: string, icon: any }) => (
+  <button
+    onClick={onClick}
+    className={`relative flex items-center gap-2 px-6 py-4 text-xs font-bold tracking-widest uppercase transition-all z-10 ${
+      active ? 'text-gold-primary' : 'text-gray-500 hover:text-white'
+    }`}
   >
-    <td className="p-4 text-xs font-bold text-white font-inter">{invoice.id}</td>
-    <td className="p-4">
-      <div className="flex flex-col">
-        <span className="text-sm font-bold text-gray-200 font-playfair group-hover:text-gold-primary transition-colors">{invoice.client}</span>
-        <span className="text-[10px] text-gray-500 font-inter">{invoice.matter}</span>
-      </div>
-    </td>
-    <td className="p-4 text-xs text-gray-300 font-inter">{invoice.date}</td>
-    <td className="p-4 text-sm font-bold text-white font-inter">{invoice.amount}</td>
-    <td className="p-4">
-      <span className={`px-2 py-1 rounded-sm text-[10px] font-bold tracking-widest uppercase border ${
-        invoice.status === 'Paid' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
-        invoice.status === 'Overdue' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
-        'bg-amber-500/10 text-amber-500 border-amber-500/20'
-      }`}>
-        {invoice.status}
-      </span>
-    </td>
-    <td className="p-4 text-right">
-      <button className="text-gray-500 hover:text-gold-primary transition-colors">
-        <Download size={16} />
-      </button>
-    </td>
-  </motion.tr>
+    <Icon size={16} className="relative z-20" />
+    <span className="relative z-20">{label}</span>
+    {active && (
+      <motion.div 
+        layoutId="finance-tab-bg"
+        className="absolute inset-0 bg-gold-primary/5 border-b-2 border-gold-primary z-10"
+        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+      />
+    )}
+  </button>
 );
 
 export default function FinancePage() {
-  const invoices = [
-    { id: 'INV-2026-0012', client: 'Zuma Energy Ltd', matter: 'Federal Litigation (FHC/ABJ/CS/120/24)', date: 'Apr 12, 2026', amount: '₦4,500,000', status: 'Paid' },
-    { id: 'INV-2026-0013', client: 'Acme International', matter: 'IP Dispute Recovery', date: 'Apr 14, 2026', amount: '₦2,850,000', status: 'Pending' },
-    { id: 'INV-2026-0014', client: 'Lagos Maritime Board', matter: 'Jurisdiction Challenge', date: 'Mar 28, 2026', amount: '₦12,400,000', status: 'Overdue' },
-    { id: 'INV-2026-0015', client: 'Global Tech Inc', matter: 'Compliance Audit Fee', date: 'Apr 02, 2026', amount: '₦1,200,000', status: 'Paid' },
-    { id: 'INV-2026-0016', client: 'First National Bank', matter: 'Retail Debt Recovery', date: 'Apr 15, 2026', amount: '₦850,000', status: 'Pending' },
-  ];
+  const [activeTab, setActiveTab] = useState('overview');
+  const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN');
+
+  const symbol = currency === 'NGN' ? '₦' : '$';
 
   return (
     <div className="space-y-8 pb-12">
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white font-playfair mb-2">Financial Intelligence</h1>
-          <p className="text-gray-400 text-sm font-inter">Monitor revenue cycle, clerk billables, and chamber profitability.</p>
+          <h1 className="text-3xl font-bold text-white font-playfair mb-2 mt-4 flex items-center gap-3">
+             <span className="p-3 bg-gold-primary/10 rounded-lg"><Banknote size={24} className="text-gold-primary" /></span>
+             Finance & Billing Center
+          </h1>
+          <p className="text-gray-400 text-sm font-inter mt-3">Enterprise-grade legal accounting with multi-currency trust ledgers and revenue analytics.</p>
         </div>
-        <div className="flex gap-4">
-          <button className="btn-outline px-6 py-3 flex items-center gap-2 text-xs">
-            <Download size={16} /> Export Reports
-          </button>
+        <div className="flex items-center gap-4">
+          <div className="flex bg-black border border-gold-dark/20 rounded-lg p-1">
+            <button 
+              onClick={() => setCurrency('NGN')}
+              className={`px-4 py-1.5 rounded text-[9px] font-bold transition-all ${currency === 'NGN' ? 'bg-gold-primary text-black' : 'text-gray-500'}`}
+            >
+              NGN
+            </button>
+            <button 
+              onClick={() => setCurrency('USD')}
+              className={`px-4 py-1.5 rounded text-[9px] font-bold transition-all ${currency === 'USD' ? 'bg-gold-primary text-black' : 'text-gray-500'}`}
+            >
+              USD
+            </button>
+          </div>
           <button className="btn-luxury px-6 py-3 flex items-center gap-2 text-xs font-bold">
-             Generate Invoice
+            <Plus size={18} /> New Billable Entry
           </button>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <FinanceCard 
-          label="Total Revenue (Q2)" 
-          value="₦84.2M" 
-          trend="+14.5%" 
-          trendType="up"
-          icon={DollarSign}
-          delay={0.1}
-        />
-        <FinanceCard 
-          label="Pending Receivables" 
-          value="₦18.4M" 
-          trend="+2.1%" 
-          trendType="up"
-          icon={Clock}
-          delay={0.2}
-        />
-        <FinanceCard 
-          label="Realized Profit" 
-          value="₦32.1M" 
-          trend="+6.4%" 
-          trendType="up"
-          icon={BarChart4}
-          delay={0.3}
-        />
-        <FinanceCard 
-          label="Unbilled Hours" 
-          value="₦4.2M" 
-          trend="-8.2%" 
-          trendType="down"
-          icon={PieChart}
-          delay={0.4}
-        />
+      {/* Tabs Navigation */}
+      <div className="border-b border-gold-dark/10 flex overflow-x-auto bg-black/40 backdrop-blur-sm sticky top-20 z-10">
+        <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} label="Overview" icon={Activity} />
+        <TabButton active={activeTab === 'billing'} onClick={() => setActiveTab('billing')} label="Invoices & Fees" icon={ReceiptSquare} />
+        <TabButton active={activeTab === 'trust'} onClick={() => setActiveTab('trust')} label="Trust Account Ledger" icon={ShieldCheck} />
+        <TabButton active={activeTab === 'reporting'} onClick={() => setActiveTab('reporting')} label="Chamber Reports" icon={BarChart4} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Invoice Feed */}
-        <div className="lg:col-span-2 space-y-8">
-          <div className="glass-card overflow-hidden">
-            <div className="p-6 border-b border-gold-dark/10 flex justify-between items-center bg-white/[0.02]">
-               <h3 className="text-lg font-bold text-white font-playfair flex items-center gap-3">
-                <FileCheck className="text-gold-primary" size={20} /> Latest Invoices
-              </h3>
-              <div className="flex gap-2">
-                <button className="p-2 border border-gold-dark/20 text-gray-500 hover:text-gold-primary transition-colors cursor-pointer"><Filter size={16} /></button>
-              </div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-white/5">
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Inv ID</th>
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Client & Matter</th>
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Issue Date</th>
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Amount</th>
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Status</th>
-                    <th className="p-4 text-right"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {invoices.map((inv, i) => (
-                    <InvoiceRow key={i} invoice={inv} index={i} />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="p-4 text-center border-t border-gold-dark/5 bg-white/[0.01]">
-               <button className="text-[10px] font-bold tracking-[0.2em] uppercase text-gold-primary hover:underline">View All Billing Cycles</button>
-            </div>
-          </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+           key={activeTab}
+           initial={{ opacity: 0, y: 10 }}
+           animate={{ opacity: 1, y: 0 }}
+           exit={{ opacity: 0, y: -10 }}
+           transition={{ duration: 0.2 }}
+        >
+          {activeTab === 'overview' && (
+            <div className="space-y-8">
+               {/* KPI Grid */}
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <FinanceCard label="Total Realized Revenue" value={`${symbol}${currency === 'NGN' ? '142.5M' : '185K'}`} trend="+12%" trendType="up" icon={DollarSign} delay={0.1} />
+                  <FinanceCard label="Trust Account Balance" value={`${symbol}${currency === 'NGN' ? '28.1M' : '36.5K'}`} icon={Wallet} delay={0.2} />
+                  <FinanceCard label="Unbilled WIP" value={`${symbol}${currency === 'NGN' ? '12.4M' : '16K'}`} trend="+5%" trendType="up" icon={Clock} delay={0.3} />
+                  <FinanceCard label="Overdue Invoices" value={`${symbol}${currency === 'NGN' ? '5.8M' : '7.5K'}`} trend="+2%" trendType="down" icon={AlertCircle} delay={0.4} />
+               </div>
 
-          {/* Simulated Chart Area */}
-          <div className="glass-card p-8 bg-black">
-             <div className="flex justify-between items-end mb-10">
-               <div>
-                  <h4 className="text-white font-playfair font-bold text-xl mb-1">Fee Realization</h4>
-                  <p className="text-gray-500 text-xs">Revenue vs Net Realized Cash (Monthly)</p>
-               </div>
-               <div className="flex gap-4 text-[10px] uppercase font-bold tracking-widest">
-                 <div className="flex items-center gap-2"><div className="w-2 h-2 bg-gold-primary rounded-full"></div> <span className="text-gray-400">Projected</span></div>
-                 <div className="flex items-center gap-2"><div className="w-2 h-2 bg-white rounded-full"></div> <span className="text-gray-300">Actual</span></div>
-               </div>
-             </div>
-             
-             <div className="h-64 flex items-end justify-between gap-4 px-4">
-                {[45, 78, 56, 92, 65, 88, 70, 95, 82, 60, 75, 90].map((h, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                    <div className="w-full bg-white/5 rounded-t-sm relative group">
-                       <motion.div 
-                        initial={{ height: 0 }}
-                        animate={{ height: `${h}%` }}
-                        transition={{ delay: 0.5 + (i * 0.05), duration: 0.8 }}
-                        className="w-full bg-gold-primary rounded-t-sm group-hover:bg-gold-light transition-colors"
-                       />
-                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gold-primary text-black text-[8px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                         ₦{h/10}M
-                       </div>
-                    </div>
-                    <span className="text-[8px] text-gray-600 uppercase font-inter">{['J','F','M','A','M','J','J','A','S','O','N','D'][i]}</span>
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Revenue Distribution Chart */}
+                  <div className="lg:col-span-2 glass-card p-8 aspect-video flex flex-col">
+                     <div className="flex justify-between items-center mb-10">
+                        <div>
+                           <h3 className="text-white font-playfair font-bold text-xl">Monthly Fee Realization</h3>
+                           <p className="text-xs text-gray-500">Comparing billable hours vs collections.</p>
+                        </div>
+                        <div className="flex gap-4 items-center">
+                           <div className="flex items-center gap-2"><div className="w-2 h-2 bg-gold-primary rounded-full" /> <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Invoiced</span></div>
+                           <div className="flex items-center gap-2"><div className="w-2 h-2 bg-white/20 rounded-full" /> <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">WIP</span></div>
+                        </div>
+                     </div>
+                     <div className="flex-1 flex items-end gap-3 px-2">
+                        {[35, 65, 45, 85, 75, 95, 60, 40, 80, 55, 70, 90].map((h, i) => (
+                          <div key={i} className="flex-1 flex flex-col items-center gap-3">
+                             <div className="w-full relative group">
+                                <motion.div 
+                                   initial={{ height: 0 }}
+                                   animate={{ height: `${h}%` }}
+                                   transition={{ delay: i * 0.05, duration: 1 }}
+                                   className="w-full bg-gold-primary/80 hover:bg-gold-primary rounded-t-sm transition-all"
+                                />
+                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gold-primary text-black text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                   {symbol}{h * (currency === 'NGN' ? 100 : 0.1)}k
+                                </div>
+                             </div>
+                             <span className="text-[8px] text-gray-600 font-bold uppercase">{['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][i]}</span>
+                          </div>
+                        ))}
+                     </div>
                   </div>
-                ))}
-             </div>
-          </div>
-        </div>
 
-        {/* Clerk Activity / Ledger */}
-        <div className="space-y-8">
-           <section className="glass-card p-6">
-              <h3 className="text-lg font-bold text-white font-playfair mb-6 flex items-center gap-3">
-                <CreditCard className="text-gold-primary" size={20} /> Departmental ROI
-              </h3>
-              <div className="space-y-6">
+                  {/* Revenue Splits */}
+                  <div className="space-y-6">
+                     <div className="glass-card p-6">
+                        <h3 className="text-white font-playfair font-bold text-sm mb-6 uppercase tracking-widest flex items-center justify-between">
+                           Partner Splits <PieChart size={16} className="text-gold-primary" />
+                        </h3>
+                        <div className="space-y-4">
+                           {[
+                             { name: 'Olumide Zuma', role: 'Principal', share: '45%', amount: '₦64M' },
+                             { name: 'Sarah Nwosu', role: 'Managing Partner', share: '30%', amount: '₦42M' },
+                             { name: 'Adeyemi Cole', role: 'Partner', share: '25%', amount: '₦35M' },
+                           ].map(partner => (
+                             <div key={partner.name} className="flex flex-col gap-2">
+                                <div className="flex justify-between items-end">
+                                   <span className="text-xs text-white font-bold">{partner.name}</span>
+                                   <span className="text-[10px] text-gold-primary font-bold">{partner.share}</span>
+                                </div>
+                                <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                                   <div className="h-full bg-gold-gradient" style={{ width: partner.share }} />
+                                </div>
+                             </div>
+                           ))}
+                        </div>
+                     </div>
+
+                     <div className="glass-card p-6 border-gold-primary/20 bg-gold-primary/[0.02]">
+                        <h3 className="text-white font-playfair font-bold text-sm mb-2">VAT & Compliance</h3>
+                        <p className="text-[10px] text-gray-500 leading-relaxed mb-4">Firm is currently up-to-date with FIRS returns. Estimated VAT payable for Q2: **₦4,120,400**.</p>
+                        <button className="w-full py-2 bg-white/5 border border-gold-dark/10 rounded text-[9px] font-bold uppercase tracking-widest text-gold-primary hover:bg-gold-primary hover:text-black transition-all">Submit Returns</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {activeTab === 'billing' && (
+             <div className="space-y-8">
+                {/* Advanced Invoice Filter */}
+                <div className="flex flex-col md:flex-row gap-4 items-center justify-between glass-card p-4">
+                   <div className="flex gap-2">
+                      <button className="px-4 py-2 bg-gold-primary text-black text-[10px] font-bold uppercase tracking-widest rounded">All Fees</button>
+                      <button className="px-4 py-2 bg-white/5 text-gray-500 text-[10px] font-bold uppercase tracking-widest rounded hover:text-white transition-colors">Success Fee</button>
+                      <button className="px-4 py-2 bg-white/5 text-gray-500 text-[10px] font-bold uppercase tracking-widest rounded hover:text-white transition-colors">Fixed Fee</button>
+                   </div>
+                   <div className="relative flex-1 max-w-sm">
+                      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gold-primary" />
+                      <input type="text" placeholder="Search invoices, clients..." className="w-full bg-black/40 border border-gold-dark/10 rounded-lg py-2 pl-10 pr-4 text-xs text-white outline-none focus:border-gold-primary" />
+                   </div>
+                </div>
+
+                {/* Ledger Table */}
+                <div className="glass-card overflow-hidden">
+                   <table className="w-full text-left border-collapse">
+                      <thead>
+                         <tr className="bg-white/5 border-b border-gold-dark/10">
+                            <th className="p-5 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Reference No.</th>
+                            <th className="p-5 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Client Entity</th>
+                            <th className="p-5 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Type</th>
+                            <th className="p-5 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Due Date</th>
+                            <th className="p-5 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter text-right">Amount Due</th>
+                            <th className="p-5 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Status</th>
+                            <th className="p-5"></th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                         {[
+                           { ref: 'ZC/2026/040', client: 'Lagos Maritime Board', type: 'Success Fee', due: 'May 10, 2026', amount: '12,500,000', status: 'Pending' },
+                           { ref: 'ZC/2026/038', client: 'Dangote Group', type: 'Retainer', due: 'Apr 28, 2026', amount: '4,500,000', status: 'Paid' },
+                           { ref: 'ZC/2026/035', client: 'Acme Int.', type: 'Fixed Fee', due: 'Apr 15, 2026', amount: '2,100,000', status: 'Overdue' },
+                           { ref: 'ZC/2026/032', client: 'Shell Petroleum', type: 'Hourly', due: 'May 02, 2026', amount: '8,420,000', status: 'Pending' },
+                         ].map((inv, i) => (
+                           <tr key={i} className="hover:bg-white/[0.02] group transition-colors">
+                              <td className="p-5 text-xs text-gray-400 font-mono">{inv.ref}</td>
+                              <td className="p-5 text-sm font-bold text-white font-playfair">{inv.client}</td>
+                              <td className="p-5 text-[10px] text-gray-500 uppercase font-bold tracking-widest">{inv.type}</td>
+                              <td className="p-5 text-xs text-gray-400 font-inter">{inv.due}</td>
+                              <td className="p-5 text-right font-bold text-white font-inter">{symbol}{currency === 'NGN' ? inv.amount : (parseInt(inv.amount.replace(/,/g, '')) / 1200).toLocaleString()}</td>
+                              <td className="p-5">
+                                 <span className={`text-[9px] font-bold px-2 py-0.5 rounded border ${
+                                   inv.status === 'Paid' ? 'border-green-500/20 text-green-500' : 
+                                   inv.status === 'Overdue' ? 'border-red-500/20 text-red-500 animate-pulse' : 
+                                   'border-amber-500/20 text-amber-500'
+                                 }`}>
+                                    {inv.status}
+                                 </span>
+                              </td>
+                              <td className="p-5 text-right">
+                                 <button className="text-gray-500 hover:text-gold-primary transition-colors"><Download size={16} /></button>
+                              </td>
+                           </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                </div>
+             </div>
+          )}
+
+          {activeTab === 'trust' && (
+             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-8">
+                   <div className="glass-card p-6">
+                      <div className="flex justify-between items-center mb-10">
+                         <h3 className="text-xl font-bold text-white font-playfair">Trust Account Ledger</h3>
+                         <button className="flex items-center gap-2 text-gold-primary text-[10px] font-bold uppercase tracking-widest hover:underline">
+                            <Plus size={14} /> Record Entry
+                         </button>
+                      </div>
+                      <div className="space-y-1">
+                         {[
+                           { date: 'May 02, 2026', ref: 'TR-1022', client: 'Shell Petroleum', desc: 'Filing fees deposit for Suit ABJ/120', credit: '+₦500,000' },
+                           { date: 'Apr 28, 2026', ref: 'TR-1018', client: 'Global Tech', desc: 'Trust disbursement for Arbitration costs', debit: '-₦1,250,500' },
+                           { date: 'Apr 25, 2026', ref: 'TR-1015', client: 'Zuma Energy', desc: 'Refund of excess research fees', debit: '-₦45,000' },
+                           { date: 'Apr 20, 2026', ref: 'TR-1012', client: 'First Bank', desc: 'Lien recovery trust deposit', credit: '+₦14,200,000' },
+                         ].map((entry, i) => (
+                           <div key={i} className="flex flex-col md:flex-row md:items-center justify-between p-5 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                              <div className="flex flex-col gap-1 mb-3 md:mb-0">
+                                 <span className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">{entry.date} • {entry.ref}</span>
+                                 <span className="text-sm font-bold text-white font-playfair">{entry.client}</span>
+                                 <p className="text-xs text-gray-500 font-inter">{entry.desc}</p>
+                              </div>
+                              <div className="text-right">
+                                 <span className={`text-lg font-bold font-mono ${entry.credit ? 'text-green-500' : 'text-gray-400'}`}>
+                                    {entry.credit || entry.debit}
+                                 </span>
+                              </div>
+                           </div>
+                         ))}
+                      </div>
+                   </div>
+                </div>
+
+                <div className="space-y-8">
+                   <div className="glass-card p-6 border-l-4 border-l-gold-primary">
+                      <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">Account Integrity</h4>
+                      <p className="text-xs text-gray-400 font-inter mb-6 leading-relaxed">
+                         The Trust Account is currently **reconciled** with bank statements as of **Yesterday**. All client funds are strictly segregated.
+                      </p>
+                      <div className="flex items-center gap-3 text-green-500 font-bold text-[10px] uppercase tracking-widest">
+                         <ShieldCheck size={18} /> Verified Auditor Check
+                      </div>
+                   </div>
+
+                   <div className="glass-card p-6">
+                      <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">Pending Requests</h4>
+                      <div className="space-y-4">
+                         <div className="p-3 bg-red-500/5 border border-red-500/20 rounded-lg">
+                            <span className="text-white font-bold text-[11px] block mb-1">Unallocated Funds Recovery</span>
+                            <span className="text-[10px] text-gray-500">₦245K from POS transaction ID 44521</span>
+                            <button className="mt-3 text-[9px] text-gold-primary font-bold hover:underline">Resolve Now</button>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          )}
+
+          {activeTab === 'reporting' && (
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[
-                  { label: 'Litigation (Commercial)', val: '₦42.1M', perc: 48 },
-                  { label: 'Energy & Natural Resources', val: '₦28.4M', perc: 32 },
-                  { label: 'Intellectual Property', val: '₦9.2M', perc: 12 },
-                  { label: 'Compliance Advisory', val: '₦4.5M', perc: 8 },
-                ].map((item, i) => (
-                  <div key={i} className="space-y-2">
-                    <div className="flex justify-between items-end">
-                      <span className="text-[10px] text-gray-400 font-inter font-bold uppercase tracking-wider">{item.label}</span>
-                      <span className="text-xs text-white font-bold">{item.val}</span>
+                  { title: 'Chamber Overhead Report', desc: 'Detailed breakdown of office rentals, software, and administrative costs.', icon: Building },
+                  { title: 'Clerk Productivity Analysis', desc: 'Billable efficiency tracking across the entire clerk pool.', icon: Users },
+                  { title: 'Tax & VAT Projections', desc: 'Forward-looking tax liability planning for the next fiscal year.', icon: ReceiptSquare },
+                  { title: 'Success Fee Analytics', desc: 'Correlation between high-stakes litigation outcomes and firm growth.', icon: Gavel },
+                  { title: 'Multi-Currency Exposure', desc: 'Risk tracking for USD denominated contracts vs Naira volatility.', icon: DollarSign },
+                  { title: 'Payroll Support Summary', desc: 'Monthly disbursement breakdown and statutory contribution logs.', icon: Wallet },
+                ].map((report, i) => (
+                  <motion.div 
+                    key={i}
+                    whileHover={{ scale: 1.02 }}
+                    className="glass-card p-6 flex items-start gap-4 cursor-pointer border-white/5 hover:border-gold-primary/30 transition-all"
+                  >
+                    <div className="p-3 bg-white/5 text-gold-primary rounded-xl">
+                       <report.icon size={24} />
                     </div>
-                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${item.perc}%` }}
-                        transition={{ delay: 0.8, duration: 1 }}
-                        className="h-full bg-gold-gradient"
-                      />
+                    <div>
+                       <h4 className="text-white font-bold text-sm mb-2 font-playfair">{report.title}</h4>
+                       <p className="text-[11px] text-gray-500 font-inter leading-relaxed">{report.desc}</p>
+                       <button className="mt-4 flex items-center gap-2 text-[10px] text-gold-primary font-bold uppercase tracking-widest hover:gap-3 transition-all">
+                          Generate <ArrowRight size={14} />
+                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
-           </section>
-
-           <section className="glass-card p-6 border-gold-primary/20 bg-gold-primary/[0.02]">
-              <div className="flex items-center gap-3 mb-6">
-                <Clock className="text-gold-primary" size={18} />
-                <h4 className="text-white font-playfair font-bold">Billable Leakage</h4>
-              </div>
-              <p className="text-[10px] text-gray-500 font-inter leading-relaxed mb-6">
-                You have **₦1,420,000** in unbilled expenses from completed court filings in Lagos.
-              </p>
-              <button className="w-full py-3 bg-gold-primary text-black font-bold text-[10px] tracking-widest uppercase rounded hover:bg-gold-light transition-all">
-                Reconcile Now
-              </button>
-           </section>
-
-           <div className="p-6 glass-card bg-black border-dashed border-gold-dark/30 flex flex-col items-center justify-center text-center">
-             <BarChart4 size={32} className="text-gold-primary/20 mb-4" />
-             <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-4">Integrate Accounting</p>
-             <button className="text-[10px] text-gold-primary font-bold hover:underline">Link Bank Account</button>
-           </div>
-        </div>
-      </div>
+             </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

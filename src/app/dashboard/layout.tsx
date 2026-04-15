@@ -9,28 +9,39 @@ import { hasPermission, PERMISSIONS, ROLE_LABELS, ROLE_COLORS } from '@/lib/perm
 import RouteGuard from '@/components/guards/RouteGuard';
 import {
   LayoutDashboard, Briefcase, FileText, BarChart3, ShieldCheck, Users,
-  Settings, LogOut, Menu, X, Bell, Search, Gavel, ScrollText, CalendarDays
+  Settings, LogOut, Menu, X, Bell, Search, Gavel, ScrollText, CalendarDays,
+  MessageSquare
 } from '@/components/shared/Icons';
 
 const SidebarItem = ({ icon: Icon, label, href, active, locked }: { icon: React.ElementType, label: string, href: string, active: boolean, locked?: boolean }) => (
-  <Link href={locked ? '#' : href}>
+  <Link href={locked ? '#' : href} className="relative block">
     <motion.div
       whileHover={locked ? {} : { x: 5 }}
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 relative group z-10 ${
         locked
           ? 'text-gray-700 cursor-not-allowed'
           : active
-            ? 'bg-gold-primary text-black shadow-lg shadow-gold-primary/20'
+            ? 'text-black font-bold'
             : 'text-gray-400 hover:text-white hover:bg-white/5'
       }`}
     >
-      <Icon size={20} />
-      <span className="text-sm font-medium font-inter">{label}</span>
+      <Icon size={20} className="relative z-20" />
+      <span className="text-sm font-medium font-inter relative z-20">{label}</span>
+      
       {active && (
-        <motion.div layoutId="active-pill" className="ml-auto w-1 h-4 bg-black rounded-full" />
+        <motion.div 
+          layoutId="sidebar-active-bg"
+          className="absolute inset-0 bg-gold-primary rounded-lg shadow-lg shadow-gold-primary/20 z-10"
+          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+        />
       )}
+      
+      {active && (
+        <motion.div layoutId="active-pill" className="ml-auto w-1 h-4 bg-black/40 rounded-full relative z-20" />
+      )}
+      
       {locked && (
-        <span className="ml-auto text-[7px] tracking-widest uppercase text-gray-700 font-bold">Locked</span>
+        <span className="ml-auto text-[7px] tracking-widest uppercase text-gray-700 font-bold relative z-20">Locked</span>
       )}
     </motion.div>
   </Link>
@@ -50,12 +61,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Build navigation based on role permissions
   const allMenuItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/dashboard', permission: null },
+    { icon: Users, label: 'Clients', href: '/dashboard/clients', permission: PERMISSIONS.VIEW_CLIENTS },
     { icon: Briefcase, label: 'Cases', href: '/dashboard/cases', permission: PERMISSIONS.VIEW_CASES },
     { icon: CalendarDays, label: 'Court Calendar', href: '/dashboard/calendar', permission: PERMISSIONS.VIEW_CALENDAR },
     { icon: FileText, label: 'Documents', href: '/dashboard/documents', permission: PERMISSIONS.VIEW_DOCUMENTS },
     { icon: BarChart3, label: 'Financials', href: '/dashboard/finance', permission: PERMISSIONS.VIEW_FINANCE },
     { icon: ShieldCheck, label: 'Compliance', href: '/dashboard/compliance', permission: PERMISSIONS.VIEW_COMPLIANCE },
     { icon: Users, label: 'Team', href: '/dashboard/team', permission: PERMISSIONS.VIEW_TEAM },
+    { icon: MessageSquare, label: 'Collaborate', href: '/dashboard/collaboration', permission: PERMISSIONS.VIEW_COLLABORATION },
     { icon: ScrollText, label: 'Audit Logs', href: '/dashboard/audit-logs', permission: PERMISSIONS.VIEW_AUDIT_LOGS },
   ];
 
