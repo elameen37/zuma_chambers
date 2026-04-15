@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Gavel, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { Gavel, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from '@/components/shared/Icons';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

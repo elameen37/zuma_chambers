@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Scale, Award, BookOpen, Clock, Linkedin, Mail, Search } from 'lucide-react';
+import { Scale, Award, BookOpen, Clock, Linkedin, Mail, Search } from '@/components/shared/Icons';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
