@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BookMarked, Calendar, ArrowRight, Newspaper, Search } from 'lucide-react';
+import { BookMarked, Calendar, ArrowRight, Newspaper, Search } from '@/components/shared/Icons';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 

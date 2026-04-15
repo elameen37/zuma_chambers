@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Scale, Shield, Briefcase, ArrowRight } from 'lucide-react';
+import { Scale, Shield, Briefcase, ArrowRight } from '@/components/shared/Icons';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 

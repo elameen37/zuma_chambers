@@ -2,20 +2,20 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  ShieldCheck, 
-  AlertTriangle, 
-  Calendar, 
-  CheckCircle, 
-  FileText, 
-  Globe, 
+import {
+  ShieldCheck,
+  AlertTriangle,
+  Calendar,
+  CheckCircle,
+  FileText,
+  Globe,
   Lock,
   ArrowRight,
   TrendingUp,
   Activity,
   Filter,
   BarChart
-} from 'lucide-react';
+} from '@/components/shared/Icons';
 
 const ComplianceMetric = ({ label, value, color, delay }: { label: string, value: string, color: string, delay: number }) => (
   <motion.div 

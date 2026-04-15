@@ -2,21 +2,14 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Briefcase, 
-  TrendingUp, 
-  Clock, 
-  Users, 
-  Scale, 
-  FileText, 
-  AlertCircle,
-  ChevronRight,
-  ArrowUpRight,
-  ArrowDownRight
-} from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
+import {
+  Briefcase, TrendingUp, Clock, Users, Scale, FileText, AlertCircle,
+  ChevronRight, ArrowUpRight, ArrowDownRight
+} from '@/components/shared/Icons';
 
 const DashboardStat = ({ icon: Icon, label, value, trend, trendType, delay }: { icon: React.ElementType, label: string, value: string, trend: string, trendType: 'up' | 'down', delay: number }) => (
-  <motion.div 
+  <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.5 }}
@@ -50,13 +43,15 @@ const ActivityItem = ({ title, time, type }: { title: string, time: string, type
 );
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+
   return (
     <div className="space-y-8 pb-12">
       {/* Welcome Header */}
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold text-white font-playfair mb-2">Chamber Intelligence</h1>
-          <p className="text-gray-400 text-sm font-inter">Welcome back, Chief Zuma. Here is an overview of today&apos;s legal pulse.</p>
+          <p className="text-gray-400 text-sm font-inter">Welcome back, {user?.name ?? 'Counsellor'}. Here is an overview of today&apos;s legal pulse.</p>
         </div>
         <div className="flex gap-4">
           <button className="btn-outline py-2 px-6 text-xs">Export Report</button>
@@ -66,38 +61,10 @@ export default function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <DashboardStat 
-          icon={Briefcase} 
-          label="Active Matters" 
-          value="142" 
-          trend="+12%" 
-          trendType="up"
-          delay={0.1}
-        />
-        <DashboardStat 
-          icon={TrendingUp} 
-          label="Revenue MTD" 
-          value="₦24.8M" 
-          trend="+8.2%" 
-          trendType="up"
-          delay={0.2}
-        />
-        <DashboardStat 
-          icon={Clock} 
-          label="Billable Hours" 
-          value="1,240" 
-          trend="-2.4%" 
-          trendType="down"
-          delay={0.3}
-        />
-        <DashboardStat 
-          icon={Users} 
-          label="Client Retention" 
-          value="98.5%" 
-          trend="+0.5%" 
-          trendType="up"
-          delay={0.4}
-        />
+        <DashboardStat icon={Briefcase} label="Active Matters" value="142" trend="+12%" trendType="up" delay={0.1} />
+        <DashboardStat icon={TrendingUp} label="Revenue MTD" value="₦24.8M" trend="+8.2%" trendType="up" delay={0.2} />
+        <DashboardStat icon={Clock} label="Billable Hours" value="1,240" trend="-2.4%" trendType="down" delay={0.3} />
+        <DashboardStat icon={Users} label="Client Retention" value="98.5%" trend="+0.5%" trendType="up" delay={0.4} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -195,11 +162,11 @@ export default function DashboardPage() {
                     <span>{bar.val}%</span>
                   </div>
                   <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                    <motion.div 
+                    <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${bar.val}%` }}
                       transition={{ delay: 0.5 + (i * 0.1), duration: 1 }}
-                      className="h-full bg-gold-primary shadow-[0_0_10px_rgba(212,175,55,0.5)]" 
+                      className="h-full bg-gold-primary shadow-[0_0_10px_rgba(212,175,55,0.5)]"
                     />
                   </div>
                 </div>

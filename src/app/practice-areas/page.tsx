@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Gavel, Briefcase, Home, ShieldAlert, Users2, Landmark, ShieldCheck, LandmarkIcon, Cpu, BookOpen, ChevronRight } from 'lucide-react';
+import { Gavel, Briefcase, Home, ShieldAlert, Users2, Landmark, ShieldCheck, LandmarkIcon, Cpu, BookOpen, ChevronRight } from '@/components/shared/Icons';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 

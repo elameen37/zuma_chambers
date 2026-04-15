@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Target, Award, Users, ChevronRight } from 'lucide-react';
+import { Shield, Target, Award, Users, ChevronRight } from '@/components/shared/Icons';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, MessageCircle, Clock, Send, ShieldCheck, Globe } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle, Clock, Send, ShieldCheck, Globe } from '@/components/shared/Icons';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 

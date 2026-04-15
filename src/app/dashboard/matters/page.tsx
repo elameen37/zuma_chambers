@@ -2,17 +2,17 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreVertical, 
-  User, 
+import {
+  Plus,
+  Search,
+  Filter,
+  MoreVertical,
+  User,
   AlertCircle,
   CheckCircle2,
   Calendar,
   Tag
-} from 'lucide-react';
+} from '@/components/shared/Icons';
 
 const StatusBadge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {

@@ -2,24 +2,24 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Folder, 
-  FileText, 
-  Upload, 
-  Search, 
-  ShieldAlert, 
-  Eye, 
-  Lock, 
-  ChevronRight, 
+import {
+  Folder,
+  FileText,
+  Upload,
+  Search,
+  ShieldAlert,
+  Eye,
+  Lock,
+  ChevronRight,
   Gavel,
   Scale,
   MoreVertical,
   Filter,
   Grid,
-  List as ListIcon,
+  ListIcon,
   CheckCircle,
   FileBadge
-} from 'lucide-react';
+} from '@/components/shared/Icons';
 
 const FileItem = ({ name, size, type, modified, security, delay }: { name: string, size: string, type: string, modified: string, security: string, delay: number }) => (
   <motion.div 

@@ -2,19 +2,19 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  DollarSign, 
-  BarChart4, 
-  PieChart, 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  FileCheck, 
-  Clock, 
+import {
+  DollarSign,
+  BarChart4,
+  PieChart,
+  ArrowUpRight,
+  ArrowDownRight,
+  FileCheck,
+  Clock,
   CreditCard,
   Download,
   Filter,
   MoreHorizontal
-} from 'lucide-react';
+} from '@/components/shared/Icons';
 
 const FinanceCard = ({ label, value, trend, trendType, icon: Icon, delay }: { label: string, value: string, trend: string, trendType: 'up' | 'down', icon: React.ElementType, delay: number }) => (
   <motion.div 

@@ -2,19 +2,19 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Mail, 
-  MapPin, 
-  Briefcase, 
+import {
+  Users,
+  Search,
+  Filter,
+  Mail,
+  MapPin,
+  Briefcase,
   Award,
   Circle,
   MessageSquare,
   Calendar,
   MoreVertical
-} from 'lucide-react';
+} from '@/components/shared/Icons';
 
 const TeamMemberCard = ({ name, role, dept, status, delay }: { name: string, role: string, dept: string, status: string, delay: number }) => (
   <motion.div 
