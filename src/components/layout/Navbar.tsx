@@ -2,12 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Gavel } from '@/components/shared/Icons';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,17 +47,29 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href}
-              className="text-sm font-medium tracking-wide uppercase hover:text-gold-primary transition-colors font-inter"
-            >
-              {link.name}
-            </Link>
-          ))}
-          <Link href="/login" className="btn-outline text-xs">
+        <div className="hidden lg:flex items-center gap-8 relative">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link 
+                key={link.name} 
+                href={link.href}
+                className={`text-sm font-medium tracking-wide uppercase transition-colors font-inter relative ${
+                  isActive ? 'text-gold-primary' : 'hover:text-gold-primary text-gray-300'
+                }`}
+              >
+                {link.name}
+                {isActive && (
+                  <motion.div 
+                    layoutId="navbar-indicator"
+                    className="absolute -bottom-2 left-0 right-0 h-[2px] bg-gold-primary rounded-full"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
+          <Link href="/login" className="btn-outline text-xs ml-4">
             Legal Workspace
           </Link>
         </div>
@@ -77,16 +92,21 @@ const Navbar = () => {
             exit={{ opacity: 0, y: -20 }}
             className="absolute top-full left-0 right-0 glass-card rounded-none border-t border-gold-dark/20 p-8 flex flex-col gap-6 lg:hidden"
           >
-            {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                href={link.href}
-                className="text-lg font-medium tracking-widest uppercase hover:text-gold-primary"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link 
+                  key={link.name} 
+                  href={link.href}
+                  className={`text-lg font-medium tracking-widest uppercase transition-colors ${
+                    isActive ? 'text-gold-primary font-bold' : 'hover:text-gold-primary text-gray-300'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
             <Link 
               href="/login" 
               className="btn-luxury text-center"
