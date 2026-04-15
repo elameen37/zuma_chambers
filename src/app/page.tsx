@@ -45,9 +45,18 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center overflow-hidden">
-        {/* Abstract Background Element */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] pointer-events-none">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.05)_0%,transparent_70%)]" />
+        {/* Professional Background Image with Sophisticated Overlay */}
+        <div className="absolute inset-0 z-0">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+            style={{ 
+              backgroundImage: "url('/hero-bg.png')",
+              filter: "brightness(0.7) contrast(1.1)"
+            }}
+          />
+          {/* Multi-layered gradient for depth and readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30" />
         </div>
         
         <div className="section-container relative z-10 w-full pt-20">
