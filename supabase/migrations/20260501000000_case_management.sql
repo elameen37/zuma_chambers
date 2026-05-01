@@ -46,6 +46,12 @@ CREATE TABLE IF NOT EXISTS matter_events (
     description TEXT,
     event_date TIMESTAMPTZ NOT NULL,
     is_completed BOOLEAN DEFAULT false,
+    -- Court Logistics
+    courtroom TEXT,
+    assigned_clerk_id UUID REFERENCES auth.users(id),
+    attendance_status TEXT DEFAULT 'Pending', -- Pending, Attended, Missed
+    outcome TEXT,
+    next_hearing_date TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 

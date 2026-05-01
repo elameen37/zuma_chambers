@@ -19,6 +19,13 @@ export interface MatterEvent {
   description?: string;
   date: string;
   isCompleted: boolean;
+  // Calendar & Court Logistics
+  courtroom?: string;
+  assignedCounsel?: string[];
+  assignedClerk?: string;
+  attendanceStatus?: 'Pending' | 'Attended' | 'Missed';
+  outcome?: string;
+  nextHearingDate?: string;
 }
 
 export interface Evidence {
@@ -93,7 +100,17 @@ const initialMatters: Matter[] = [
       { id: '2', name: 'Jane Smith', role: 'Associate' }
     ],
     events: [
-      { id: 'e1', type: 'Hearing', title: 'Substantive Hearing', date: '2026-05-15', isCompleted: false },
+      { 
+        id: 'e1', 
+        type: 'Hearing', 
+        title: 'Substantive Hearing', 
+        date: new Date().toISOString().split('T')[0], // TODAY
+        isCompleted: false,
+        courtroom: 'Courtroom 4A',
+        assignedCounsel: ['Chief Elameen SAN', 'John Doe'],
+        assignedClerk: 'Usman Ali',
+        attendanceStatus: 'Pending'
+      },
       { id: 'e2', type: 'Filing', title: 'Statement of Defense', date: '2026-04-10', isCompleted: true }
     ],
     evidence: [
@@ -123,7 +140,19 @@ const initialMatters: Matter[] = [
     riskScore: 25,
     leadCounsel: 'Barr. Aisha Yusuf',
     team: [{ id: '3', name: 'Aisha Yusuf', role: 'Lead Counsel' }],
-    events: [{ id: 'e3', type: 'Hearing', title: 'Final Judgment', date: '2026-05-20', isCompleted: false }],
+    events: [
+      { 
+        id: 'e3', 
+        type: 'Hearing', 
+        title: 'Final Judgment', 
+        date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // TOMORROW
+        isCompleted: false,
+        courtroom: 'Supreme Court Chamber 1',
+        assignedCounsel: ['Aisha Yusuf'],
+        assignedClerk: 'Mary Ebuka',
+        attendanceStatus: 'Pending'
+      }
+    ],
     evidence: [],
     notes: [],
     statutes: [],
@@ -131,6 +160,7 @@ const initialMatters: Matter[] = [
     createdAt: '2023-11-20'
   }
 ];
+
 
 export const useMatterStore = create<MatterStore>()(
   persist(
