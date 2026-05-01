@@ -8,23 +8,18 @@ import {
 } from '@/components/shared/Icons';
 import MatterCard, { MatterData } from '@/components/legal/MatterCard';
 
-const MOCK_MATTERS: MatterData[] = [
-  { id: '1', suitNumber: 'FHC/ABJ/CS/120/24', title: 'Zuma vs Federal Govt of Nigeria - Admiralty Dispute', type: 'Litigation', stage: 'Hearing', riskLevel: 'Critical', client: 'Zuma Oil & Gas', leadCounsel: 'Olumide Zuma (SAN)', lastUpdated: '2 hours ago', nextHearing: 'May 14, 2026' },
-  { id: '2', suitNumber: 'LD/1024/GCM/24', title: 'Acme Corp vs First Bank - Contractual Breach', type: 'Commercial', stage: 'Discovery', riskLevel: 'Medium', client: 'Acme Corp', leadCounsel: 'Adeyemi Cole', lastUpdated: 'Yesterday', nextHearing: null },
-  { id: '3', suitNumber: 'SC/CV/245/2023', title: 'State Maritime Jurisdiction Appeal', type: 'Appellate', stage: 'Judgment', riskLevel: 'High', client: 'Lagos State Gov', leadCounsel: 'Olumide Zuma (SAN)', lastUpdated: '3 days ago', nextHearing: 'Jun 22, 2026' },
-  { id: '4', suitNumber: 'FCT/HC/CV/09/24', title: 'Global Tech IP Infringement Action', type: 'Intellectual Property', stage: 'Pre-Trial', riskLevel: 'Low', client: 'Global Tech Inc', leadCounsel: 'Sarah Nwosu', lastUpdated: '1 week ago', nextHearing: 'May 02, 2026' },
-  { id: '5', suitNumber: 'ARB/LCIA/044/23', title: 'Pan-African Bank Syndicated Loan Recovery', type: 'Arbitration', stage: 'Hearing', riskLevel: 'High', client: 'Pan-African Bank', leadCounsel: 'Adeyemi Cole', lastUpdated: '5 hours ago', nextHearing: 'May 28, 2026' },
-  { id: '6', suitNumber: 'NICN/LA/334/23', title: 'Industrial Action Injunction - Aviation Union', type: 'Employment', stage: 'Closed', riskLevel: 'Low', client: 'Aero Contractors', leadCounsel: 'Ibrahim Musa', lastUpdated: '2 months ago', nextHearing: null },
-];
+import Link from 'next/link';
+import { useMatterStore } from '@/lib/matter-service';
 
-const STAGES = ['Discovery', 'Pre-Trial', 'Hearing', 'Judgment', 'Closed'] as const;
+const STAGES = ['Intake', 'Discovery', 'Pre-Trial', 'Hearing', 'Judgment', 'Closed'] as const;
 
 export default function CasesBoardPage() {
+  const matters = useMatterStore((state) => state.matters);
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [riskFilter, setRiskFilter] = useState('All');
 
-  const filteredMatters = MOCK_MATTERS.filter(m => {
+  const filteredMatters = matters.filter(m => {
     const matchesSearch = m.title.toLowerCase().includes(searchTerm.toLowerCase()) || m.suitNumber.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRisk = riskFilter === 'All' || m.riskLevel === riskFilter;
     return matchesSearch && matchesRisk;
@@ -59,9 +54,9 @@ export default function CasesBoardPage() {
           <button className="btn-outline px-4 py-2 flex items-center gap-2 text-xs">
             Export Docket
           </button>
-          <button className="btn-luxury px-6 py-2 flex items-center gap-2 text-xs font-bold">
+          <Link href="/dashboard/cases/new" className="btn-luxury px-6 py-2 flex items-center gap-2 text-xs font-bold">
             <Plus size={16} /> New Matter
-          </button>
+          </Link>
         </div>
       </div>
 

@@ -42,8 +42,14 @@ const ActivityItem = ({ title, time, type }: { title: string, time: string, type
   </div>
 );
 
+import { useMatterStore } from '@/lib/matter-service';
+
 export default function DashboardPage() {
   const { user } = useAuth();
+  const matters = useMatterStore((state) => state.matters);
+
+  // Stats logic
+  const activeMatters = matters.filter(m => m.stage !== 'Closed').length;
 
   return (
     <div className="space-y-8 pb-12">
@@ -55,13 +61,13 @@ export default function DashboardPage() {
         </div>
         <div className="flex gap-4">
           <button className="btn-outline py-2 px-6 text-xs">Export Report</button>
-          <button className="btn-luxury py-2 px-6 text-xs">New Matter</button>
+          <Link href="/dashboard/cases/new" className="btn-luxury py-2 px-6 text-xs font-bold">New Matter</Link>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <DashboardStat icon={Briefcase} label="Active Matters" value="142" trend="+12%" trendType="up" delay={0.1} />
+        <DashboardStat icon={Briefcase} label="Active Matters" value={activeMatters.toString()} trend="+12%" trendType="up" delay={0.1} />
         <DashboardStat icon={TrendingUp} label="Revenue MTD" value="₦24.8M" trend="+8.2%" trendType="up" delay={0.2} />
         <DashboardStat icon={Clock} label="Billable Hours" value="1,240" trend="-2.4%" trendType="down" delay={0.3} />
         <DashboardStat icon={Users} label="Client Retention" value="98.5%" trend="+0.5%" trendType="up" delay={0.4} />
@@ -75,9 +81,9 @@ export default function DashboardPage() {
               <h3 className="text-lg font-bold text-white font-playfair flex items-center gap-3">
                 <Scale className="text-gold-primary" size={20} /> High-Priority Suits
               </h3>
-              <button className="text-gold-primary text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 hover:gap-3 transition-all">
+              <Link href="/dashboard/cases" className="text-gold-primary text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 hover:gap-3 transition-all">
                 Full Docket <ChevronRight size={14} />
-              </button>
+              </Link>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
@@ -90,21 +96,19 @@ export default function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gold-dark/5">
-                  {[
-                    { id: 'FHC/ABJ/CS/120/24', title: 'Zuma vs Federal Govt of Nigeria', status: 'Hearing', color: 'text-amber-500' },
-                    { id: 'SC/CV/245/2023', title: 'Acme Corp Intellectual Property', status: 'Judgment', color: 'text-green-500' },
-                    { id: 'LD/1024/GCM/24', title: 'State Maritime Jurisdiction', status: 'Discovery', color: 'text-blue-500' },
-                    { id: 'FCT/HC/CV/09/24', title: 'Global Tech Compliance Audit', status: 'Closed', color: 'text-gray-500' },
-                  ].map((row, i) => (
-                    <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="p-4 text-xs text-white font-inter font-medium">{row.id}</td>
+                  {matters.slice(0, 4).map((row, i) => (
+                    <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => router.push(`/dashboard/cases/${row.id}`)}>
+                      <td className="p-4 text-xs text-white font-inter font-medium">{row.suitNumber}</td>
                       <td className="p-4 text-sm text-gray-300 font-playfair font-bold">{row.title}</td>
-                      <td className={`p-4 text-[10px] font-bold uppercase ${row.color}`}>{row.status}</td>
+                      <td className={`p-4 text-[10px] font-bold uppercase ${
+                        row.stage === 'Hearing' ? 'text-amber-500' : 
+                        row.stage === 'Judgment' ? 'text-green-500' : 'text-blue-500'
+                      }`}>{row.stage}</td>
                       <td className="p-4">
                         <div className="flex -space-x-2">
-                          {[1, 2, 3].map(j => (
-                            <div key={j} className="w-6 h-6 rounded-full border border-black bg-gray-800 flex items-center justify-center text-[8px] text-gold-primary font-bold">
-                              JD
+                          {row.team.map((m, j) => (
+                            <div key={j} title={m.name} className="w-6 h-6 rounded-full border border-black bg-gray-800 flex items-center justify-center text-[8px] text-gold-primary font-bold">
+                              {m.name.split(' ').map(n => n[0]).join('')}
                             </div>
                           ))}
                         </div>
