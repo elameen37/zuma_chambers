@@ -87,6 +87,60 @@ CREATE TABLE IF NOT EXISTS linked_intelligence (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Clients Table
+CREATE TABLE IF NOT EXISTS clients (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    type TEXT CHECK (type IN ('Individual', 'Company', 'Government')),
+    email TEXT,
+    phone TEXT,
+    address TEXT,
+    kyc_status TEXT DEFAULT 'Pending',
+    risk_profile TEXT DEFAULT 'Low',
+    cac_number TEXT,
+    industry TEXT,
+    retainer_balance DECIMAL(15,2) DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Client Interactions
+CREATE TABLE IF NOT EXISTS client_interactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+    type TEXT CHECK (type IN ('Email', 'Call', 'Meeting', 'Letter')),
+    subject TEXT NOT NULL,
+    summary TEXT,
+    interaction_date TIMESTAMPTZ DEFAULT now(),
+    staff_id UUID REFERENCES auth.users(id)
+);
+
+-- Legal Documents & Versioning
+CREATE TABLE IF NOT EXISTS legal_documents (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    matter_id UUID REFERENCES matters(id),
+    client_id UUID REFERENCES clients(id),
+    title TEXT NOT NULL,
+    category TEXT,
+    current_version INTEGER DEFAULT 1,
+    status TEXT DEFAULT 'Draft',
+    privilege TEXT DEFAULT 'Confidential',
+    expiry_date TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS document_versions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    document_id UUID REFERENCES legal_documents(id) ON DELETE CASCADE,
+    version INTEGER NOT NULL,
+    file_name TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    changes TEXT,
+    author_id UUID REFERENCES auth.users(id),
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- Audit Triggers for Updated At
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -96,7 +150,9 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_matters_updated_at
-    BEFORE UPDATE ON matters
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+-- Update triggers
+CREATE TRIGGER update_matters_updated_at BEFORE UPDATE ON matters FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_clients_updated_at BEFORE UPDATE ON clients FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_legal_documents_updated_at BEFORE UPDATE ON legal_documents FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+
