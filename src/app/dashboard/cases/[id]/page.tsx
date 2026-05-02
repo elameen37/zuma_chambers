@@ -73,7 +73,7 @@ export default function MatterDetailPage() {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => setActiveTab(tab.id as 'overview' | 'timeline' | 'evidence' | 'intelligence')}
             className={`flex items-center gap-2 px-6 py-4 text-[10px] font-bold uppercase tracking-widest transition-all relative ${
               activeTab === tab.id ? 'text-gold-primary' : 'text-gray-500 hover:text-white'
             }`}

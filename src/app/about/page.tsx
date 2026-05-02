@@ -71,7 +71,7 @@ export default function AboutPage() {
                 Established in 1999, Zuma Chambers emerged with a clear vision: to redefine legal practice in Nigeria. What began as a boutique litigation firm has evolved into a full-service enterprise legal powerhouse, advising multi-national corporations, government entities, and private clients.
               </p>
               <p>
-                Our culture is rooted in the "Zuma Philosophy"—a belief that strength comes from meticulous preparation and justice is driven by relentless advocacy. Every case we handle is treated as a landmark, every client as a partner in progress.
+                Our culture is rooted in the &quot;Zuma Philosophy&quot;&mdash;a belief that strength comes from meticulous preparation and justice is driven by relentless advocacy. Every case we handle is treated as a landmark, every client as a partner in progress.
               </p>
             </div>
             <div className="mt-10 flex gap-12">
@@ -102,9 +102,9 @@ export default function AboutPage() {
                <div className="absolute inset-0 bg-gold-primary/5 shimmer" />
                <Shield className="w-40 h-40 text-gold-primary/20" />
                <div className="absolute bottom-8 left-8 right-8 p-6 bg-background/80 backdrop-blur-md border border-gold-primary/30 rounded-lg">
-                 <p className="text-xs text-gold-primary italic font-inter leading-relaxed">
-                   "Justice is not just a destination, but the path we walk every day."
-                 </p>
+                  <p className="text-xs text-gold-primary italic font-inter leading-relaxed">
+                    &quot;Justice is not just a destination, but the path we walk every day.&quot;
+                  </p>
                  <p className="text-[10px] text-gray-500 mt-2 tracking-widest uppercase font-bold">
                    — Senior Partner, Zuma Chambers
                  </p>

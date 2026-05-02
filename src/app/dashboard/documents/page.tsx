@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import DraftingLibrary from '@/components/legal/DraftingLibrary';
 import DocumentVault from '@/components/legal/DocumentVault';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ScrollText, FileStack, Plus, Zap } from 'lucide-react';
+import { FileStack, Plus, Zap } from 'lucide-react';
 
 export default function DocumentsIntelligencePage() {
-  const [activeTab, setActiveTab] = useState<'library' | 'vault'>('library');
+  const [activeTab, setActiveTab] = React.useState<'library' | 'vault'>('library');
 
   return (
     <div className="space-y-8 pb-12">

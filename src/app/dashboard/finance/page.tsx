@@ -4,9 +4,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   DollarSign, BarChart4, PieChart, ArrowUpRight, ArrowDownRight,
-  FileCheck, Clock, CreditCard, Download, Filter, MoreHorizontal,
-  Coins, Banknote, Wallet, ReceiptSquare, Users, Activity,
-  ChevronRight, Plus, Gavel, ArrowRight, ShieldCheck, Building, AlertCircle,
+  Clock, Wallet, ReceiptSquare, Users, Activity, Download,
+  Plus, Gavel, ArrowRight, ShieldCheck, Building, AlertCircle,
   Search
 } from '@/components/shared/Icons';
 
@@ -33,7 +32,7 @@ const FinanceCard = ({ label, value, trend, trendType, icon: Icon, delay }: { la
   </motion.div>
 );
 
-const TabButton = ({ active, onClick, label, icon: Icon }: { active: boolean, onClick: () => void, label: string, icon: any }) => (
+const TabButton = ({ active, onClick, label, icon: Icon }: { active: boolean, onClick: () => void, label: string, icon: React.ElementType }) => (
   <button
     onClick={onClick}
     className={`relative flex items-center gap-2 px-6 py-4 text-xs font-bold tracking-widest uppercase transition-all z-10 ${
@@ -64,7 +63,7 @@ export default function FinancePage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white font-playfair mb-2 mt-4 flex items-center gap-3">
-             <span className="p-3 bg-gold-primary/10 rounded-lg"><Banknote size={24} className="text-gold-primary" /></span>
+             <span className="p-3 bg-gold-primary/10 rounded-lg"><DollarSign size={24} className="text-gold-primary" /></span>
              Finance & Billing Center
           </h1>
           <p className="text-gray-400 text-sm font-inter mt-3">Enterprise-grade legal accounting with multi-currency trust ledgers and revenue analytics.</p>

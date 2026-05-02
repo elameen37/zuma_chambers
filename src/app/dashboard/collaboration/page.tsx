@@ -246,7 +246,7 @@ export default function CollaborationPage() {
              <BookOpen className="text-gold-primary" size={16} /> Legal Research
            </h3>
            <div className="p-4 border border-gold-dark/5 rounded-xl bg-white/[0.02]">
-             <p className="text-[10px] text-gray-500 italic">"Can anyone pull the recent ECOWAS court ruling on transnational debt enforcement?"</p>
+             <p className="text-[10px] text-gray-500 italic">&quot;Can anyone pull the recent ECOWAS court ruling on transnational debt enforcement?&quot;</p>
              <div className="mt-3 flex items-center gap-2">
                 <div className="w-5 h-5 rounded-full bg-gold-dark/20 text-[8px] flex items-center justify-center">NM</div>
                 <span className="text-[9px] text-gray-400">Requested by Nkechi M.</span>

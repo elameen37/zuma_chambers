@@ -149,6 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.user && parsed.isAuthenticated) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setState(prev => ({
             ...prev,
             user: parsed.user,
