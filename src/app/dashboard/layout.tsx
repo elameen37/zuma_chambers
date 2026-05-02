@@ -10,7 +10,7 @@ import RouteGuard from '@/components/guards/RouteGuard';
 import {
   LayoutDashboard, Briefcase, FileText, BarChart3, ShieldCheck, Users,
   Settings, LogOut, Menu, X, Bell, Search, Gavel, ScrollText, CalendarDays,
-  MessageSquare
+  MessageSquare, BookOpen
 } from '@/components/shared/Icons';
 
 const SidebarItem = ({ icon: Icon, label, href, active, locked }: { icon: React.ElementType, label: string, href: string, active: boolean, locked?: boolean }) => (
