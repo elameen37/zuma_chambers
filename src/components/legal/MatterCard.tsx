@@ -2,22 +2,12 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Briefcase, Clock, ShieldAlert, ArrowRight, Gavel, Scale } from '@/components/shared/Icons';
+import { Matter, MatterStage } from '@/lib/matter-service';
 
-export interface MatterData {
-  id: string;
-  suitNumber: string;
-  title: string;
-  type: string;
-  stage: 'Discovery' | 'Pre-Trial' | 'Hearing' | 'Judgment' | 'Closed';
-  riskLevel: 'Low' | 'Medium' | 'High' | 'Critical';
-  client: string;
-  leadCounsel: string;
-  lastUpdated: string;
-  nextHearing: string | null;
-}
 
-const getStageColor = (stage: MatterData['stage']) => {
+const getStageColor = (stage: MatterStage) => {
   switch (stage) {
+    case 'Intake': return 'text-gold-primary border-gold-primary/20 bg-gold-primary/10';
     case 'Discovery': return 'text-blue-500 border-blue-500/20 bg-blue-500/10';
     case 'Pre-Trial': return 'text-purple-500 border-purple-500/20 bg-purple-500/10';
     case 'Hearing': return 'text-amber-500 border-amber-500/20 bg-amber-500/10';
@@ -26,7 +16,7 @@ const getStageColor = (stage: MatterData['stage']) => {
   }
 };
 
-const getRiskColor = (risk: MatterData['riskLevel']) => {
+const getRiskColor = (risk: Matter['riskLevel']) => {
   switch (risk) {
     case 'Low': return 'text-green-500';
     case 'Medium': return 'text-amber-500';
@@ -35,7 +25,7 @@ const getRiskColor = (risk: MatterData['riskLevel']) => {
   }
 };
 
-export default function MatterCard({ matter, delay, compact = false }: { matter: MatterData, delay: number, compact?: boolean }) {
+export default function MatterCard({ matter, delay, compact = false }: { matter: Matter, delay: number, compact?: boolean }) {
   const stageClasses = getStageColor(matter.stage);
   const riskClass = getRiskColor(matter.riskLevel);
 

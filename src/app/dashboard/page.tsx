@@ -7,6 +7,8 @@ import {
   Briefcase, TrendingUp, Clock, Users, Scale, FileText, AlertCircle,
   ChevronRight, ArrowUpRight, ArrowDownRight
 } from '@/components/shared/Icons';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const DashboardStat = ({ icon: Icon, label, value, trend, trendType, delay }: { icon: React.ElementType, label: string, value: string, trend: string, trendType: 'up' | 'down', delay: number }) => (
   <motion.div
@@ -46,6 +48,7 @@ import { useMatterStore } from '@/lib/matter-service';
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const matters = useMatterStore((state) => state.matters);
 
   // Stats logic

@@ -56,7 +56,7 @@ export default function WorkflowBoard() {
                 ) : (
                   getMattersByStage(stage).map((matter, idx) => (
                     <div key={matter.id} className="relative group">
-                      <MatterCard matter={matter as any} delay={idx * 0.05} compact />
+                      <MatterCard matter={matter} delay={idx * 0.05} compact />
                       
                       {/* Move Stage Overlay (Mini) */}
                       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">

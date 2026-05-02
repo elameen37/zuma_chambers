@@ -69,6 +69,7 @@ export interface Matter {
   evidence: Evidence[];
   notes: Note[];
   statutes: Statute[];
+  type: string;
   lastUpdated: string;
   createdAt: string;
 }
@@ -95,6 +96,7 @@ const initialMatters: Matter[] = [
     riskLevel: 'High',
     riskScore: 78,
     leadCounsel: 'Chief Elameen SAN',
+    type: 'Civil Litigation',
     team: [
       { id: '1', name: 'John Doe', role: 'Lead Counsel' },
       { id: '2', name: 'Jane Smith', role: 'Associate' }
@@ -139,6 +141,7 @@ const initialMatters: Matter[] = [
     riskLevel: 'Low',
     riskScore: 25,
     leadCounsel: 'Barr. Aisha Yusuf',
+    type: 'Appellate',
     team: [{ id: '3', name: 'Aisha Yusuf', role: 'Lead Counsel' }],
     events: [
       { 
@@ -181,6 +184,7 @@ export const useMatterStore = create<MatterStore>()(
           riskLevel: 'Low',
           riskScore: 10,
           leadCounsel: 'Unassigned',
+          type: 'General',
           team: [],
           events: [],
           evidence: [],

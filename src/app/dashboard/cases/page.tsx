@@ -6,7 +6,7 @@ import {
   Briefcase, Search, Filter, Plus, LayoutDashboard, Grid,
   AlertCircle
 } from '@/components/shared/Icons';
-import MatterCard, { MatterData } from '@/components/legal/MatterCard';
+import MatterCard from '@/components/legal/MatterCard';
 
 import Link from 'next/link';
 import { useMatterStore } from '@/lib/matter-service';
