@@ -10,7 +10,7 @@ import RouteGuard from '@/components/guards/RouteGuard';
 import {
   LayoutDashboard, Briefcase, FileText, BarChart3, ShieldCheck, Users,
   Settings, LogOut, Menu, X, Bell, Search, Gavel, ScrollText, CalendarDays,
-  MessageSquare, BookOpen
+  MessageSquare, BookOpen, Sparkles
 } from '@/components/shared/Icons';
 
 const SidebarItem = ({ icon: Icon, label, href, active, locked }: { icon: React.ElementType, label: string, href: string, active: boolean, locked?: boolean }) => (
@@ -73,6 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: BookOpen, label: 'Law Library', href: '/dashboard/research', permission: PERMISSIONS.VIEW_RESEARCH },
     { icon: ShieldCheck, label: 'Chamber Admin', href: '/dashboard/hr', permission: PERMISSIONS.VIEW_HR },
     { icon: BarChart3, label: 'Executive Insights', href: '/dashboard/insights', permission: PERMISSIONS.VIEW_ANALYTICS },
+    { icon: Sparkles, label: 'AI Intelligence', href: '/dashboard/ai', permission: PERMISSIONS.VIEW_AI },
     { icon: ScrollText, label: 'Audit Logs', href: '/dashboard/audit-logs', permission: PERMISSIONS.VIEW_AUDIT_LOGS },
   ];
 
