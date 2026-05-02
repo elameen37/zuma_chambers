@@ -70,6 +70,7 @@ export interface Matter {
   notes: Note[];
   statutes: Statute[];
   type: string;
+  nextHearing?: string | null;
   lastUpdated: string;
   createdAt: string;
 }
@@ -185,6 +186,7 @@ export const useMatterStore = create<MatterStore>()(
           riskScore: 10,
           leadCounsel: 'Unassigned',
           type: 'General',
+          nextHearing: null,
           team: [],
           events: [],
           evidence: [],
