@@ -46,6 +46,9 @@ export const PERMISSIONS = {
   // Collaboration
   VIEW_COLLABORATION: 'view_collaboration',
   MANAGE_WORKFLOWS: 'manage_workflows',
+
+  // Research & Knowledge Base
+  VIEW_RESEARCH: 'view_research',
 } as const;
 
 export type Permission = typeof PERMISSIONS[keyof typeof PERMISSIONS];
@@ -63,6 +66,7 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     PERMISSIONS.VIEW_CALENDAR, PERMISSIONS.MANAGE_HEARINGS,
     PERMISSIONS.VIEW_COMPLIANCE,
     PERMISSIONS.VIEW_TEAM,
+    PERMISSIONS.VIEW_RESEARCH,
   ],
 
   admin: [
@@ -120,6 +124,7 @@ const ROUTE_PERMISSIONS: Record<string, Permission[]> = {
   '/dashboard/cause-list': [PERMISSIONS.VIEW_CALENDAR],
   '/dashboard/clients': [PERMISSIONS.VIEW_CLIENTS],
   '/dashboard/collaboration': [PERMISSIONS.VIEW_COLLABORATION],
+  '/dashboard/research': [PERMISSIONS.VIEW_RESEARCH],
   '/dashboard/audit-logs': [PERMISSIONS.VIEW_AUDIT_LOGS],
   '/dashboard/settings': [PERMISSIONS.MANAGE_SETTINGS],
 };
