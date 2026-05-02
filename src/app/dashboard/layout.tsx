@@ -72,6 +72,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: MessageSquare, label: 'Collaborate', href: '/dashboard/collaboration', permission: PERMISSIONS.VIEW_COLLABORATION },
     { icon: BookOpen, label: 'Law Library', href: '/dashboard/research', permission: PERMISSIONS.VIEW_RESEARCH },
     { icon: ShieldCheck, label: 'Chamber Admin', href: '/dashboard/hr', permission: PERMISSIONS.VIEW_HR },
+    { icon: BarChart3, label: 'Executive Insights', href: '/dashboard/insights', permission: PERMISSIONS.VIEW_ANALYTICS },
     { icon: ScrollText, label: 'Audit Logs', href: '/dashboard/audit-logs', permission: PERMISSIONS.VIEW_AUDIT_LOGS },
   ];
 
