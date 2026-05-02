@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth-context';
 import { ROLE_LABELS, ROLE_COLORS, Role } from '@/lib/permissions';
 import { User, Lock, Key, Fingerprint, ShieldCheck, Globe, Eye, Clock, Activity, CheckCircle } from '@/components/shared/Icons';
 import Badge from '@/components/shared/Badge';
+import NotificationSettings from '@/components/settings/NotificationSettings';
 
 export default function SettingsPage() {
   const { user, switchRole } = useAuth();
@@ -203,6 +204,10 @@ export default function SettingsPage() {
           </motion.div>
         </div>
       </div>
+      {/* Notification Settings */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+        <NotificationSettings />
+      </motion.div>
     </div>
   );
 }
