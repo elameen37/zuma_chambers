@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   Truck, Package, ClipboardList, MapPin, 
   Clock, CheckCircle2, AlertCircle, ShoppingCart,
-  HardDrive, Monitor, Briefcase
+  HardDrive, Monitor, Briefcase, Plus
 } from 'lucide-react';
 import { useHRStore } from '@/lib/hr-service';
 
