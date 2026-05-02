@@ -49,6 +49,9 @@ export const PERMISSIONS = {
 
   // Research & Knowledge Base
   VIEW_RESEARCH: 'view_research',
+
+  // HR & Admin
+  VIEW_HR: 'view_hr',
 } as const;
 
 export type Permission = typeof PERMISSIONS[keyof typeof PERMISSIONS];
@@ -67,6 +70,7 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     PERMISSIONS.VIEW_COMPLIANCE,
     PERMISSIONS.VIEW_TEAM,
     PERMISSIONS.VIEW_RESEARCH,
+    PERMISSIONS.VIEW_HR,
   ],
 
   admin: [
@@ -125,6 +129,7 @@ const ROUTE_PERMISSIONS: Record<string, Permission[]> = {
   '/dashboard/clients': [PERMISSIONS.VIEW_CLIENTS],
   '/dashboard/collaboration': [PERMISSIONS.VIEW_COLLABORATION],
   '/dashboard/research': [PERMISSIONS.VIEW_RESEARCH],
+  '/dashboard/hr': [PERMISSIONS.VIEW_HR],
   '/dashboard/audit-logs': [PERMISSIONS.VIEW_AUDIT_LOGS],
   '/dashboard/settings': [PERMISSIONS.MANAGE_SETTINGS],
 };
