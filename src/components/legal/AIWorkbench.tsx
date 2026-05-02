@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, Copy, Download, Wand2, 
   MessageSquare, Sparkles, BookOpen, Search,
-  History, Eye, ShieldCheck, Cpu
+  History, Eye, ShieldCheck, Cpu, Lightbulb
 } from 'lucide-react';
 import { useAIStore } from '@/lib/ai-service';
 
