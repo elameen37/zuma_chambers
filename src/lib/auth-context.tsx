@@ -130,6 +130,8 @@ const INITIAL_AUDIT_LOG: AuditEntry[] = [
   { id: 'aud_012', timestamp: '2026-04-14T18:40:00Z', userId: 'usr_001', userName: 'Chief Olumide Zuma', action: 'APPROVE_SETTLEMENT', resource: 'Case: LD/1024/GCM/24', ip: '102.89.45.121', status: 'success', details: 'Settlement amount: ₦25,000,000' },
 ];
 
+import { supabase } from './supabase';
+
 // ─── Context ───────────────────────────────────────────────────
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -142,39 +144,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     auditLog: INITIAL_AUDIT_LOG,
   });
 
-  // Restore session from localStorage
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('zuma_auth');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.user && parsed.isAuthenticated) {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setState(prev => ({
-            ...prev,
-            user: parsed.user,
-            isAuthenticated: true,
-            is2FAVerified: parsed.is2FAVerified ?? false,
-            sessionStarted: parsed.sessionStarted,
-          }));
-        }
-      }
-    } catch {
-      // Invalid session, ignore
-    }
-  }, []);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapSupabaseUser = (user: any): UserProfile => ({
+    id: user.id,
+    name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+    email: user.email || '',
+    role: (user.user_metadata?.role as Role) || 'client',
+    initials: user.user_metadata?.initials || user.email?.substring(0, 2).toUpperCase() || 'U',
+    title: user.user_metadata?.title || 'User',
+    department: user.user_metadata?.department || 'General',
+    lastLogin: user.last_sign_in_at || new Date().toISOString(),
+    ip: 'Unknown',
+  });
 
-  // Persist session
+  // Supabase Auth Listener
   useEffect(() => {
-    if (state.isAuthenticated && state.user) {
-      localStorage.setItem('zuma_auth', JSON.stringify({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-        is2FAVerified: state.is2FAVerified,
-        sessionStarted: state.sessionStarted,
-      }));
-    }
-  }, [state.isAuthenticated, state.user, state.is2FAVerified, state.sessionStarted]);
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setState(prev => ({
+          ...prev,
+          user: mapSupabaseUser(session.user),
+          isAuthenticated: true,
+          sessionStarted: session.user.last_sign_in_at || new Date().toISOString(),
+        }));
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        setState(prev => ({
+          ...prev,
+          user: mapSupabaseUser(session.user),
+          isAuthenticated: true,
+          sessionStarted: session.user.last_sign_in_at || new Date().toISOString(),
+        }));
+      } else if (event === 'SIGNED_OUT') {
+        setState(prev => ({
+          ...prev,
+          user: null,
+          isAuthenticated: false,
+          sessionStarted: null,
+        }));
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const addAuditEntry = useCallback((action: string, resource: string, status: 'success' | 'denied' | 'warning', details?: string) => {
     const entry: AuditEntry = {
@@ -194,39 +212,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }));
   }, [state.user]);
 
-  const login = useCallback(async (email: string, _password: string, role?: Role): Promise<boolean> => {
-    // Simulate network delay
-    await new Promise(r => setTimeout(r, 800));
+  const login = useCallback(async (email: string, password: string, role?: Role): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    // Mock validation: accept any non-empty credentials
-    if (!email) return false;
+      if (error) throw error;
 
-    const selectedRole = role ?? 'associate';
-    const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString() };
-
-    setState(prev => ({
-      ...prev,
-      user,
-      isAuthenticated: true,
-      is2FAVerified: false,
-      sessionStarted: new Date().toISOString(),
-      auditLog: [{
-        id: `aud_${Date.now()}`,
-        timestamp: new Date().toISOString(),
-        userId: user.id,
-        userName: user.name,
-        action: 'LOGIN',
-        resource: 'Authentication',
-        ip: user.ip,
-        status: 'success',
-      }, ...prev.auditLog],
-    }));
-
-    return true;
+      if (data.user) {
+        const mappedUser = mapSupabaseUser(data.user);
+        
+        setState(prev => ({
+          ...prev,
+          user: mappedUser,
+          isAuthenticated: true,
+          is2FAVerified: false,
+          sessionStarted: new Date().toISOString(),
+          auditLog: [{
+            id: `aud_${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            userId: mappedUser.id,
+            userName: mappedUser.name,
+            action: 'LOGIN',
+            resource: 'Authentication',
+            ip: mappedUser.ip,
+            status: 'success',
+          }, ...prev.auditLog],
+        }));
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('Login error:', err);
+      // Fallback to mock for demo purposes if Supabase is unconfigured
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('your-project')) {
+        console.warn('Falling back to mock authentication...');
+        const selectedRole = role ?? 'associate';
+        const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString() };
+        setState(prev => ({
+          ...prev,
+          user,
+          isAuthenticated: true,
+          is2FAVerified: false,
+          sessionStarted: new Date().toISOString(),
+        }));
+        return true;
+      }
+      return false;
+    }
   }, []);
 
   const verify2FA = useCallback((code: string): boolean => {
-    // Mock: accept any 6-digit code
+    // Mock: accept any 6-digit code for 2FA
     if (code.length === 6) {
       setState(prev => ({
         ...prev,
@@ -247,17 +286,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
     addAuditEntry('LOGOUT', 'Authentication', 'success');
-    localStorage.removeItem('zuma_auth');
-    setState({
+    await supabase.auth.signOut();
+    setState(prev => ({
+      ...prev,
       user: null,
       isAuthenticated: false,
       is2FAVerified: false,
       sessionStarted: null,
-      auditLog: state.auditLog,
-    });
-  }, [addAuditEntry, state.auditLog]);
+    }));
+  }, [addAuditEntry]);
 
   const switchRole = useCallback((role: Role) => {
     const newUser = { ...MOCK_USERS[role], lastLogin: new Date().toISOString() };
@@ -284,6 +323,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     </AuthContext.Provider>
   );
 }
+
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);

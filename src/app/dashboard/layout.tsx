@@ -10,14 +10,14 @@ import RouteGuard from '@/components/guards/RouteGuard';
 import {
   LayoutDashboard, Briefcase, FileText, BarChart3, ShieldCheck, Users,
   Settings, LogOut, Menu, X, Bell, Search, Gavel, ScrollText, CalendarDays,
-  MessageSquare, BookOpen, Sparkles
+  MessageSquare, BookOpen, Sparkles, ChevronLeft, ChevronRight
 } from '@/components/shared/Icons';
 
-const SidebarItem = ({ icon: Icon, label, href, active, locked }: { icon: React.ElementType, label: string, href: string, active: boolean, locked?: boolean }) => (
+const SidebarItem = ({ icon: Icon, label, href, active, locked, collapsed }: { icon: React.ElementType, label: string, href: string, active: boolean, locked?: boolean, collapsed?: boolean }) => (
   <Link href={locked ? '#' : href} className="relative block">
     <motion.div
-      whileHover={locked ? {} : { x: 5 }}
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 relative group z-10 ${
+      whileHover={locked ? {} : { x: collapsed ? 0 : 5 }}
+      className={`flex items-center ${collapsed ? 'justify-center px-0' : 'gap-3 px-4'} py-3 rounded-lg transition-all duration-300 relative group z-10 ${
         locked
           ? 'text-gray-700 cursor-not-allowed'
           : active
@@ -25,8 +25,20 @@ const SidebarItem = ({ icon: Icon, label, href, active, locked }: { icon: React.
             : 'text-gray-400 hover:text-white hover:bg-white/5'
       }`}
     >
-      <Icon size={20} className="relative z-20" />
-      <span className="text-sm font-medium font-inter relative z-20">{label}</span>
+      <Icon size={20} className="relative z-20 shrink-0" />
+      
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.span
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: 'auto' }}
+            exit={{ opacity: 0, width: 0 }}
+            className="text-sm font-medium font-inter relative z-20 whitespace-nowrap overflow-hidden"
+          >
+            {label}
+          </motion.span>
+        )}
+      </AnimatePresence>
       
       {active && (
         <motion.div 
@@ -36,11 +48,11 @@ const SidebarItem = ({ icon: Icon, label, href, active, locked }: { icon: React.
         />
       )}
       
-      {active && (
+      {active && !collapsed && (
         <motion.div layoutId="active-pill" className="ml-auto w-1 h-4 bg-black/40 rounded-full relative z-20" />
       )}
       
-      {locked && (
+      {locked && !collapsed && (
         <span className="ml-auto text-[7px] tracking-widest uppercase text-gray-700 font-bold relative z-20">Locked</span>
       )}
     </motion.div>
@@ -49,6 +61,7 @@ const SidebarItem = ({ icon: Icon, label, href, active, locked }: { icon: React.
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -99,20 +112,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </AnimatePresence>
 
         {/* Sidebar */}
-        <aside
-          className={`fixed lg:static inset-y-0 left-0 z-50 w-72 bg-black border-r border-gold-dark/10 transition-transform duration-300 ease-in-out ${
+        <motion.aside
+          initial={false}
+          animate={{ width: isDesktopCollapsed ? 80 : 288 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className={`fixed lg:static inset-y-0 left-0 z-50 bg-black border-r border-gold-dark/10 ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-          }`}
+          } overflow-hidden`}
         >
           <div className="flex flex-col h-full p-6">
-            <div className="flex items-center gap-3 mb-12 px-2">
-              <div className="w-10 h-10 flex items-center justify-center border border-gold-primary rounded-full">
+            <div className={`flex items-center gap-3 mb-12 ${isDesktopCollapsed ? 'justify-center px-0' : 'px-2'}`}>
+              <div className="w-10 h-10 shrink-0 flex items-center justify-center border border-gold-primary rounded-full">
                 <Gavel className="w-5 h-5 text-gold-primary" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold tracking-widest text-white uppercase font-playfair">Zuma ERP</span>
-                <span className="text-[8px] text-gold-primary tracking-[0.2em] uppercase font-inter leading-tight font-bold">Workspace v2.0</span>
-              </div>
+              <AnimatePresence>
+                {!isDesktopCollapsed && (
+                  <motion.div
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: 'auto' }}
+                    exit={{ opacity: 0, width: 0 }}
+                    className="flex flex-col whitespace-nowrap overflow-hidden"
+                  >
+                    <span className="text-lg font-bold tracking-widest text-white uppercase font-playfair">Zuma ERP</span>
+                    <span className="text-[8px] text-gold-primary tracking-[0.2em] uppercase font-inter leading-tight font-bold">Workspace v2.0</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <nav className="flex-1 space-y-2">
@@ -124,6 +149,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   active={pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))}
                   locked={item.locked}
+                  collapsed={isDesktopCollapsed}
                 />
               ))}
             </nav>
@@ -135,17 +161,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 href="/dashboard/settings"
                 active={pathname === '/dashboard/settings'}
                 locked={!hasPermission(user?.role ?? 'client', PERMISSIONS.MANAGE_SETTINGS)}
+                collapsed={isDesktopCollapsed}
               />
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-all font-inter text-sm"
+                className={`w-full flex items-center ${isDesktopCollapsed ? 'justify-center px-0' : 'gap-3 px-4'} py-3 text-gray-400 hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-all font-inter text-sm`}
               >
-                <LogOut size={20} />
-                <span>Logout</span>
+                <LogOut size={20} className="shrink-0" />
+                {!isDesktopCollapsed && <span className="whitespace-nowrap">Logout</span>}
               </button>
             </div>
+
+            {/* Desktop Collapse Toggle */}
+            <button
+              onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
+              className="hidden lg:flex absolute bottom-6 right-0 translate-x-1/2 w-6 h-6 bg-gold-primary rounded-full items-center justify-center text-black shadow-lg hover:scale-110 transition-transform z-50"
+            >
+              {isDesktopCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            </button>
           </div>
-        </aside>
+        </motion.aside>
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-w-0">

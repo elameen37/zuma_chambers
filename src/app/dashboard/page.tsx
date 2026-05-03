@@ -50,6 +50,13 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
   const matters = useMatterStore((state) => state.matters);
+  const syncWithSupabase = useMatterStore((state) => state.syncWithSupabase);
+
+  React.useEffect(() => {
+    if (syncWithSupabase) {
+      syncWithSupabase();
+    }
+  }, [syncWithSupabase]);
 
   // Stats logic
   const activeMatters = matters.filter(m => m.stage !== 'Closed').length;

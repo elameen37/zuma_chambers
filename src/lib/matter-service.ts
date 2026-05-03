@@ -77,9 +77,10 @@ export interface Matter {
 
 interface MatterStore {
   matters: Matter[];
-  addMatter: (matter: Partial<Matter>) => void;
+  addMatter: (matter: Partial<Matter>) => Promise<void> | void;
   updateMatter: (id: string, updates: Partial<Matter>) => void;
   getMatter: (id: string) => Matter | undefined;
+  syncWithSupabase: () => Promise<void>;
 }
 
 const initialMatters: Matter[] = [
@@ -166,11 +167,13 @@ const initialMatters: Matter[] = [
 ];
 
 
+import { supabase } from './supabase';
+
 export const useMatterStore = create<MatterStore>()(
   persist(
     (set, get) => ({
       matters: initialMatters,
-      addMatter: (matter) => {
+      addMatter: async (matter) => {
         const newMatter: Matter = {
           id: Math.random().toString(36).substring(7),
           suitNumber: '',
@@ -196,7 +199,24 @@ export const useMatterStore = create<MatterStore>()(
           createdAt: new Date().toISOString(),
           ...matter,
         } as Matter;
+        
         set((state) => ({ matters: [newMatter, ...state.matters] }));
+        
+        // Try to sync to Supabase (fire and forget for now)
+        try {
+          await supabase.from('matters').insert({
+            suit_number: newMatter.suitNumber,
+            title: newMatter.title,
+            stage: newMatter.stage,
+            priority: newMatter.riskLevel,
+            client_name: newMatter.client,
+            assigned_counsel: newMatter.leadCounsel,
+            next_hearing: newMatter.nextHearing,
+            type: newMatter.type,
+          });
+        } catch (e) {
+          console.warn('Failed to insert into Supabase', e);
+        }
       },
       updateMatter: (id, updates) => {
         set((state) => ({
@@ -204,9 +224,47 @@ export const useMatterStore = create<MatterStore>()(
         }));
       },
       getMatter: (id) => get().matters.find((m) => m.id === id),
+      syncWithSupabase: async () => {
+        try {
+          const { data, error } = await supabase.from('matters').select('*');
+          if (!error && data && data.length > 0) {
+            // Map Supabase rows to Matter interface
+            const mappedMatters = data.map(row => ({
+              id: row.id,
+              suitNumber: row.suit_number,
+              title: row.title,
+              client: row.client_name,
+              opposingParty: 'Opposing Party', // Needs DB update for full fidelity
+              opposingCounsel: 'Unknown',
+              jurisdiction: 'Unknown',
+              court: 'High Court',
+              judge: 'Unknown',
+              stage: row.stage as MatterStage,
+              riskLevel: row.priority as RiskLevel,
+              riskScore: 50,
+              leadCounsel: row.assigned_counsel,
+              type: row.type,
+              nextHearing: row.next_hearing,
+              team: [],
+              events: [],
+              evidence: [],
+              notes: [],
+              statutes: [],
+              lastUpdated: new Date().toISOString(),
+              createdAt: row.created_at,
+            }));
+            
+            // Merge or replace
+            set({ matters: mappedMatters as Matter[] });
+          }
+        } catch (e) {
+          console.error('Failed to sync matters from Supabase', e);
+        }
+      }
     }),
     {
       name: 'zuma-matter-storage',
     }
   )
 );
+

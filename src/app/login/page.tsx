@@ -14,14 +14,12 @@ function LoginContent() {
 
   const initialStep = searchParams.get('step') === '2fa' ? 2 : 1;
   const [step, setStep] = useState(initialStep);
-  const [email, setEmail] = useState('olumide.zuma@zumachambers.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<Role>('partner');
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showRoleSelect, setShowRoleSelect] = useState(false);
 
   // Redirect if already fully authenticated
   React.useEffect(() => {
@@ -37,13 +35,13 @@ function LoginContent() {
     setError('');
     setLoading(true);
 
-    const success = await login(email, password, selectedRole);
+    const success = await login(email, password);
     setLoading(false);
 
     if (success) {
       setStep(2);
     } else {
-      setError('Invalid credentials. Please try again.');
+      setError('Invalid credentials. Please verify your email and password.');
     }
   };
 
@@ -120,45 +118,6 @@ function LoginContent() {
                 <p className="text-gray-400 text-sm font-inter mb-10">Sign in to your secure chamber workspace.</p>
 
                 <form onSubmit={handleLogin} className="space-y-6">
-                  {/* Role Selector */}
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2 font-inter">
-                      Access Role (Demo)
-                    </label>
-                    <div className="relative">
-                      <button
-                        type="button"
-                        onClick={() => setShowRoleSelect(!showRoleSelect)}
-                        className="w-full bg-white/5 border border-gold-dark/20 rounded-lg py-3 px-4 text-sm text-white text-left flex justify-between items-center hover:border-gold-primary/40 transition-colors"
-                      >
-                        <span className="flex items-center gap-3">
-                          <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border ${ROLE_COLORS[selectedRole]}`}>
-                            {selectedRole}
-                          </span>
-                          <span className="font-inter">{ROLE_LABELS[selectedRole]}</span>
-                        </span>
-                        <ChevronDown size={16} className="text-gray-500" />
-                      </button>
-                      {showRoleSelect && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-black border border-gold-dark/20 rounded-lg overflow-hidden z-50 shadow-2xl">
-                          {roles.map(role => (
-                            <button
-                              key={role}
-                              type="button"
-                              onClick={() => { setSelectedRole(role); setShowRoleSelect(false); }}
-                              className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors ${selectedRole === role ? 'bg-gold-primary/5' : ''}`}
-                            >
-                              <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border ${ROLE_COLORS[role]}`}>
-                                {role}
-                              </span>
-                              <span className="text-sm text-gray-300 font-inter">{ROLE_LABELS[role]}</span>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
                   {/* Email */}
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2 font-inter">
