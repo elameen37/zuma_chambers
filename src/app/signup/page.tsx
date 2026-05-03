@@ -23,16 +23,20 @@ function SignUpContent() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
+  const [pin, setPin] = useState('');
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
+    setPin('');
     setLoading(true);
 
-    const { success, error: signUpError, message } = await signUp(email, password, name, selectedRole);
+    const { success, error: signUpError, message, pin: generatedPin } = await signUp(email, password, name, selectedRole);
     setLoading(false);
 
     if (success) {
+      if (generatedPin) setPin(generatedPin);
       if (message) {
         setSuccessMsg(message);
       } else {
@@ -107,6 +111,15 @@ function SignUpContent() {
                 </div>
                 <h3 className="text-white font-bold font-playfair text-xl">Registration Successful</h3>
                 <p className="text-gray-400 text-sm font-inter">{successMsg}</p>
+                
+                {pin && (
+                  <div className="mt-6 p-4 bg-black/40 border border-gold-primary/30 rounded-lg">
+                    <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-2">Your 2FA Access PIN</p>
+                    <p className="text-3xl font-bold text-gold-primary tracking-[0.2em]">{pin}</p>
+                    <p className="text-xs text-red-400 mt-2 font-inter italic">Please save this PIN securely. You will need it to log in.</p>
+                  </div>
+                )}
+
                 <Link href="/login" className="btn-luxury block w-full py-3 text-sm mt-4">
                   Return to Sign In
                 </Link>

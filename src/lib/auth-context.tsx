@@ -14,6 +14,7 @@ export interface UserProfile {
   department: string;
   lastLogin: string;
   ip: string;
+  pin?: string;
 }
 
 interface AuditEntry {
@@ -38,7 +39,7 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string, role?: Role) => Promise<boolean>;
-  signUp: (email: string, password: string, name: string, role: Role) => Promise<{ success: boolean; error?: string; message?: string }>;
+  signUp: (email: string, password: string, name: string, role: Role) => Promise<{ success: boolean; error?: string; message?: string; pin?: string }>;
   verify2FA: (code: string) => boolean;
   logout: () => void;
   addAuditEntry: (action: string, resource: string, status: 'success' | 'denied' | 'warning', details?: string) => void;
@@ -156,6 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     department: user.user_metadata?.department || 'General',
     lastLogin: user.last_sign_in_at || new Date().toISOString(),
     ip: 'Unknown',
+    pin: user.user_metadata?.pin,
   });
 
   // Supabase Auth Listener
@@ -265,9 +267,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string, name: string, role: Role): Promise<{ success: boolean; error?: string; message?: string }> => {
+  const signUp = useCallback(async (email: string, password: string, name: string, role: Role): Promise<{ success: boolean; error?: string; message?: string; pin?: string }> => {
     try {
       const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || email.substring(0, 2).toUpperCase();
+      const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -279,6 +282,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             initials,
             title: role === 'partner' ? 'Partner' : role === 'associate' ? 'Associate Counsel' : 'Staff',
             department: 'Operations',
+            pin: generatedPin,
           }
         }
       });
@@ -287,10 +291,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // If session is null, it means email confirmation is required
       if (data.user && !data.session) {
-        return { success: true, message: 'Please check your email to verify your account.' };
+        return { success: true, message: 'Please check your email to verify your account.', pin: generatedPin };
       }
 
-      return { success: true };
+      return { success: true, pin: generatedPin };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Sign-up error:', err);
@@ -299,7 +303,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const verify2FA = useCallback((code: string): boolean => {
-    // Mock: accept any 6-digit code for 2FA
+    // Check if the user has a specific PIN assigned
+    if (state.user?.pin) {
+      if (code === state.user.pin) {
+        dispatch({ type: 'VERIFY_2FA' });
+        return true;
+      }
+      return false;
+    }
+    
+    // Fallback: mock accept any 6-digit code for 2FA (for old accounts)
     if (code.length === 6) {
       setState(prev => ({
         ...prev,
