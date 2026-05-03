@@ -209,7 +209,7 @@ export default function ExecutiveAnalytics() {
   return (
     <div className="space-y-8 pb-12">
       {/* Top Layer: Core KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatCard label="Active Cases" value={data.activeCases} trend="12%" trendType="up" icon={Briefcase} delay={0.1} />
         <StatCard label="Upcoming Hearings" value={data.upcomingHearings} trend="4 today" trendType="up" icon={Calendar} delay={0.2} />
         <StatCard label="Urgent Deadlines" value={data.urgentDeadlines} trend="Critical" trendType="down" icon={AlertCircle} delay={0.3} />
@@ -217,34 +217,34 @@ export default function ExecutiveAnalytics() {
       </div>
 
       {/* Middle Layer: Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glass-card p-8">
-          <div className="flex justify-between items-center mb-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="xl:col-span-2 glass-card p-4 sm:p-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
               <h3 className="text-lg font-bold text-white font-playfair flex items-center gap-2">
                 <Activity className="text-gold-primary" size={20} /> Case Filing Trends
               </h3>
               <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Monthly volume comparison</p>
             </div>
-            <button className="btn-outline px-4 py-2 text-[10px]">Download Report</button>
+            <button className="w-full sm:w-auto btn-outline px-4 py-2 text-[10px]">Download Report</button>
           </div>
           <LineChart data={data.monthlyFilings} />
         </div>
 
-        <div className="glass-card p-8">
+        <div className="glass-card p-4 sm:p-8">
           <h3 className="text-lg font-bold text-white font-playfair flex items-center gap-2 mb-8">
             <PieChart className="text-gold-primary" size={20} /> Practice Distribution
           </h3>
-          <div className="flex justify-center">
+          <div className="flex justify-center xl:block">
             <DonutChart data={data.practiceAreaAnalytics} />
           </div>
         </div>
       </div>
 
       {/* Bottom Layer: Specialized Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="glass-card p-8">
-          <div className="flex justify-between items-center mb-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <div className="glass-card p-4 sm:p-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
               <h3 className="text-lg font-bold text-white font-playfair flex items-center gap-2">
                 <BarChart3 className="text-gold-primary" size={20} /> Workload Intensity Map
@@ -260,14 +260,14 @@ export default function ExecutiveAnalytics() {
           <Heatmap data={data.workloadHeatmap} />
         </div>
 
-        <div className="glass-card p-8">
+        <div className="glass-card p-4 sm:p-8">
           <h3 className="text-lg font-bold text-white font-playfair flex items-center gap-2 mb-8">
             <Users className="text-gold-primary" size={20} /> Associate Performance Index
           </h3>
           <div className="space-y-6">
             {data.associatePerformance.map((assoc, i) => (
               <div key={assoc.name} className="space-y-2">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gold-primary/10 border border-gold-primary/20 flex items-center justify-center text-[10px] font-bold text-gold-primary">
                       {assoc.name.split(' ').map(n => n[0]).join('')}
@@ -295,34 +295,34 @@ export default function ExecutiveAnalytics() {
       </div>
 
       {/* KPI Footer Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="glass-card p-6 border-gold-primary/20 bg-gold-primary/5 flex items-center gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+        <div className="glass-card p-4 sm:p-6 border-gold-primary/20 bg-gold-primary/5 flex items-center gap-4">
           <div className="p-3 bg-gold-primary text-black rounded-lg shadow-lg">
             <Target size={20} />
           </div>
           <div>
             <p className="text-[10px] font-bold text-gold-primary uppercase tracking-widest mb-1">Litigation Success Rate</p>
-            <h4 className="text-xl font-bold text-white font-playfair">88.4%</h4>
+            <h4 className="text-lg sm:text-xl font-bold text-white font-playfair">88.4%</h4>
           </div>
         </div>
         
-        <div className="glass-card p-6 border-gold-primary/20 bg-gold-primary/5 flex items-center gap-4">
+        <div className="glass-card p-4 sm:p-6 border-gold-primary/20 bg-gold-primary/5 flex items-center gap-4">
           <div className="p-3 bg-gold-primary text-black rounded-lg shadow-lg">
             <Clock size={20} />
           </div>
           <div>
             <p className="text-[10px] font-bold text-gold-primary uppercase tracking-widest mb-1">Avg Case Aging</p>
-            <h4 className="text-xl font-bold text-white font-playfair">114 Days</h4>
+            <h4 className="text-lg sm:text-xl font-bold text-white font-playfair">114 Days</h4>
           </div>
         </div>
 
-        <div className="glass-card p-6 border-gold-primary/20 bg-gold-primary/5 flex items-center gap-4">
+        <div className="glass-card p-4 sm:p-6 border-gold-primary/20 bg-gold-primary/5 flex items-center gap-4 sm:col-span-2 xl:col-span-1">
           <div className="p-3 bg-gold-primary text-black rounded-lg shadow-lg">
             <Activity size={20} />
           </div>
           <div>
             <p className="text-[10px] font-bold text-gold-primary uppercase tracking-widest mb-1">Chamber Utilization</p>
-            <h4 className="text-xl font-bold text-white font-playfair">94.2%</h4>
+            <h4 className="text-lg sm:text-xl font-bold text-white font-playfair">94.2%</h4>
           </div>
         </div>
       </div>

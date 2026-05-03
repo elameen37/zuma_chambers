@@ -57,19 +57,19 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 pb-12">
       {/* Welcome Header */}
-      <div className="flex justify-between items-end">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white font-playfair mb-2">Chamber Intelligence</h1>
-          <p className="text-gray-400 text-sm font-inter">Welcome back, {user?.name ?? 'Counsellor'}. Here is an overview of today&apos;s legal pulse.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white font-playfair mb-2">Chamber Intelligence</h1>
+          <p className="text-gray-400 text-xs sm:text-sm font-inter">Welcome back, {user?.name ?? 'Counsellor'}. Here is an overview of today&apos;s legal pulse.</p>
         </div>
-        <div className="flex gap-4">
-          <button className="btn-outline py-2 px-6 text-xs">Export Report</button>
-          <Link href="/dashboard/cases/new" className="btn-luxury py-2 px-6 text-xs font-bold">New Matter</Link>
+        <div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
+          <button className="flex-1 sm:flex-none btn-outline py-2 px-4 sm:px-6 text-[10px] sm:text-xs">Export Report</button>
+          <Link href="/dashboard/cases/new" className="flex-1 sm:flex-none btn-luxury py-2 px-4 sm:px-6 text-[10px] sm:text-xs font-bold text-center">New Matter</Link>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <DashboardStat icon={Briefcase} label="Active Matters" value={activeMatters.toString()} trend="+12%" trendType="up" delay={0.1} />
         <DashboardStat icon={TrendingUp} label="Revenue MTD" value="₦24.8M" trend="+8.2%" trendType="up" delay={0.2} />
         <DashboardStat icon={Clock} label="Billable Hours" value="1,240" trend="-2.4%" trendType="down" delay={0.3} />
@@ -92,25 +92,25 @@ export default function DashboardPage() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-white/5">
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Suit Number</th>
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Matter Name</th>
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Status</th>
-                    <th className="p-4 text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Team</th>
+                    <th className="p-3 sm:p-4 text-[9px] sm:text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Suit Number</th>
+                    <th className="p-3 sm:p-4 text-[9px] sm:text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Matter Name</th>
+                    <th className="p-3 sm:p-4 text-[9px] sm:text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Status</th>
+                    <th className="p-3 sm:p-4 text-[9px] sm:text-[10px] font-bold uppercase text-gray-500 tracking-widest font-inter">Team</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gold-dark/5">
                   {matters.slice(0, 4).map((row, i) => (
                     <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => router.push(`/dashboard/cases/${row.id}`)}>
-                      <td className="p-4 text-xs text-white font-inter font-medium">{row.suitNumber}</td>
-                      <td className="p-4 text-sm text-gray-300 font-playfair font-bold">{row.title}</td>
-                      <td className={`p-4 text-[10px] font-bold uppercase ${
+                      <td className="p-3 sm:p-4 text-[10px] sm:text-xs text-white font-inter font-medium">{row.suitNumber}</td>
+                      <td className="p-3 sm:p-4 text-xs sm:text-sm text-gray-300 font-playfair font-bold whitespace-nowrap sm:whitespace-normal">{row.title}</td>
+                      <td className={`p-3 sm:p-4 text-[9px] sm:text-[10px] font-bold uppercase ${
                         row.stage === 'Hearing' ? 'text-amber-500' : 
                         row.stage === 'Judgment' ? 'text-green-500' : 'text-blue-500'
                       }`}>{row.stage}</td>
-                      <td className="p-4">
+                      <td className="p-3 sm:p-4">
                         <div className="flex -space-x-2">
                           {row.team.map((m, j) => (
-                            <div key={j} title={m.name} className="w-6 h-6 rounded-full border border-black bg-gray-800 flex items-center justify-center text-[8px] text-gold-primary font-bold">
+                            <div key={j} title={m.name} className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-black bg-gray-800 flex items-center justify-center text-[7px] sm:text-[8px] text-gold-primary font-bold">
                               {m.name.split(' ').map(n => n[0]).join('')}
                             </div>
                           ))}

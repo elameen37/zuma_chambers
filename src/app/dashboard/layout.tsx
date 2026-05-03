@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { hasPermission, PERMISSIONS, ROLE_LABELS, ROLE_COLORS } from '@/lib/permissions';
 import RouteGuard from '@/components/guards/RouteGuard';
@@ -85,6 +85,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <RouteGuard>
       <div className="min-h-screen bg-[#050505] flex">
+        {/* Mobile Backdrop */}
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSidebarOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            />
+          )}
+        </AnimatePresence>
+
         {/* Sidebar */}
         <aside
           className={`fixed lg:static inset-y-0 left-0 z-50 w-72 bg-black border-r border-gold-dark/10 transition-transform duration-300 ease-in-out ${
@@ -137,7 +150,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Top Header */}
-          <header className="h-20 bg-black/50 backdrop-blur-md border-b border-gold-dark/10 px-8 flex justify-between items-center sticky top-0 z-40">
+          <header className="h-20 bg-black/50 backdrop-blur-md border-b border-gold-dark/10 px-4 sm:px-6 lg:px-8 flex justify-between items-center sticky top-0 z-40">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -145,32 +158,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               >
                 {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
-              <div className="hidden md:flex items-center gap-3 bg-white/5 border border-gold-dark/10 rounded-full px-4 py-2 w-80">
+              <div className="hidden sm:flex items-center gap-3 bg-white/5 border border-gold-dark/10 rounded-full px-4 py-2 w-48 md:w-80 transition-all">
                 <Search size={16} className="text-gray-500" />
                 <input
                   type="text"
-                  placeholder="Search matters, documents..."
-                  className="bg-transparent border-none outline-none text-xs text-white w-full font-inter"
+                  placeholder="Search matters..."
+                  className="bg-transparent border-none outline-none text-[10px] md:text-xs text-white w-full font-inter"
                 />
               </div>
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 md:gap-6">
               <button className="relative text-gray-400 hover:text-gold-primary transition-colors">
                 <Bell size={20} />
                 <span className="absolute top-0 right-0 w-2 h-2 bg-gold-primary rounded-full border border-black" />
               </button>
-              <div className="h-8 w-[1px] bg-gold-dark/10" />
+              <div className="hidden sm:block h-8 w-[1px] bg-gold-dark/10" />
               <div className="flex items-center gap-3">
-                <div className="flex flex-col items-end">
+                <div className="hidden xs:flex flex-col items-end">
                   <span className="text-xs font-bold text-white font-inter">{user?.name ?? 'Guest'}</span>
                   <span className={`text-[9px] font-bold tracking-widest font-inter uppercase px-1.5 py-0.5 rounded-sm border ${ROLE_COLORS[user?.role ?? 'client']}`}>
                     {ROLE_LABELS[user?.role ?? 'client']}
                   </span>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-gold-gradient p-[1px]">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gold-gradient p-[1px]">
                   <div className="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
-                    <span className="text-sm font-bold text-gold-primary font-playfair">{user?.initials ?? '??'}</span>
+                    <span className="text-xs md:text-sm font-bold text-gold-primary font-playfair">{user?.initials ?? '??'}</span>
                   </div>
                 </div>
               </div>
@@ -178,7 +191,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </header>
 
           {/* Dynamic Page Content */}
-          <main className="flex-1 p-8 overflow-y-auto">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
             {children}
           </main>
         </div>
