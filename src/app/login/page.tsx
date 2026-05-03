@@ -184,7 +184,7 @@ function LoginContent() {
 
                   <div className="text-center pt-6 border-t border-white/5 mt-6">
                     <p className="text-xs text-gray-500 font-inter">
-                      Don't have an account?{' '}
+                      Don&apos;t have an account?{' '}
                       <Link href="/signup" className="text-gold-primary hover:text-white transition-colors font-bold">
                         Sign Up Here
                       </Link>
