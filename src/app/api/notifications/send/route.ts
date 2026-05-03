@@ -31,14 +31,23 @@ export async function POST(req: NextRequest) {
   }
 }
 
+interface NotificationPayload {
+  recipient: {
+    email?: string;
+    phone?: string;
+  };
+  subject: string;
+  body: string;
+}
+
 // ─── Email via Resend ────────────────────────────────────────────
-async function sendEmail(payload: any) {
+async function sendEmail(payload: NotificationPayload) {
   const { Resend } = await import('resend');
   const resend = new Resend(process.env.RESEND_API_KEY!);
 
   const { data, error } = await resend.emails.send({
     from: 'Zuma Chambers <notifications@zumachambers.ng>',
-    to: [payload.recipient.email],
+    to: payload.recipient.email ? [payload.recipient.email] : [],
     subject: payload.subject,
     text: payload.body,
     html: buildEmailHTML(payload),
@@ -48,7 +57,7 @@ async function sendEmail(payload: any) {
   return { messageId: data?.id, channel: 'email' };
 }
 
-function buildEmailHTML(payload: any): string {
+function buildEmailHTML(payload: NotificationPayload): string {
   return `
 <!DOCTYPE html>
 <html>
@@ -85,7 +94,7 @@ function buildEmailHTML(payload: any): string {
 }
 
 // ─── SMS via Termii (Nigerian Provider) ──────────────────────────
-async function sendSMS(payload: any) {
+async function sendSMS(payload: NotificationPayload) {
   const phone = payload.recipient.phone;
   if (!phone) throw new Error('No phone number provided');
 
@@ -107,12 +116,12 @@ async function sendSMS(payload: any) {
     throw new Error(`Termii SMS failed: ${error}`);
   }
 
-  const data = await res.json();
+  const data = await res.json() as { message_id: string };
   return { messageId: data.message_id, channel: 'sms' };
 }
 
 // ─── WhatsApp via Meta Cloud API ──────────────────────────────────
-async function sendWhatsApp(payload: any) {
+async function sendWhatsApp(payload: NotificationPayload) {
   const phone = payload.recipient.phone;
   if (!phone) throw new Error('No phone number provided');
 
@@ -137,10 +146,10 @@ async function sendWhatsApp(payload: any) {
   );
 
   if (!res.ok) {
-    const error = await res.json();
+    const error = await res.json() as Record<string, unknown>;
     throw new Error(`WhatsApp API failed: ${JSON.stringify(error)}`);
   }
 
-  const data = await res.json();
+  const data = await res.json() as { messages?: { id: string }[] };
   return { messageId: data.messages?.[0]?.id, channel: 'whatsapp' };
 }

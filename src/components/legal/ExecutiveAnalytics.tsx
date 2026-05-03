@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useAnalyticsStore } from '@/lib/analytics-service';
 
-const StatCard = ({ label, value, trend, trendType, icon: Icon, delay }: { label: string, value: string | number, trend?: string, trendType?: 'up' | 'down', icon: any, delay: number }) => (
+const StatCard = ({ label, value, trend, trendType, icon: Icon, delay }: { label: string, value: string | number, trend?: string, trendType?: 'up' | 'down', icon: React.ElementType, delay: number }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -155,35 +155,35 @@ const DonutChart = ({ data }: { data: { area: string, value: number, color?: str
   const radius = 60;
   const strokeWidth = 12;
   const circumference = 2 * Math.PI * radius;
-  
-  let currentOffset = 0;
   const colors = ['#D4AF37', '#B8860B', '#DAA520', '#8B4513'];
+
+  // Pre-calculate offsets to avoid mutation during render
+  const chartData = data.reduce((acc, item, i) => {
+    const percentage = (item.value / 100) * circumference;
+    const offset = i === 0 ? 0 : acc[i - 1].offset + acc[i - 1].percentage;
+    acc.push({ ...item, percentage, offset });
+    return acc;
+  }, [] as { area: string, value: number, percentage: number, offset: number }[]);
 
   return (
     <div className="flex items-center gap-8">
       <div className="relative w-40 h-40">
         <svg viewBox={`0 0 ${size} ${size}`} className="rotate-[-90deg]">
-          {data.map((item, i) => {
-            const percentage = (item.value / 100) * circumference;
-            const offset = currentOffset;
-            currentOffset += percentage;
-            
-            return (
-              <motion.circle
-                key={item.area}
-                initial={{ strokeDasharray: `0, ${circumference}` }}
-                animate={{ strokeDasharray: `${percentage}, ${circumference}` }}
-                transition={{ duration: 1.5, delay: i * 0.2 }}
-                cx={center}
-                cy={center}
-                r={radius}
-                fill="none"
-                stroke={colors[i % colors.length]}
-                strokeWidth={strokeWidth}
-                strokeDashoffset={-offset}
-              />
-            );
-          })}
+          {chartData.map((item, i) => (
+            <motion.circle
+              key={item.area}
+              initial={{ strokeDasharray: `0, ${circumference}` }}
+              animate={{ strokeDasharray: `${item.percentage}, ${circumference}` }}
+              transition={{ duration: 1.5, delay: i * 0.2 }}
+              cx={center}
+              cy={center}
+              r={radius}
+              fill="none"
+              stroke={colors[i % colors.length]}
+              strokeWidth={strokeWidth}
+              strokeDashoffset={-item.offset}
+            />
+          ))}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest leading-none">Total</span>
