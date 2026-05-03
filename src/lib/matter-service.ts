@@ -174,9 +174,13 @@ export const useMatterStore = create<MatterStore>()(
     (set, get) => ({
       matters: initialMatters,
       addMatter: async (matter) => {
+        const year = new Date().getFullYear();
+        const randomNum = Math.floor(Math.random() * 9000) + 1000;
+        const generatedSuitNumber = `ZUMA/CV/${randomNum}/${year}`;
+
         const newMatter: Matter = {
           id: Math.random().toString(36).substring(7),
-          suitNumber: '',
+          suitNumber: generatedSuitNumber,
           title: '',
           client: '',
           opposingParty: '',
