@@ -306,7 +306,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check if the user has a specific PIN assigned
     if (state.user?.pin) {
       if (code === state.user.pin) {
-        dispatch({ type: 'VERIFY_2FA' });
+        setState(prev => ({
+          ...prev,
+          is2FAVerified: true,
+          auditLog: [{
+            id: `aud_${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            userId: prev.user?.id ?? 'unknown',
+            userName: prev.user?.name ?? 'Unknown',
+            action: '2FA_VERIFIED',
+            resource: 'Authentication',
+            ip: prev.user?.ip ?? '0.0.0.0',
+            status: 'success',
+          }, ...prev.auditLog],
+        }));
         return true;
       }
       return false;
@@ -331,7 +344,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return true;
     }
     return false;
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.user?.pin]);
 
   const logout = useCallback(async () => {
     addAuditEntry('LOGOUT', 'Authentication', 'success');
