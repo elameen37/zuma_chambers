@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { Role, ROLE_LABELS, ROLE_COLORS } from '@/lib/permissions';
 import { Gavel, Lock, Key, Fingerprint, Eye, EyeOff, ShieldCheck, Globe, ChevronDown } from '@/components/shared/Icons';
+import Link from 'next/link';
 
 function LoginContent() {
   const router = useRouter();
@@ -180,6 +181,15 @@ function LoginContent() {
                   >
                     <Fingerprint size={18} /> Biometric Login (Coming Soon)
                   </button>
+
+                  <div className="text-center pt-6 border-t border-white/5 mt-6">
+                    <p className="text-xs text-gray-500 font-inter">
+                      Don't have an account?{' '}
+                      <Link href="/signup" className="text-gold-primary hover:text-white transition-colors font-bold">
+                        Sign Up Here
+                      </Link>
+                    </p>
+                  </div>
                 </form>
 
                 {/* Session Info */}

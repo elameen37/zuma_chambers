@@ -38,6 +38,7 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string, role?: Role) => Promise<boolean>;
+  signUp: (email: string, password: string, name: string, role: Role) => Promise<{ success: boolean; error?: string; message?: string }>;
   verify2FA: (code: string) => boolean;
   logout: () => void;
   addAuditEntry: (action: string, resource: string, status: 'success' | 'denied' | 'warning', details?: string) => void;
@@ -264,6 +265,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const signUp = useCallback(async (email: string, password: string, name: string, role: Role): Promise<{ success: boolean; error?: string; message?: string }> => {
+    try {
+      const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || email.substring(0, 2).toUpperCase();
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+            role,
+            initials,
+            title: role === 'partner' ? 'Partner' : role === 'associate' ? 'Associate Counsel' : 'Staff',
+            department: 'Operations',
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      // If session is null, it means email confirmation is required
+      if (data.user && !data.session) {
+        return { success: true, message: 'Please check your email to verify your account.' };
+      }
+
+      return { success: true };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.error('Sign-up error:', err);
+      return { success: false, error: err.message || 'Failed to register account.' };
+    }
+  }, []);
+
   const verify2FA = useCallback((code: string): boolean => {
     // Mock: accept any 6-digit code for 2FA
     if (code.length === 6) {
@@ -318,7 +352,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, verify2FA, logout, addAuditEntry, switchRole }}>
+    <AuthContext.Provider value={{ ...state, login, signUp, verify2FA, logout, addAuditEntry, switchRole }}>
       {children}
     </AuthContext.Provider>
   );
