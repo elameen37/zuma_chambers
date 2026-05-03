@@ -36,6 +36,12 @@ function SignUpContent() {
     setLoading(false);
 
     if (success) {
+      // Clear form fields
+      setName('');
+      setEmail('');
+      setPassword('');
+      setSelectedRole('associate');
+
       if (generatedPin) setPin(generatedPin);
       if (message) {
         setSuccessMsg(message);
