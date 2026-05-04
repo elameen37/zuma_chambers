@@ -51,26 +51,43 @@ export default function SettingsPage() {
             <p className="text-[10px] text-gray-600 font-inter">{user.department}</p>
           </motion.div>
 
-          {/* Role Switcher (Demo) */}
-          <div className="glass-card p-6 border-amber-500/20 bg-amber-500/[0.02]">
-            <h4 className="text-sm font-bold text-white font-playfair mb-1">Demo Role Switcher</h4>
-            <p className="text-[10px] text-gray-500 font-inter mb-4">Switch roles to preview different permission levels.</p>
+          {/* Role Management (Enterprise) */}
+          <div className="glass-card p-6 border-gold-primary/20 bg-gold-primary/[0.02]">
+            <h4 className="text-sm font-bold text-white font-playfair mb-1 flex items-center gap-2">
+              <ShieldCheck size={16} className="text-gold-primary" /> Role Management
+            </h4>
+            <p className="text-[10px] text-gray-500 font-inter mb-4">
+              Update your workspace permissions.
+              {user.email === 'lawfirm815@gmail.com' && (
+                <span className="block text-gold-primary mt-1 font-bold">Authorized Partner Account</span>
+              )}
+            </p>
             <div className="space-y-2">
               {roles.map(role => (
                 <button
                   key={role}
                   onClick={() => switchRole(role)}
-                  className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-3 transition-all text-xs font-inter ${
-                    user.role === role ? 'bg-gold-primary/10 border border-gold-primary/30' : 'hover:bg-white/5 border border-transparent'
+                  className={`w-full text-left px-3 py-2.5 rounded-lg flex items-center gap-3 transition-all text-xs font-inter border ${
+                    user.role === role 
+                      ? 'bg-gold-primary/10 border-gold-primary/40 shadow-lg shadow-gold-primary/5' 
+                      : 'hover:bg-white/5 border-transparent'
                   }`}
                 >
+                  <div className={`w-2 h-2 rounded-full ${user.role === role ? 'bg-gold-primary' : 'bg-gray-700'}`} />
                   <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border ${ROLE_COLORS[role]}`}>
                     {role}
                   </span>
-                  <span className="text-gray-300">{ROLE_LABELS[role]}</span>
+                  <span className={user.role === role ? 'text-white font-bold' : 'text-gray-400'}>
+                    {ROLE_LABELS[role]}
+                  </span>
                   {user.role === role && <CheckCircle size={14} className="text-gold-primary ml-auto" />}
                 </button>
               ))}
+            </div>
+            <div className="mt-6 pt-4 border-t border-gold-dark/10">
+              <p className="text-[9px] text-gray-600 font-inter leading-relaxed italic">
+                * Switching roles will immediately update your permissions across the entire workspace.
+              </p>
             </div>
           </div>
         </div>

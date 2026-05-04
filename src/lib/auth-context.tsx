@@ -359,23 +359,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }));
   }, [addAuditEntry]);
 
-  const switchRole = useCallback((role: Role) => {
-    const newUser = { ...MOCK_USERS[role], lastLogin: new Date().toISOString() };
-    setState(prev => ({
-      ...prev,
-      user: newUser,
-      auditLog: [{
-        id: `aud_${Date.now()}`,
-        timestamp: new Date().toISOString(),
-        userId: newUser.id,
-        userName: newUser.name,
-        action: 'ROLE_SWITCH',
-        resource: `Switched to ${ROLE_LABELS[role]}`,
-        ip: newUser.ip,
-        status: 'warning',
-        details: `Demo role switch to: ${role}`,
-      }, ...prev.auditLog],
-    }));
+  const switchRole = useCallback(async (role: Role) => {
+    // 1. Update Supabase Metadata (Persistence)
+    const { data, error } = await supabase.auth.updateUser({
+      data: { role }
+    });
+
+    if (error) {
+      console.error('Failed to update role in Supabase:', error);
+      // Fallback for mock/demo users
+      const newUser = { ...MOCK_USERS[role], lastLogin: new Date().toISOString() };
+      setState(prev => ({
+        ...prev,
+        user: newUser,
+      }));
+      return;
+    }
+
+    // 2. Update Local State (UI Response)
+    if (data.user) {
+      const updatedUser = mapSupabaseUser(data.user);
+      setState(prev => ({
+        ...prev,
+        user: updatedUser,
+        auditLog: [{
+          id: `aud_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          userId: updatedUser.id,
+          userName: updatedUser.name,
+          action: 'ROLE_SWITCH',
+          resource: `Switched to ${ROLE_LABELS[role]}`,
+          ip: updatedUser.ip,
+          status: 'warning',
+          details: `Role successfully updated to: ${role}`,
+        }, ...prev.auditLog],
+      }));
+    }
   }, []);
 
   return (
