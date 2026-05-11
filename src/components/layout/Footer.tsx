@@ -39,26 +39,28 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="pt-20 pb-10 border-t border-gold-dark/20 bg-[#020202]">
-      <div className="section-container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+    <footer className="pt-32 pb-16 border-t border-white/5 bg-onyx relative overflow-hidden">
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-primary/5 blur-[120px] rounded-full" />
+      
+      <div className="section-responsive relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 lg:gap-12 mb-24">
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 flex items-center justify-center border border-gold-primary rounded-full">
-                <Gavel className="w-5 h-5 text-gold-primary" />
+            <Link href="/" className="flex items-center gap-4 mb-10">
+              <div className="w-12 h-12 flex items-center justify-center border border-brand-primary rounded-full bg-brand-primary/5">
+                <Gavel className="w-6 h-6 text-brand-primary" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-bold tracking-widest text-white uppercase font-playfair">Zuma Chambers</span>
-                <span className="text-[10px] text-gold-primary tracking-[0.2em] uppercase font-inter">Rooted in Strength</span>
+                <span className="text-2xl font-bold tracking-widest text-white uppercase font-playfair">Zuma Chambers</span>
+                <span className="text-[10px] text-brand-primary tracking-[0.4em] uppercase font-bold">Elite Legal Counsel</span>
               </div>
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm font-inter">
+            <p className="text-gray-400 text-base leading-relaxed mb-10 max-w-sm font-inter font-medium">
               Providing world-class legal excellence with a commitment to justice. Zuma Chambers is at the forefront of Nigerian legal reforms and enterprise legal operations.
             </p>
             <div className="flex gap-4">
               {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-full border border-gray-800 flex items-center justify-center text-gray-400 hover:border-gold-primary hover:text-gold-primary transition-all duration-300">
-                  <Icon size={18} />
+                <a key={i} href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:border-brand-primary hover:text-brand-primary hover:scale-110 transition-all duration-500">
+                  <Icon size={20} />
                 </a>
               ))}
             </div>
@@ -66,13 +68,13 @@ const Footer = () => {
 
           {footerLinks.map((group) => (group && group.title && (
             <div key={group.title}>
-              <h4 className="text-xs font-bold tracking-widest uppercase text-white mb-6 font-inter underline decoration-gold-primary decoration-2 underline-offset-8">
+              <h4 className="text-[11px] font-bold tracking-[0.3em] uppercase text-white mb-10 font-inter">
                 {group.title}
               </h4>
-              <ul className="flex flex-col gap-4">
+              <ul className="flex flex-col gap-5">
                 {group.links.map((link) => (
                   <li key={link.name}>
-                    <Link href={link.href} className="text-sm text-gray-400 hover:text-gold-primary transition-colors font-inter">
+                    <Link href={link.href} className="text-[13px] text-gray-500 hover:text-brand-primary transition-all font-inter font-bold hover:translate-x-2 inline-block duration-300">
                       {link.name}
                     </Link>
                   </li>
@@ -82,21 +84,26 @@ const Footer = () => {
           )))}
         </div>
 
-        <div className="border-t border-gray-900 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col md:flex-row gap-8 items-center text-gray-400 text-xs font-inter">
-            <span className="flex items-center gap-2">
-              <Mail size={14} className="text-gold-primary" /> office@zumachambers.law
-            </span>
-            <span className="flex items-center gap-2">
-              <Phone size={14} className="text-gold-primary" /> +234 (0) 800-ZUMA-LAW
-            </span>
-            <span className="flex items-center gap-2">
-              <MapPin size={14} className="text-gold-primary" /> Abuja, Nigeria
+        <div className="border-t border-white/5 pt-16 flex flex-col lg:flex-row justify-between items-center gap-10">
+          <div className="flex flex-col md:flex-row gap-12 items-center text-gray-400 text-[13px] font-inter font-bold">
+            <a href="mailto:office@zumachambers.law" className="flex items-center gap-3 hover:text-brand-primary transition-colors">
+              <Mail size={16} className="text-brand-primary" /> office@zumachambers.law
+            </a>
+            <a href="tel:+234800ZUMALAW" className="flex items-center gap-3 hover:text-brand-primary transition-colors">
+              <Phone size={16} className="text-brand-primary" /> +234 (0) 800-ZUMA-LAW
+            </a>
+            <span className="flex items-center gap-3">
+              <MapPin size={16} className="text-brand-primary" /> Abuja, Nigeria
             </span>
           </div>
-          <p className="text-gray-500 text-[10px] tracking-widest uppercase font-inter">
-            &copy; {currentYear} Zuma Chambers. All Rights Reserved.
-          </p>
+          <div className="flex flex-col items-center lg:items-end gap-2">
+            <p className="text-gray-600 text-[10px] tracking-[0.2em] uppercase font-bold">
+              &copy; {currentYear} Zuma Chambers. All Rights Reserved.
+            </p>
+            <p className="text-[9px] text-gray-700 tracking-widest uppercase">
+              Designed by Craftwave Systems
+            </p>
+          </div>
         </div>
       </div>
     </footer>

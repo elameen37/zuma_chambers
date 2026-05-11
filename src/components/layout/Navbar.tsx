@@ -35,81 +35,86 @@ const Navbar = () => {
   const isMoreActive = moreLinks.some(link => pathname === link.href);
 
   return (
-    <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'py-4 glass-card luxury-glow rounded-none' : 'py-8 bg-transparent'
-      }`}
-    >
-      <div className="section-container flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-12 h-12 flex items-center justify-center border border-gold-primary rounded-full group-hover:bg-gold-primary transition-all duration-300">
-            <Gavel className="w-6 h-6 text-gold-primary group-hover:text-black" />
+    <nav className="fixed top-0 left-0 right-0 z-50 py-6 px-4 md:px-8">
+      <div className={`max-w-7xl mx-auto transition-all duration-500 rounded-full px-6 md:px-10 py-4 flex justify-between items-center ${
+        isScrolled ? 'glass-panel shadow-premium' : 'bg-transparent border border-transparent'
+      }`}>
+        <Link href="/" className="flex items-center gap-4 group">
+          <div className="w-10 h-10 flex items-center justify-center border border-brand-primary rounded-full group-hover:bg-brand-primary transition-all duration-500">
+            <Gavel className="w-5 h-5 text-brand-primary group-hover:text-onyx" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-widest text-white uppercase font-playfair">Zuma Chambers</span>
-            <span className="text-[10px] text-gold-primary tracking-[0.2em] font-medium uppercase font-inter leading-tight">Rooted in Strength</span>
+            <span className="text-lg font-bold tracking-widest text-white uppercase font-playfair">Zuma Chambers</span>
+            <span className="text-[8px] text-brand-primary tracking-[0.3em] font-bold uppercase font-inter leading-tight">Elite Legal Counsel</span>
           </div>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center gap-8 relative">
-          {visibleLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link 
-                key={link.name} 
-                href={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium tracking-wide uppercase transition-all font-inter relative ${
-                  isActive ? 'bg-gold-primary text-black font-bold shadow-lg shadow-gold-primary/20' : 'text-gray-300 hover:text-gold-primary hover:bg-gold-primary/5'
-                }`}
-              >
-                {link.name}
-              </Link>
-            );
-          })}
-
-          {/* More Dropdown */}
-          <div 
-            className="relative"
-            onMouseEnter={() => setIsMoreOpen(true)}
-            onMouseLeave={() => setIsMoreOpen(false)}
-          >
-            <button 
-              className={`px-4 py-2 rounded-lg text-sm font-medium tracking-wide uppercase transition-all font-inter flex items-center gap-2 relative ${
-                isMoreActive || isMoreOpen ? 'bg-gold-primary text-black font-bold shadow-lg shadow-gold-primary/20' : 'text-gray-300 hover:text-gold-primary hover:bg-gold-primary/5'
-              }`}
-            >
-              More <ChevronDown size={14} className={`transition-transform duration-300 ${isMoreOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            <AnimatePresence>
-              {isMoreOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full right-0 mt-4 w-48 bg-black/90 backdrop-blur-xl border border-gold-primary/20 rounded-lg overflow-hidden shadow-2xl z-50"
+        <div className="hidden lg:flex items-center gap-10">
+          <div className="flex items-center gap-8">
+            {visibleLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link 
+                  key={link.name} 
+                  href={link.href}
+                  className={`text-[11px] font-bold tracking-[0.2em] uppercase transition-all font-inter relative ${
+                    isActive ? 'text-brand-primary' : 'text-gray-400 hover:text-white'
+                  }`}
                 >
-                  {moreLinks.map((link) => {
-                    const isActive = pathname === link.href;
-                    return (
-                      <Link 
-                        key={link.name} 
-                        href={link.href}
-                        className={`block px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all ${
-                          isActive ? 'bg-gold-primary text-black' : 'text-white hover:text-gold-primary hover:bg-gold-primary/5'
-                        }`}
-                      >
-                        {link.name}
-                      </Link>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {link.name}
+                  {isActive && (
+                    <motion.div 
+                      layoutId="nav-indicator"
+                      className="absolute -bottom-1 left-0 right-0 h-[1.5px] bg-brand-primary rounded-full"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
+
+            {/* More Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setIsMoreOpen(true)}
+              onMouseLeave={() => setIsMoreOpen(false)}
+            >
+              <button className={`text-[11px] font-bold tracking-[0.2em] uppercase transition-all font-inter flex items-center gap-2 ${
+                isMoreActive || isMoreOpen ? 'text-brand-primary' : 'text-gray-400 hover:text-white'
+              }`}>
+                More <ChevronDown size={12} className={`transition-transform duration-300 ${isMoreOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <AnimatePresence>
+                {isMoreOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full right-0 mt-6 w-52 glass-panel rounded-2xl overflow-hidden z-50 p-2"
+                  >
+                    {moreLinks.map((link) => {
+                      const isActive = pathname === link.href;
+                      return (
+                        <Link 
+                          key={link.name} 
+                          href={link.href}
+                          className={`block px-6 py-4 text-[10px] font-bold uppercase tracking-widest transition-all rounded-xl ${
+                            isActive ? 'bg-brand-primary text-onyx' : 'text-white hover:bg-brand-primary/10 hover:text-brand-primary'
+                          }`}
+                        >
+                          {link.name}
+                        </Link>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
-          <Link href="/login" className="btn-outline text-xs ml-4">
+          <Link href="/login" className="btn-modern !py-2.5 !px-6 !text-[10px]">
             Legal Workspace
           </Link>
         </div>
@@ -127,34 +132,55 @@ const Navbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 glass-card rounded-none border-t border-gold-dark/20 p-8 flex flex-col gap-6 lg:hidden"
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 bg-onyx/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col p-8"
           >
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link 
-                  key={link.name} 
-                  href={link.href}
-                  className={`flex items-center justify-between p-4 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
-                    isActive ? 'bg-gold-primary text-black' : 'text-gray-400 hover:text-gold-primary hover:bg-gold-primary/5'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                  {isActive && <div className="w-1.5 h-1.5 bg-black rounded-full" />}
-                </Link>
-              );
-            })}
-            <Link 
-              href="/login" 
-              className="btn-luxury text-center"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Client Login
-            </Link>
+            <div className="flex justify-between items-center mb-12">
+              <span className="text-xl font-bold tracking-widest text-white uppercase font-playfair">Menu</span>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              {navLinks.map((link, idx) => {
+                const isActive = pathname === link.href;
+                return (
+                  <motion.div
+                    key={link.name}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                  >
+                    <Link 
+                      href={link.href}
+                      className={`text-3xl font-bold uppercase tracking-tighter transition-all ${
+                        isActive ? 'text-brand-primary' : 'text-gray-500 hover:text-white'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <div className="mt-auto pt-10 border-t border-white/5">
+              <Link 
+                href="/login" 
+                className="btn-modern w-full"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Legal Workspace
+              </Link>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
