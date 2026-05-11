@@ -59,7 +59,7 @@ export default function Home() {
         </div>
         
         <div className="section-responsive relative z-10 w-full pt-32 pb-20">
-          <div className="max-w-5xl">
+          <div className="max-w-5xl mt-5">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
