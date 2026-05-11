@@ -7,39 +7,44 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
 const ContactInfo = ({ icon: Icon, title, detail, subdetail }: { icon: React.ElementType, title: string, detail: string, subdetail?: string }) => (
-  <div className="flex gap-6 items-start">
-    <div className="w-12 h-12 rounded-lg bg-gold-primary/10 border border-gold-primary/30 flex items-center justify-center shrink-0">
-      <Icon className="w-6 h-6 text-gold-primary" />
+  <div className="flex gap-8 items-start group">
+    <div className="w-14 h-14 rounded-2xl bg-brand-primary/5 border border-brand-primary/20 flex items-center justify-center shrink-0 group-hover:bg-brand-primary/10 transition-colors duration-500">
+      <Icon className="w-6 h-6 text-brand-primary" />
     </div>
     <div>
-      <h4 className="text-gray-500 text-[10px] font-bold tracking-[0.2em] uppercase mb-1 font-inter">{title}</h4>
-      <p className="text-white text-lg font-playfair font-bold">{detail}</p>
-      {subdetail && <p className="text-gray-400 text-xs font-inter mt-1">{subdetail}</p>}
+      <h4 className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase mb-2 font-inter">{title}</h4>
+      <p className="text-white text-xl font-playfair font-bold group-hover:text-brand-primary transition-colors">{detail}</p>
+      {subdetail && <p className="text-gray-400 text-sm font-inter font-medium mt-1.5 leading-relaxed">{subdetail}</p>}
     </div>
   </div>
 );
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-onyx selection:bg-brand-primary selection:text-onyx">
       <Navbar />
 
       {/* Header */}
-      <section className="pt-40 pb-20 border-b border-gold-dark/10">
-        <div className="section-container text-center">
+      <section className="pt-40 pb-20 border-b border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-primary/5 blur-[120px] rounded-full" />
+        <div className="section-responsive text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto"
           >
-            <h2 className="text-gold-primary text-xs font-bold tracking-[0.4em] uppercase mb-6 font-inter underline underline-offset-8 decoration-gold-primary">
-              Connect With Excellence
-            </h2>
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 font-playfair">
-              Consultation & <span className="gold-text italic">Booking</span>
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="w-12 h-[1px] bg-brand-primary" />
+              <h2 className="text-brand-primary text-[10px] font-bold tracking-[0.5em] uppercase font-inter">
+                Connect With Excellence
+              </h2>
+              <div className="w-12 h-[1px] bg-brand-primary" />
+            </div>
+            <h1 className="heading-premium text-5xl md:text-7xl text-white mb-8">
+              Consultation & <span className="italic bg-luxury-gradient bg-clip-text text-transparent">Booking</span>
             </h1>
-            <p className="text-gray-400 text-lg leading-relaxed font-inter">
+            <p className="text-gray-400 text-lg md:text-xl leading-relaxed font-inter font-medium max-w-2xl mx-auto">
               Secure your legal representation. Our intake team is prepared to process your inquiry with absolute discretion and efficiency.
             </p>
           </motion.div>
@@ -47,8 +52,8 @@ export default function ContactPage() {
       </section>
 
       {/* Main Content */}
-      <section className="py-24 section-container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+      <section className="py-24 section-responsive">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
           {/* Form */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -56,43 +61,43 @@ export default function ContactPage() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <div className="glass-card p-10 md:p-14">
-              <div className="flex items-center gap-3 mb-10 text-gold-primary">
-                <ShieldCheck size={20} />
-                <span className="text-[10px] font-bold tracking-widest uppercase font-inter">Encrypted Conflict Check Intake</span>
+            <div className="glass-panel p-10 md:p-16 rounded-[3rem]">
+              <div className="flex items-center gap-4 mb-12 text-brand-primary">
+                <ShieldCheck size={24} />
+                <span className="text-[11px] font-bold tracking-[0.2em] uppercase font-inter">Secure Encrypted Intake</span>
               </div>
               
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-widest uppercase text-gray-500 font-inter">Full Name / Entity Name</label>
-                    <input type="text" className="w-full bg-accent-gray border border-gold-dark/20 rounded-md p-4 text-white text-sm font-inter focus:border-gold-primary outline-none transition-all" placeholder="John Doe / Acme Corp" />
+              <form className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-500 font-inter">Full Name / Entity</label>
+                    <input type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white text-[13px] font-inter font-bold focus:border-brand-primary outline-none transition-all" placeholder="John Doe / Acme Corp" />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-widest uppercase text-gray-500 font-inter">Email Address</label>
-                    <input type="email" className="w-full bg-accent-gray border border-gold-dark/20 rounded-md p-4 text-white text-sm font-inter focus:border-gold-primary outline-none transition-all" placeholder="john@example.com" />
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-500 font-inter">Email Address</label>
+                    <input type="email" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white text-[13px] font-inter font-bold focus:border-brand-primary outline-none transition-all" placeholder="exec@example.com" />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold tracking-widest uppercase text-gray-500 font-inter">Legal Practice Area</label>
-                  <select className="w-full bg-accent-gray border border-gold-dark/20 rounded-md p-4 text-white text-sm font-inter focus:border-gold-primary outline-none transition-all appearance-none cursor-pointer">
-                    <option>Select Practice Area</option>
-                    <option>Litigation</option>
-                    <option>Corporate Law</option>
-                    <option>Tech & IP</option>
-                    <option>Property Law</option>
-                    <option>Other</option>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-500 font-inter">Practice Area</label>
+                  <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white text-[13px] font-inter font-bold focus:border-brand-primary outline-none transition-all appearance-none cursor-pointer">
+                    <option className="bg-onyx">Select Legal Practice Area</option>
+                    <option className="bg-onyx">High-Stakes Litigation</option>
+                    <option className="bg-onyx">Corporate M&A</option>
+                    <option className="bg-onyx">Tech & Intelligence</option>
+                    <option className="bg-onyx">Property & Maritime</option>
+                    <option className="bg-onyx">Other Complex Matter</option>
                   </select>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold tracking-widest uppercase text-gray-500 font-inter">Message / Case Overview</label>
-                  <textarea rows={6} className="w-full bg-accent-gray border border-gold-dark/20 rounded-md p-4 text-white text-sm font-inter focus:border-gold-primary outline-none transition-all" placeholder="Provide a brief summary of your legal requirements..."></textarea>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-500 font-inter">Case Overview</label>
+                  <textarea rows={6} className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 text-white text-[13px] font-inter font-bold focus:border-brand-primary outline-none transition-all resize-none" placeholder="Provide a brief summary of your legal requirements..."></textarea>
                 </div>
 
-                <button type="submit" className="btn-luxury w-full py-5 flex items-center justify-center gap-3">
-                  Initiate Secure Booking <Send size={18} />
+                <button type="submit" className="btn-modern w-full !py-6 flex items-center justify-center gap-4">
+                  Initiate Secure Booking <Send size={20} />
                 </button>
               </form>
             </div>
@@ -104,54 +109,54 @@ export default function ContactPage() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-16"
+            className="flex flex-col gap-16 justify-center"
           >
             <div>
-              <h3 className="text-3xl font-bold mb-10 font-playfair text-white">Direct <span className="gold-text">Chamber Channels</span></h3>
-              <div className="space-y-8">
+              <h3 className="heading-premium text-4xl font-bold mb-12 text-white">Direct <span className="italic text-brand-primary">Channels</span></h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-12">
                 <ContactInfo 
                   icon={Mail} 
-                  title="Official Email" 
+                  title="Official Intake" 
                   detail="intake@zumachambers.law" 
-                  subdetail="Monitored 24/7 for urgent legal matters"
+                  subdetail="Monitored 24/7 for urgent high-stakes matters"
                 />
                 <ContactInfo 
                   icon={Phone} 
                   title="Global Head Office" 
                   detail="+234 (0) 800 ZUMA LAW" 
-                  subdetail="Extensions available for all senior partners"
+                  subdetail="Extensions available for all senior advocates"
                 />
                 <ContactInfo 
                   icon={MapPin} 
-                  title="Main Address" 
+                  title="Abuja Headquarters" 
                   detail="Zuma Crescent, Central Area, Abuja" 
-                  subdetail="Nigeria's premier legal district"
+                  subdetail="Located in Nigeria's premier legal district"
                 />
                 <ContactInfo 
                   icon={MessageCircle} 
-                  title="WhatsApp Connect" 
+                  title="Secure WhatsApp" 
                   detail="+234 901 234 5678" 
-                  subdetail="Secure messaging for initial triage"
+                  subdetail="Encrypted messaging for initial triage"
                 />
               </div>
             </div>
 
-            <div className="glass-card p-10 bg-[#020202]">
-              <h4 className="text-white font-playfair font-bold text-xl mb-6 flex items-center gap-3">
-                <Clock className="text-gold-primary" /> Active Hours
+            <div className="glass-panel p-12 bg-slate-grey/30 rounded-[2.5rem]">
+              <h4 className="text-white font-playfair font-bold text-2xl mb-8 flex items-center gap-4">
+                <Clock className="text-brand-primary" /> Active Workspace
               </h4>
-              <div className="space-y-4 text-sm font-inter">
-                <div className="flex justify-between border-b border-gray-900 pb-2">
-                  <span className="text-gray-500">Monday — Friday</span>
+              <div className="space-y-5 text-sm font-inter font-bold">
+                <div className="flex justify-between border-b border-white/5 pb-4">
+                  <span className="text-gray-500 uppercase tracking-widest text-[11px]">Mon — Fri</span>
                   <span className="text-white">08:00 — 18:00 (WAT)</span>
                 </div>
-                <div className="flex justify-between border-b border-gray-900 pb-2">
-                  <span className="text-gray-500">Saturday</span>
+                <div className="flex justify-between border-b border-white/5 pb-4">
+                  <span className="text-gray-500 uppercase tracking-widest text-[11px]">Sat</span>
                   <span className="text-white">10:00 — 14:00 (WAT)</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Emergency Support</span>
-                  <span className="text-gold-primary font-bold">Available 24/7</span>
+                <div className="flex justify-between pt-2">
+                  <span className="text-gray-500 uppercase tracking-widest text-[11px]">Emergency Support</span>
+                  <span className="text-brand-primary">Available 24/7</span>
                 </div>
               </div>
             </div>
@@ -160,18 +165,18 @@ export default function ContactPage() {
       </section>
 
       {/* Global Presence */}
-      <section className="py-32 bg-[#020202]">
-        <div className="section-container text-center">
-          <Globe className="w-16 h-16 text-gold-primary mx-auto mb-10 opacity-50" />
-          <h2 className="text-[10px] font-bold tracking-[0.4em] uppercase text-gold-primary mb-6 font-inter">International Desk</h2>
-          <h3 className="text-4xl font-bold font-playfair mb-10">Coordinating <span className="gold-text italic">Global Integrity</span></h3>
-          <p className="text-gray-400 max-w-2xl mx-auto font-inter text-sm mb-16 leading-relaxed">
+      <section className="py-24 bg-slate-grey/30 border-y border-white/5">
+        <div className="section-responsive text-center">
+          <Globe className="w-16 h-16 text-brand-primary/20 mx-auto mb-10" />
+          <h2 className="text-[11px] font-bold tracking-[0.5em] uppercase text-brand-primary mb-6 font-inter">International Desk</h2>
+          <h3 className="heading-premium text-4xl md:text-5xl text-white mb-10">Coordinating <span className="italic text-brand-primary">Global Integrity</span></h3>
+          <p className="text-gray-400 max-w-2xl mx-auto font-inter font-medium text-lg mb-16 leading-relaxed">
             Zuma Chambers maintains strategic partnerships in London, New York, and Dubai to facilitate cross-border legal operations and multi-jurisdictional compliance.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {['Abuja', 'Lagos', 'London', 'New York'].map((city) => (
-               <div key={city} className="py-4 border border-gold-dark/10 rounded-lg hover:border-gold-primary transition-all cursor-default">
-                 <span className="text-white font-playfair font-bold tracking-widest">{city}</span>
+               <div key={city} className="py-6 glass-panel border-white/5 rounded-2xl hover:border-brand-primary hover:scale-105 transition-all duration-500 cursor-default">
+                 <span className="text-white font-playfair font-bold tracking-[0.2em] uppercase text-sm">{city}</span>
                </div>
             ))}
           </div>
