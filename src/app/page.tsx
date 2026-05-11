@@ -72,7 +72,7 @@ export default function Home() {
                 </h2>
               </div>
               
-              <h1 className="heading-premium text-6xl md:text-8xl lg:text-9xl font-bold mb-10 text-white leading-[0.95]">
+              <h1 className="heading-premium text-5xl md:text-7xl lg:text-8xl font-bold mb-10 text-white leading-[0.95]">
                 Rooted in <span className="text-brand-primary italic">Strength</span>.<br />
                 Driven by <span className="bg-luxury-gradient bg-clip-text text-transparent italic">Justice</span>.
               </h1>
