@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { Role, ROLE_LABELS, ROLE_COLORS } from '@/lib/permissions';
-import { Gavel, Lock, Key, Fingerprint, Eye, EyeOff, ShieldCheck, Globe, ChevronDown } from '@/components/shared/Icons';
+import { Gavel, Lock, Key, Fingerprint, Eye, EyeOff, ShieldCheck, Globe, ChevronDown, Home } from '@/components/shared/Icons';
 import Link from 'next/link';
 
 function LoginContent() {
@@ -96,7 +96,10 @@ function LoginContent() {
       </div>
 
       {/* Right Panel — Forms */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex items-center justify-center p-8 relative">
+        <Link href="/" className="absolute top-8 right-8 flex items-center gap-2 text-[10px] font-bold tracking-widest text-gray-500 hover:text-gold-primary transition-colors font-inter uppercase">
+          <Home size={14} /> Back to Home
+        </Link>
         <div className="w-full max-w-md">
           {/* Mobile Header */}
           <div className="lg:hidden flex items-center gap-3 mb-10">
