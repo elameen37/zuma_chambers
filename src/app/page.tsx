@@ -44,7 +44,7 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
         {/* Modern Background */}
         <div className="absolute inset-0 z-0">
           <div 
@@ -58,34 +58,34 @@ export default function Home() {
           <div className="absolute inset-0 bg-dark-gradient opacity-80" />
         </div>
         
-        <div className="section-responsive relative z-10 w-full pt-32 pb-20">
-          <div className="max-w-5xl mt-5">
+        <div className="section-responsive relative z-10 w-full pt-28 pb-16">
+          <div className="max-w-5xl mt-2">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
             >
-              <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-[1px] bg-brand-primary" />
                 <h2 className="text-brand-primary text-[10px] font-bold tracking-[0.5em] uppercase font-inter">
                   The Future of Legal Excellence
                 </h2>
               </div>
               
-              <h1 className="heading-premium text-5xl md:text-7xl lg:text-8xl font-bold mb-10 text-white leading-[0.95]">
+              <h1 className="heading-premium text-5xl md:text-7xl lg:text-8xl font-bold mb-8 text-white leading-[0.95]">
                 Rooted in <span className="text-brand-primary italic">Strength</span>.<br />
                 Driven by <span className="bg-luxury-gradient bg-clip-text text-transparent italic">Justice</span>.
               </h1>
               
-              <p className="text-lg md:text-xl text-gray-400 mb-14 max-w-2xl leading-relaxed font-inter font-medium">
+              <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed font-inter font-medium">
                 Zuma Chambers provides premier legal counsel and sophisticated operational solutions for high-stakes litigation, corporate complexities, and global regulatory compliance.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6">
-                <button className="btn-modern !py-5 !px-12 !text-[11px]">
+                <button className="btn-modern !py-4 !px-10 !text-[11px]">
                   Secure a Consultation
                 </button>
-                <button className="btn-modern-outline !py-5 !px-12 !text-[11px]">
+                <button className="btn-modern-outline !py-4 !px-10 !text-[11px]">
                   Our Practice Areas <ArrowRight size={18} />
                 </button>
               </div>
@@ -98,17 +98,16 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
         >
-          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-500 rotate-90 mb-8">Scroll</span>
-          <div className="w-px h-24 bg-gradient-to-b from-brand-primary to-transparent" />
+          <div className="w-px h-16 bg-gradient-to-b from-brand-primary to-transparent" />
         </motion.div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-32 border-y border-white/5 bg-slate-grey/30">
+      <section className="py-20 border-y border-white/5 bg-slate-grey/30">
         <div className="section-responsive">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
             <StatItem label="Years of Excellence" value="25" suffix="+" />
             <StatItem label="Successful Cases" value="1,200" suffix="+" />
             <StatItem label="Senior Advocates" value="12" />
@@ -118,14 +117,14 @@ export default function Home() {
       </section>
 
       {/* Practice Areas */}
-      <section className="py-40 relative">
+      <section className="py-24 relative">
         <div className="section-responsive">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-10">
             <div className="max-w-2xl">
-              <h2 className="text-[10px] font-bold tracking-[0.4em] uppercase text-brand-primary mb-6 font-inter">
+              <h2 className="text-[10px] font-bold tracking-[0.4em] uppercase text-brand-primary mb-4 font-inter">
                 Areas of Expertise
               </h2>
-              <h3 className="heading-premium text-5xl md:text-6xl text-white">
+              <h3 className="heading-premium text-4xl md:text-5xl text-white">
                 Specialized Solutions for <span className="italic bg-luxury-gradient bg-clip-text text-transparent">Modern Challenges</span>
               </h3>
             </div>
@@ -134,7 +133,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard 
               icon={Scale} 
               title="Litigation & Dispute" 
@@ -158,17 +157,17 @@ export default function Home() {
       </section>
 
       {/* Call to action */}
-      <section className="py-40 section-responsive">
-        <div className="glass-panel p-16 md:p-32 text-center relative overflow-hidden group rounded-[3rem]">
+      <section className="py-24 section-responsive">
+        <div className="glass-panel p-12 md:p-20 text-center relative overflow-hidden group rounded-[2.5rem]">
           <div className="absolute inset-0 bg-brand-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
           <div className="relative z-10">
-            <h2 className="heading-premium text-4xl md:text-6xl mb-10 max-w-3xl mx-auto">
+            <h2 className="heading-premium text-3xl md:text-5xl mb-8 max-w-3xl mx-auto">
               Ready to Secure Your <span className="bg-luxury-gradient bg-clip-text text-transparent italic">Legal Future</span>?
             </h2>
-            <p className="text-lg text-gray-400 mb-16 max-w-xl mx-auto font-inter font-medium leading-relaxed">
+            <p className="text-base text-gray-400 mb-12 max-w-xl mx-auto font-inter font-medium leading-relaxed">
               Experience the pinnacle of legal operations. Join Zuma Chambers and transform how your organization handles legal complexity.
             </p>
-            <button className="btn-modern !py-6 !px-16 !text-[12px]">
+            <button className="btn-modern !py-5 !px-12 !text-[11px]">
               Secure Your Consultation
             </button>
           </div>
