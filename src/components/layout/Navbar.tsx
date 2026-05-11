@@ -59,18 +59,11 @@ const Navbar = () => {
               <Link 
                 key={link.name} 
                 href={link.href}
-                className={`text-sm font-medium tracking-wide uppercase transition-colors font-inter relative ${
-                  isActive ? 'text-gold-primary' : 'hover:text-gold-primary text-gray-300'
+                className={`px-4 py-2 rounded-lg text-sm font-medium tracking-wide uppercase transition-all font-inter relative ${
+                  isActive ? 'bg-gold-primary text-black font-bold shadow-lg shadow-gold-primary/20' : 'text-gray-300 hover:text-gold-primary hover:bg-gold-primary/5'
                 }`}
               >
                 {link.name}
-                {isActive && (
-                  <motion.div 
-                    layoutId="navbar-indicator"
-                    className="absolute -bottom-2 left-0 right-0 h-[2px] bg-gold-primary rounded-full"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
               </Link>
             );
           })}
@@ -82,18 +75,11 @@ const Navbar = () => {
             onMouseLeave={() => setIsMoreOpen(false)}
           >
             <button 
-              className={`text-sm font-medium tracking-wide uppercase transition-colors font-inter flex items-center gap-2 relative ${
-                isMoreActive || isMoreOpen ? 'text-gold-primary' : 'text-gray-300 hover:text-gold-primary'
+              className={`px-4 py-2 rounded-lg text-sm font-medium tracking-wide uppercase transition-all font-inter flex items-center gap-2 relative ${
+                isMoreActive || isMoreOpen ? 'bg-gold-primary text-black font-bold shadow-lg shadow-gold-primary/20' : 'text-gray-300 hover:text-gold-primary hover:bg-gold-primary/5'
               }`}
             >
               More <ChevronDown size={14} className={`transition-transform duration-300 ${isMoreOpen ? 'rotate-180' : ''}`} />
-              {(isMoreActive) && (
-                <motion.div 
-                  layoutId="navbar-indicator"
-                  className="absolute -bottom-2 left-0 right-0 h-[2px] bg-gold-primary rounded-full"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
             </button>
 
             <AnimatePresence>
@@ -152,18 +138,13 @@ const Navbar = () => {
                 <Link 
                   key={link.name} 
                   href={link.href}
-                  className={`text-lg font-medium tracking-widest uppercase transition-colors relative ${
-                    isActive ? 'text-gold-primary font-bold' : 'hover:text-gold-primary text-gray-300'
+                  className={`flex items-center justify-between p-4 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
+                    isActive ? 'bg-gold-primary text-black' : 'text-gray-400 hover:text-gold-primary hover:bg-gold-primary/5'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.name}
-                  {isActive && (
-                    <motion.div 
-                      layoutId="mobile-navbar-indicator"
-                      className="absolute -left-4 top-1/2 -translate-y-1/2 w-1 h-6 bg-gold-primary rounded-full"
-                    />
-                  )}
+                  {isActive && <div className="w-1.5 h-1.5 bg-black rounded-full" />}
                 </Link>
               );
             })}
