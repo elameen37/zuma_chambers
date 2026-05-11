@@ -102,7 +102,7 @@ const Navbar = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full right-0 mt-4 w-48 bg-gold-primary border border-gold-light/20 rounded-lg overflow-hidden shadow-2xl z-50"
+                  className="absolute top-full right-0 mt-4 w-48 bg-black/90 backdrop-blur-xl border border-gold-primary/20 rounded-lg overflow-hidden shadow-2xl z-50"
                 >
                   {moreLinks.map((link) => {
                     const isActive = pathname === link.href;
@@ -111,7 +111,7 @@ const Navbar = () => {
                         key={link.name} 
                         href={link.href}
                         className={`block px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all ${
-                          isActive ? 'bg-black text-gold-primary' : 'text-black hover:bg-black/10'
+                          isActive ? 'bg-gold-primary text-black' : 'text-white hover:text-gold-primary hover:bg-gold-primary/5'
                         }`}
                       >
                         {link.name}

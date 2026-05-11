@@ -152,7 +152,7 @@ export default function SettingsPage() {
                 <select
                   value={sessionTimeout}
                   onChange={e => setSessionTimeout(e.target.value)}
-                  className="bg-gold-primary border border-gold-light/20 rounded-lg py-2 px-3 text-[10px] text-black outline-none appearance-none cursor-pointer font-inter font-bold"
+                  className="bg-white/5 border border-gold-dark/20 rounded-lg py-2 px-3 text-[10px] text-white outline-none appearance-none cursor-pointer font-inter font-bold focus:border-gold-primary"
                 >
                   <option value="15">15 minutes</option>
                   <option value="30">30 minutes</option>
