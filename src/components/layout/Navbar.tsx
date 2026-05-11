@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Gavel } from '@/components/shared/Icons';
+import { Menu, X, Gavel, ChevronDown } from '@/components/shared/Icons';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
