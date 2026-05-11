@@ -22,7 +22,7 @@ const SidebarItem = ({ icon: Icon, label, href, active, locked, collapsed }: { i
           ? 'text-gray-700 cursor-not-allowed'
           : active
             ? 'text-black font-bold'
-            : 'text-gray-400 hover:text-white hover:bg-white/5'
+            : 'text-gray-400 hover:text-gold-primary hover:bg-gold-primary/5'
       }`}
     >
       <Icon size={20} className="relative z-20 shrink-0" />

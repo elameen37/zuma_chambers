@@ -176,12 +176,20 @@ function SignUpContent() {
                             key={role}
                             type="button"
                             onClick={() => { setSelectedRole(role); setShowRoleSelect(false); }}
-                            className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${selectedRole === role ? 'bg-gold-primary/20' : 'hover:bg-gold-primary/10'}`}
+                            className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors group ${
+                              selectedRole === role ? 'bg-gold-primary text-black' : 'hover:bg-gold-primary/5'
+                            }`}
                           >
-                            <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border ${ROLE_COLORS[role]}`}>
+                            <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border ${
+                              selectedRole === role ? 'border-black/20 bg-black/5 text-black' : ROLE_COLORS[role]
+                            }`}>
                               {role}
                             </span>
-                            <span className="text-sm text-white font-bold font-inter hover:text-gold-primary transition-colors">{ROLE_LABELS[role]}</span>
+                            <span className={`text-sm font-bold font-inter transition-colors ${
+                              selectedRole === role ? 'text-black' : 'text-white group-hover:text-gold-primary'
+                            }`}>
+                              {ROLE_LABELS[role]}
+                            </span>
                           </button>
                         ))}
                       </div>
