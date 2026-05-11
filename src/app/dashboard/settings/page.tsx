@@ -62,25 +62,36 @@ export default function SettingsPage() {
                 <span className="block text-gold-primary mt-1 font-bold">Authorized Partner Account</span>
               )}
             </p>
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               {roles.map(role => (
                 <button
                   key={role}
                   onClick={() => switchRole(role)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg flex items-center gap-3 transition-all text-xs font-inter border ${
+                  className={`w-full text-left px-3 py-2.5 rounded-lg flex items-center gap-3 transition-all text-xs font-inter border relative z-10 ${
                     user.role === role 
-                      ? 'bg-gold-primary/10 border-gold-primary/40 shadow-lg shadow-gold-primary/5' 
-                      : 'hover:bg-white/5 border-transparent'
+                      ? 'text-black font-bold' 
+                      : 'hover:bg-white/5 border-transparent text-gray-400'
                   }`}
                 >
-                  <div className={`w-2 h-2 rounded-full ${user.role === role ? 'bg-gold-primary' : 'bg-gray-700'}`} />
-                  <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border ${ROLE_COLORS[role]}`}>
+                  <div className={`w-2 h-2 rounded-full ${user.role === role ? 'bg-black' : 'bg-gray-700'}`} />
+                  <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border ${
+                    user.role === role ? 'border-black/20 bg-black/5 text-black' : ROLE_COLORS[role]
+                  }`}>
                     {role}
                   </span>
-                  <span className={user.role === role ? 'text-white font-bold' : 'text-gray-400'}>
+                  <span>
                     {ROLE_LABELS[role]}
                   </span>
-                  {user.role === role && <CheckCircle size={14} className="text-gold-primary ml-auto" />}
+                  {user.role === role && (
+                    <>
+                      <CheckCircle size={14} className="text-black ml-auto" />
+                      <motion.div 
+                        layoutId="active-role-bg"
+                        className="absolute inset-0 bg-gold-primary rounded-lg -z-10 shadow-lg shadow-gold-primary/20"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    </>
+                  )}
                 </button>
               ))}
             </div>
@@ -141,7 +152,7 @@ export default function SettingsPage() {
                 <select
                   value={sessionTimeout}
                   onChange={e => setSessionTimeout(e.target.value)}
-                  className="bg-white/5 border border-gold-dark/20 rounded-lg py-2 px-3 text-[10px] text-white outline-none appearance-none cursor-pointer font-inter font-bold"
+                  className="bg-gold-primary border border-gold-light/20 rounded-lg py-2 px-3 text-[10px] text-black outline-none appearance-none cursor-pointer font-inter font-bold"
                 >
                   <option value="15">15 minutes</option>
                   <option value="30">30 minutes</option>

@@ -170,18 +170,18 @@ function SignUpContent() {
                       <ChevronDown size={16} className="text-gray-500" />
                     </button>
                     {showRoleSelect && (
-                      <div className="absolute top-full left-0 right-0 mt-2 bg-black border border-gold-dark/20 rounded-lg overflow-hidden z-50 shadow-2xl">
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-gold-primary border border-gold-light/20 rounded-lg overflow-hidden z-50 shadow-2xl">
                         {roles.map(role => (
                           <button
                             key={role}
                             type="button"
                             onClick={() => { setSelectedRole(role); setShowRoleSelect(false); }}
-                            className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors ${selectedRole === role ? 'bg-gold-primary/5' : ''}`}
+                            className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${selectedRole === role ? 'bg-black/10' : 'hover:bg-black/5'}`}
                           >
-                            <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border ${ROLE_COLORS[role]}`}>
+                            <span className={`px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border border-black/20 text-black`}>
                               {role}
                             </span>
-                            <span className="text-sm text-gray-300 font-inter">{ROLE_LABELS[role]}</span>
+                            <span className="text-sm text-black font-bold font-inter">{ROLE_LABELS[role]}</span>
                           </button>
                         ))}
                       </div>

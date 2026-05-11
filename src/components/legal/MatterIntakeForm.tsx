@@ -75,7 +75,7 @@ export default function MatterIntakeForm() {
                 <select 
                   value={formData.stage}
                   onChange={(e) => setFormData({...formData, stage: e.target.value as MatterStage})}
-                  className="w-full bg-white/5 border border-gold-dark/20 rounded p-3 text-white focus:border-gold-primary outline-none transition-colors appearance-none"
+                  className="w-full bg-gold-primary border border-gold-light/20 rounded p-3 text-black font-bold focus:border-white outline-none transition-colors appearance-none"
                 >
                   <option value="Intake">Intake</option>
                   <option value="Discovery">Discovery</option>
@@ -87,7 +87,7 @@ export default function MatterIntakeForm() {
                 <select 
                   value={formData.riskLevel}
                   onChange={(e) => setFormData({...formData, riskLevel: e.target.value as RiskLevel})}
-                  className="w-full bg-white/5 border border-gold-dark/20 rounded p-3 text-white focus:border-gold-primary outline-none transition-colors appearance-none"
+                  className="w-full bg-gold-primary border border-gold-light/20 rounded p-3 text-black font-bold focus:border-white outline-none transition-colors appearance-none"
                 >
                   <option value="Low">Low</option>
                   <option value="Medium">Medium</option>
