@@ -44,20 +44,20 @@ const Footer = () => {
       
       <div className="section-responsive relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 lg:gap-12 mb-24">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 flex flex-col items-center lg:items-start text-center lg:text-left">
             <Link href="/" className="flex items-center gap-4 mb-10">
               <div className="w-12 h-12 flex items-center justify-center border border-brand-primary rounded-full bg-brand-primary/5">
                 <Gavel className="w-6 h-6 text-brand-primary" />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col items-center lg:items-start">
                 <span className="text-2xl font-bold tracking-widest text-white uppercase font-playfair">[COMPANY_NAME]</span>
                 <span className="text-[10px] text-brand-primary tracking-[0.4em] uppercase font-bold">Elite Legal Counsel</span>
               </div>
             </Link>
-            <p className="text-gray-400 text-base leading-relaxed mb-10 max-w-sm font-inter font-medium">
+            <p className="text-gray-400 text-base leading-relaxed mb-10 max-w-sm font-inter font-medium mx-auto lg:mx-0">
               Providing world-class legal excellence with a commitment to justice. [COMPANY_NAME] is at the forefront of Nigerian legal reforms and enterprise legal operations.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-4 justify-center lg:justify-start">
               {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
                 <a key={i} href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:border-brand-primary hover:text-brand-primary hover:scale-110 transition-all duration-500">
                   <Icon size={20} />
@@ -67,14 +67,14 @@ const Footer = () => {
           </div>
 
           {footerLinks.map((group) => (group && group.title && (
-            <div key={group.title}>
+            <div key={group.title} className="flex flex-col items-center lg:items-start text-center lg:text-left">
               <h4 className="text-[11px] font-bold tracking-[0.3em] uppercase text-white mb-10 font-inter">
                 {group.title}
               </h4>
-              <ul className="flex flex-col gap-5">
+              <ul className="flex flex-col items-center lg:items-start gap-5">
                 {group.links.map((link) => (
                   <li key={link.name}>
-                    <Link href={link.href} className="text-[13px] text-gray-500 hover:text-brand-primary transition-all font-inter font-bold hover:translate-x-2 inline-block duration-300">
+                    <Link href={link.href} className="text-[13px] text-gray-500 hover:text-brand-primary transition-all font-inter font-bold lg:hover:translate-x-2 inline-block duration-300">
                       {link.name}
                     </Link>
                   </li>
