@@ -89,8 +89,8 @@ const Footer = () => {
             <a href="mailto:office@company.law" className="flex items-center gap-3 hover:text-brand-primary transition-colors">
               <Mail size={16} className="text-brand-primary" /> office@company.law
             </a>
-            <a href="tel:+234800ZUMALAW" className="flex items-center gap-3 hover:text-brand-primary transition-colors">
-              <Phone size={16} className="text-brand-primary" /> +234 (0) 800-ZUMA-LAW
+            <a href="tel:+2348012345678" className="flex items-center gap-3 hover:text-brand-primary transition-colors">
+              <Phone size={16} className="text-brand-primary" /> +234 801-234-5678
             </a>
             <span className="flex items-center gap-3">
               <MapPin size={16} className="text-brand-primary" /> Abuja, Nigeria

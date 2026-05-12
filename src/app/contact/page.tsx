@@ -123,7 +123,7 @@ export default function ContactPage() {
                 <ContactInfo 
                   icon={Phone} 
                   title="Global Head Office" 
-                  detail="+234 (0) 800 ZUMA LAW" 
+                  detail="+234 801-234-5678" 
                   subdetail="Extensions available for all senior advocates"
                 />
                 <ContactInfo 

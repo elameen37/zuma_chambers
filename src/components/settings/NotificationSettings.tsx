@@ -40,7 +40,7 @@ export default function NotificationSettings() {
         hearingDate: new Date().toLocaleDateString('en-NG', { dateStyle: 'full' }),
         court: 'Federal High Court, Abuja',
         counselEmail: 'test@company.ng',
-        counselPhone: '+2348000000000',
+        counselPhone: '+2348012345678',
       });
 
       const result = results.find(r => r.channel === channelId);

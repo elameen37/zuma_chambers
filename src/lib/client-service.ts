@@ -51,7 +51,7 @@ const initialClients: Client[] = [
     name: 'Zuma Energy Ltd',
     type: 'Company',
     email: 'legal@zumaenergy.com',
-    phone: '+234 800 ZUMA OIL',
+    phone: '+234 801-234-5678',
     address: '1 Zuma Plaza, Abuja',
     kycStatus: 'Verified',
     riskProfile: 'Low',
