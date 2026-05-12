@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { Scale, Shield, Briefcase, ArrowRight } from '@/components/shared/Icons';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -27,16 +27,50 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: { icon: React.El
   </motion.div>
 );
 
-const StatItem = ({ label, value, prefix = "", suffix = "" }: { label: string, value: string, prefix?: string, suffix?: string }) => (
-  <div className="flex flex-col items-center">
-    <div className="text-4xl md:text-5xl lg:text-6xl font-bold font-playfair bg-luxury-gradient bg-clip-text text-transparent mb-3">
-      {prefix}{value}{suffix}
+const StatItem = ({ label, value, prefix = "", suffix = "" }: { label: string, value: string, prefix?: string, suffix?: string }) => {
+  const numericValue = parseInt(value.replace(/,/g, ''), 10);
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (isInView) {
+      const duration = 2000; // 2 seconds
+      const startTime = performance.now();
+
+      const animateCount = (currentTime: number) => {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        
+        // Easing function (easeOutQuart)
+        const easeProgress = 1 - Math.pow(1 - progress, 4);
+        
+        setCount(Math.floor(numericValue * easeProgress));
+
+        if (progress < 1) {
+          requestAnimationFrame(animateCount);
+        } else {
+          setCount(numericValue);
+        }
+      };
+
+      requestAnimationFrame(animateCount);
+    }
+  }, [isInView, numericValue]);
+
+  const formattedCount = count.toLocaleString();
+
+  return (
+    <div ref={ref} className="flex flex-col items-center">
+      <div className="text-4xl md:text-5xl lg:text-6xl font-bold font-playfair bg-luxury-gradient bg-clip-text text-transparent mb-3">
+        {prefix}{formattedCount}{suffix}
+      </div>
+      <div className="text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase text-gray-500 font-inter">
+        {label}
+      </div>
     </div>
-    <div className="text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase text-gray-500 font-inter">
-      {label}
-    </div>
-  </div>
-);
+  );
+};
 
 export default function Home() {
   return (
