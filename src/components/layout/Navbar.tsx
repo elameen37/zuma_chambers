@@ -36,7 +36,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 py-6 px-4 md:px-8">
-      <div className={`max-w-7xl mx-auto transition-all duration-500 rounded-full px-6 md:px-10 py-4 flex justify-between items-center ${
+      <div className={`max-w-7xl mx-auto transition-all duration-500 rounded-full pl-3 pr-6 md:pl-6 md:pr-10 py-4 flex justify-between items-center ${
         isScrolled ? 'glass-panel shadow-premium' : 'bg-transparent border border-transparent'
       }`}>
         <Link href="/" className="flex items-center gap-4 group">
