@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
+import BackToTop from "@/components/shared/BackToTop";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           {children}
+          <BackToTop />
         </AuthProvider>
       </body>
     </html>
