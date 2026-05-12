@@ -22,9 +22,9 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: { icon: React.El
     <p className="text-gray-400 text-sm leading-relaxed font-inter mb-8">
       {description}
     </p>
-    <button className="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase text-brand-primary hover:text-brand-secondary transition-colors">
+    <Link href="/practice-areas" className="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase text-brand-primary hover:text-brand-secondary transition-colors">
       Explore Details <ArrowRight size={14} />
-    </button>
+    </Link>
   </motion.div>
 );
 
@@ -120,9 +120,9 @@ export default function Home() {
                 <Link href="/login" className="btn-modern !py-4 !px-10 !text-[11px] inline-flex items-center justify-center">
                   Secure a Consultation
                 </Link>
-                <button className="btn-modern-outline !py-4 !px-10 !text-[11px]">
+                <Link href="/practice-areas" className="btn-modern-outline !py-4 !px-10 !text-[11px] inline-flex items-center justify-center">
                   Our Practice Areas <ArrowRight size={18} />
-                </button>
+                </Link>
               </div>
             </motion.div>
           </div>
@@ -163,9 +163,9 @@ export default function Home() {
                 Specialized Solutions for <span className="italic bg-luxury-gradient bg-clip-text text-transparent">Modern Challenges</span>
               </h3>
             </div>
-            <button className="text-[11px] font-bold tracking-[0.2em] uppercase text-brand-primary hover:text-white transition-all flex items-center gap-4 group">
+            <Link href="/practice-areas" className="text-[11px] font-bold tracking-[0.2em] uppercase text-brand-primary hover:text-white transition-all flex items-center gap-4 group">
               View All Areas <div className="w-12 h-[1px] bg-brand-primary group-hover:w-20 transition-all duration-500" />
-            </button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
