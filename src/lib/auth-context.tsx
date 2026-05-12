@@ -227,6 +227,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.user) {
         const mappedUser = mapSupabaseUser(data.user);
         
+        // Generate new OTP for every login
+        const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
+        mappedUser.pin = generatedPin;
+        console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
+        if (typeof window !== 'undefined') {
+          window.alert(`[Zuma Chambers] Your 2FA Verification Code is: ${generatedPin}`);
+        }
+        
         setState(prev => ({
           ...prev,
           user: mappedUser,
@@ -253,7 +261,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('your-project')) {
         console.warn('Falling back to mock authentication...');
         const selectedRole = role ?? 'associate';
-        const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString() };
+        
+        // Generate new OTP for mock login too
+        const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
+        if (typeof window !== 'undefined') {
+          window.alert(`[Zuma Chambers] Your 2FA Verification Code is: ${generatedPin}`);
+        }
+        
+        const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString(), pin: generatedPin };
         setState(prev => ({
           ...prev,
           user,

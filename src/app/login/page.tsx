@@ -217,8 +217,8 @@ function LoginContent() {
                 </div>
                 <h2 className="text-3xl font-bold text-white font-playfair mb-2 text-center">Two-Factor<br />Verification</h2>
                 <p className="text-gray-400 text-sm font-inter mb-10 text-center">
-                  Enter the 6-digit code from your authenticator app.<br />
-                  <span className="text-[10px] text-gold-primary">(Demo: enter any 6 digits)</span>
+                  Enter the 6-digit code sent to your device.<br />
+                  <span className="text-[10px] text-gold-primary">(Check the popup alert for your demo OTP)</span>
                 </p>
 
                 <form onSubmit={handle2FA} className="space-y-6">
