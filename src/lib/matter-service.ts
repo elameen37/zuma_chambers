@@ -208,15 +208,18 @@ export const useMatterStore = create<MatterStore>()(
         
         // Try to sync to Supabase (fire and forget for now)
         try {
-          await supabase.from('matters').insert({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (supabase.from('matters') as any).insert({
             suit_number: newMatter.suitNumber,
             title: newMatter.title,
             stage: newMatter.stage,
-            priority: newMatter.riskLevel,
-            client_name: newMatter.client,
-            assigned_counsel: newMatter.leadCounsel,
-            next_hearing: newMatter.nextHearing,
-            type: newMatter.type,
+            risk_level: newMatter.riskLevel,
+            risk_score: newMatter.riskScore,
+            opposing_party: newMatter.opposingParty || null,
+            opposing_counsel: newMatter.opposingCounsel || null,
+            jurisdiction: newMatter.jurisdiction || null,
+            court: newMatter.court || null,
+            judge: newMatter.judge || null,
           });
         } catch (e) {
           console.warn('Failed to insert into Supabase', e);
@@ -230,32 +233,34 @@ export const useMatterStore = create<MatterStore>()(
       getMatter: (id) => get().matters.find((m) => m.id === id),
       syncWithSupabase: async () => {
         try {
-          const { data, error } = await supabase.from('matters').select('*');
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { data, error } = await (supabase.from('matters') as any).select('*');
           if (!error && data && data.length > 0) {
             // Map Supabase rows to Matter interface
-            const mappedMatters = data.map(row => ({
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const mappedMatters = data.map((row: any) => ({
               id: row.id,
               suitNumber: row.suit_number,
               title: row.title,
-              client: row.client_name,
-              opposingParty: 'Opposing Party', // Needs DB update for full fidelity
-              opposingCounsel: 'Unknown',
-              jurisdiction: 'Unknown',
-              court: 'High Court',
-              judge: 'Unknown',
+              client: row.client_name || 'Unknown Client',
+              opposingParty: row.opposing_party || 'Opposing Party', // Needs DB update for full fidelity
+              opposingCounsel: row.opposing_counsel || 'Unknown',
+              jurisdiction: row.jurisdiction || 'Unknown',
+              court: row.court || 'High Court',
+              judge: row.judge || 'Unknown',
               stage: row.stage as MatterStage,
-              riskLevel: row.priority as RiskLevel,
-              riskScore: 50,
-              leadCounsel: row.assigned_counsel,
-              type: row.type,
-              nextHearing: row.next_hearing,
+              riskLevel: (row.risk_level || row.priority || 'Low') as RiskLevel,
+              riskScore: row.risk_score || 50,
+              leadCounsel: row.assigned_counsel || 'Unassigned',
+              type: row.type || 'General',
+              nextHearing: row.next_hearing || null,
               team: [],
               events: [],
               evidence: [],
               notes: [],
               statutes: [],
               lastUpdated: new Date().toISOString(),
-              createdAt: row.created_at,
+              createdAt: row.created_at || new Date().toISOString(),
             }));
             
             // Merge or replace
