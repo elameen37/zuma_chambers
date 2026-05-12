@@ -101,7 +101,7 @@ const Footer = () => {
               &copy; {currentYear} [COMPANY_NAME]. All Rights Reserved.
             </p>
             <p className="text-[9px] text-gray-700 tracking-widest uppercase">
-              Designed by Craftwave Systems
+              Designed by Craftwave Solutions
             </p>
           </div>
         </div>
