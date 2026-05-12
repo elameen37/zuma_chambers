@@ -121,7 +121,7 @@ const Navbar = () => {
 
         {/* Mobile Toggle */}
         <button 
-          className="lg:hidden text-gold-primary p-2 bg-gold-primary/5 hover:bg-gold-primary/10 rounded-lg transition-all border border-gold-primary/10"
+          className="lg:hidden text-brand-primary p-2 bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-all border border-brand-primary/10"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -160,7 +160,7 @@ const Navbar = () => {
                   >
                     <Link 
                       href={link.href}
-                      className={`text-3xl font-bold uppercase tracking-tighter transition-all ${
+                      className={`text-2xl font-bold uppercase tracking-tighter transition-all ${
                         isActive ? 'text-brand-primary' : 'text-gray-500 hover:text-white'
                       }`}
                       onClick={() => setIsMobileMenuOpen(false)}
