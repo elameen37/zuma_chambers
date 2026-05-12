@@ -46,7 +46,7 @@ async function sendEmail(payload: NotificationPayload) {
   const resend = new Resend(process.env.RESEND_API_KEY!);
 
   const { data, error } = await resend.emails.send({
-    from: '[COMPANY_NAME] <notifications@zumachambers.ng>',
+    from: '[COMPANY_NAME] <notifications@company.ng>',
     to: payload.recipient.email ? [payload.recipient.email] : [],
     subject: payload.subject,
     text: payload.body,

@@ -18,6 +18,10 @@
   --shadow-gold-glow: 0 0 20px rgba(197, 160, 89, 0.2);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --background: #0A0A0B;
   --foreground: #FFFFFF;

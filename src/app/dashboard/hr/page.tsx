@@ -249,7 +249,7 @@ const BrandingPanel = () => {
     { label: 'Body Font', value: 'Inter', type: 'text' },
     { label: 'Firm Full Name', value: '[COMPANY_NAME]', type: 'text' },
     { label: 'Tagline', value: 'Elite Legal Counsel', type: 'text' },
-    { label: 'Email Domain', value: '@zumachambers.law', type: 'text' },
+    { label: 'Email Domain', value: '@company.law', type: 'text' },
   ];
   return (
     <div>

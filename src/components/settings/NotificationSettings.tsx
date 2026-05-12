@@ -39,7 +39,7 @@ export default function NotificationSettings() {
         suitNumber: 'TEST/001/2026',
         hearingDate: new Date().toLocaleDateString('en-NG', { dateStyle: 'full' }),
         court: 'Federal High Court, Abuja',
-        counselEmail: 'test@zumachambers.ng',
+        counselEmail: 'test@company.ng',
         counselPhone: '+2348000000000',
       });
 

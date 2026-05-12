@@ -51,7 +51,7 @@ const MOCK_USERS: Record<Role, UserProfile> = {
   partner: {
     id: 'usr_001',
     name: 'Chief Olumide Zuma',
-    email: 'olumide.zuma@zumachambers.com',
+    email: 'olumide.zuma@company.com',
     role: 'partner',
     initials: 'OZ',
     title: 'Senior Advocate of Nigeria (SAN)',
@@ -62,7 +62,7 @@ const MOCK_USERS: Record<Role, UserProfile> = {
   associate: {
     id: 'usr_002',
     name: 'Adeyemi Cole',
-    email: 'adeyemi.cole@zumachambers.com',
+    email: 'adeyemi.cole@company.com',
     role: 'associate',
     initials: 'AC',
     title: 'Associate Counsel',
@@ -73,7 +73,7 @@ const MOCK_USERS: Record<Role, UserProfile> = {
   admin: {
     id: 'usr_003',
     name: 'Fatima Al-Bashir',
-    email: 'fatima.admin@zumachambers.com',
+    email: 'fatima.admin@company.com',
     role: 'admin',
     initials: 'FA',
     title: 'System Administrator',
@@ -84,7 +84,7 @@ const MOCK_USERS: Record<Role, UserProfile> = {
   clerk: {
     id: 'usr_004',
     name: 'Ibrahim Musa',
-    email: 'ibrahim.musa@zumachambers.com',
+    email: 'ibrahim.musa@company.com',
     role: 'clerk',
     initials: 'IM',
     title: 'Senior Court Clerk',
@@ -95,7 +95,7 @@ const MOCK_USERS: Record<Role, UserProfile> = {
   finance: {
     id: 'usr_005',
     name: 'Sarah Nwosu',
-    email: 'sarah.nwosu@zumachambers.com',
+    email: 'sarah.nwosu@company.com',
     role: 'finance',
     initials: 'SN',
     title: 'Chief Finance Officer',

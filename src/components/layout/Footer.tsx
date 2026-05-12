@@ -86,8 +86,8 @@ const Footer = () => {
 
         <div className="border-t border-white/5 pt-16 flex flex-col lg:flex-row justify-between items-center gap-10">
           <div className="flex flex-col md:flex-row gap-12 items-center text-gray-400 text-[13px] font-inter font-bold">
-            <a href="mailto:office@zumachambers.law" className="flex items-center gap-3 hover:text-brand-primary transition-colors">
-              <Mail size={16} className="text-brand-primary" /> office@zumachambers.law
+            <a href="mailto:office@company.law" className="flex items-center gap-3 hover:text-brand-primary transition-colors">
+              <Mail size={16} className="text-brand-primary" /> office@company.law
             </a>
             <a href="tel:+234800ZUMALAW" className="flex items-center gap-3 hover:text-brand-primary transition-colors">
               <Phone size={16} className="text-brand-primary" /> +234 (0) 800-ZUMA-LAW

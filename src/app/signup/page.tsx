@@ -207,7 +207,7 @@ function SignUpContent() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     className="w-full bg-white/5 border border-gold-dark/20 rounded-lg py-3 px-4 text-sm text-white outline-none focus:border-gold-primary transition-colors font-inter"
-                    placeholder="you@zumachambers.com"
+                    placeholder="you@company.com"
                     required
                   />
                 </div>

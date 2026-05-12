@@ -117,7 +117,7 @@ export default function ContactPage() {
                 <ContactInfo 
                   icon={Mail} 
                   title="Official Intake" 
-                  detail="intake@zumachambers.law" 
+                  detail="intake@company.law" 
                   subdetail="Monitored 24/7 for urgent high-stakes matters"
                 />
                 <ContactInfo 
