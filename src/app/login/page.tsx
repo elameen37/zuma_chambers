@@ -75,7 +75,7 @@ function LoginContent() {
               <Gavel className="w-7 h-7 text-gold-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white font-playfair tracking-wider">ZUMA CHAMBERS</h1>
+              <h1 className="text-2xl font-bold text-white font-playfair tracking-wider">[COMPANY_NAME]</h1>
               <p className="text-[9px] text-gold-primary tracking-[0.3em] uppercase font-inter font-bold">Enterprise Legal Workspace</p>
             </div>
           </div>

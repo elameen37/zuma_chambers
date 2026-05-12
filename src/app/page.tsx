@@ -113,7 +113,7 @@ export default function Home() {
               </h1>
               
               <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed font-inter font-medium">
-                Zuma Chambers provides premier legal counsel and sophisticated operational solutions for high-stakes litigation, corporate complexities, and global regulatory compliance.
+                [COMPANY_NAME] provides premier legal counsel and sophisticated operational solutions for high-stakes litigation, corporate complexities, and global regulatory compliance.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6">
@@ -200,7 +200,7 @@ export default function Home() {
               Ready to Secure Your <span className="bg-luxury-gradient bg-clip-text text-transparent italic">Legal Future</span>?
             </h2>
             <p className="text-base text-gray-400 mb-12 max-w-xl mx-auto font-inter font-medium leading-relaxed">
-              Experience the pinnacle of legal operations. Join Zuma Chambers and transform how your organization handles legal complexity.
+              Experience the pinnacle of legal operations. Join [COMPANY_NAME] and transform how your organization handles legal complexity.
             </p>
             <Link href="/login" className="btn-modern !py-5 !px-12 !text-[11px] inline-flex items-center justify-center mx-auto w-fit">
               Secure Your Consultation

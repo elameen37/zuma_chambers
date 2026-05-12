@@ -29,8 +29,8 @@ export default function LegalAIPage() {
           </div>
           <h1 className="text-4xl font-bold text-white font-playfair tracking-tight">Legal <span className="gold-text italic">AI Intelligence</span></h1>
           <p className="text-gray-400 text-sm font-inter max-w-2xl leading-relaxed">
-            Zuma Chambers Neural Engine. Leveraging advanced heuristics and semantic analysis for matter summarization, 
-            risk detection, and automated legal drafting.
+            [COMPANY_NAME] Neural Engine. Leveraging advanced heuristics and semantic analysis for matter summarization, 
+            risk profiling, and predictive legal modeling.
           </p>
         </motion.div>
         

@@ -49,7 +49,7 @@ export default function AboutPage() {
             </div>
             
             <h1 className="heading-premium text-5xl md:text-7xl font-bold mb-8 text-white leading-tight">
-              About <span className="italic bg-luxury-gradient bg-clip-text text-transparent">Zuma Chambers</span>
+              About <span className="italic bg-luxury-gradient bg-clip-text text-transparent">[COMPANY_NAME]</span>
             </h1>
             
             <p className="text-gray-400 text-lg leading-relaxed font-inter font-medium max-w-3xl mx-auto">
@@ -77,7 +77,7 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-6 text-gray-400 font-inter font-medium leading-relaxed text-base">
                 <p>
-                  Established in 1999, Zuma Chambers emerged with a clear vision: to redefine legal practice in Nigeria. What began as a boutique litigation firm has evolved into a full-service enterprise legal powerhouse, advising multi-national corporations, government entities, and private clients.
+                  Established in 1999, [COMPANY_NAME] emerged with a clear vision: to redefine legal practice in Nigeria. What began as a boutique litigation firm has evolved into a full-service enterprise legal powerhouse, advising multi-national corporations, government entities, and private clients.
                 </p>
                 <p>
                   Our culture is rooted in the &quot;Zuma Philosophy&quot;&mdash;a belief that strength comes from meticulous preparation and justice is driven by relentless advocacy.
@@ -115,7 +115,7 @@ export default function AboutPage() {
                     &quot;Justice is not just a destination, but the path we walk every day.&quot;
                   </p>
                   <p className="text-[10px] text-gray-500 mt-3 tracking-[0.2em] uppercase font-bold">
-                    — Senior Partner, Zuma Chambers
+                    — Senior Partner, [COMPANY_NAME]
                   </p>
                 </div>
               </div>

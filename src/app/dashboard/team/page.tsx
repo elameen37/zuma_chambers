@@ -85,7 +85,7 @@ export default function TeamPage() {
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold text-white font-playfair mb-2">Chamber Personnel</h1>
-          <p className="text-gray-400 text-sm font-inter">Internal directory and collaboration hub for Zuma Chambers professionals.</p>
+          <p className="text-gray-400 text-sm font-inter">Internal directory and collaboration hub for [COMPANY_NAME] professionals.</p>
         </div>
         <div className="flex gap-4">
           <button className="btn-outline px-6 py-3 flex items-center gap-2 text-xs">

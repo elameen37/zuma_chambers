@@ -31,7 +31,7 @@ export async function GET() {
   const allHealthy = !Object.values(checks).includes('unreachable') && !Object.values(checks).includes('failed');
 
   return NextResponse.json(
-    { service: 'Zuma Chambers API', ...checks },
+    { service: '[COMPANY_NAME] API', ...checks },
     { status: allHealthy ? 200 : 503 }
   );
 }

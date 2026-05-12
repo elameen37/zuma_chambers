@@ -171,7 +171,7 @@ export default function ContactPage() {
           <h2 className="text-[11px] font-bold tracking-[0.5em] uppercase text-brand-primary mb-6 font-inter">International Desk</h2>
           <h3 className="heading-premium text-4xl md:text-5xl text-white mb-10">Coordinating <span className="italic text-brand-primary">Global Integrity</span></h3>
           <p className="text-gray-400 max-w-2xl mx-auto font-inter font-medium text-lg mb-16 leading-relaxed">
-            Zuma Chambers maintains strategic partnerships in London, New York, and Dubai to facilitate cross-border legal operations and multi-jurisdictional compliance.
+            [COMPANY_NAME] maintains strategic partnerships in London, New York, and Dubai to facilitate cross-border legal operations and multi-jurisdictional compliance.
           </p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {['Abuja', 'Lagos', 'London', 'New York'].map((city) => (

@@ -30,7 +30,7 @@ export async function exportToPDF(options: ExportOptions): Promise<void> {
   doc.setTextColor(212, 175, 55);
   doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
-  doc.text('ZUMA CHAMBERS', margin, 20);
+  doc.text('[COMPANY_NAME]', margin, 20);
 
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
@@ -79,7 +79,7 @@ export async function exportToPDF(options: ExportOptions): Promise<void> {
     doc.rect(0, pageHeight - 14, pageWidth, 14, 'F');
     doc.setTextColor(100, 100, 100);
     doc.setFontSize(7);
-    doc.text('STRICTLY CONFIDENTIAL — Zuma Chambers Legal Intelligence Platform', margin, pageHeight - 7);
+    doc.text('STRICTLY CONFIDENTIAL — [COMPANY_NAME] Legal Intelligence Platform', margin, pageHeight - 7);
     doc.text(`Page ${i} / ${pages}`, pageWidth - margin - 20, pageHeight - 7);
   }
 

@@ -247,7 +247,7 @@ const BrandingPanel = () => {
     { label: 'Secondary Color', value: '#0A0A0B', type: 'color' },
     { label: 'Primary Font', value: 'Playfair Display', type: 'text' },
     { label: 'Body Font', value: 'Inter', type: 'text' },
-    { label: 'Firm Full Name', value: 'Zuma Chambers', type: 'text' },
+    { label: 'Firm Full Name', value: '[COMPANY_NAME]', type: 'text' },
     { label: 'Tagline', value: 'Elite Legal Counsel', type: 'text' },
     { label: 'Email Domain', value: '@zumachambers.law', type: 'text' },
   ];

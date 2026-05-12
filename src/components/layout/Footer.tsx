@@ -50,12 +50,12 @@ const Footer = () => {
                 <Gavel className="w-6 h-6 text-brand-primary" />
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold tracking-widest text-white uppercase font-playfair">Zuma Chambers</span>
+                <span className="text-2xl font-bold tracking-widest text-white uppercase font-playfair">[COMPANY_NAME]</span>
                 <span className="text-[10px] text-brand-primary tracking-[0.4em] uppercase font-bold">Elite Legal Counsel</span>
               </div>
             </Link>
             <p className="text-gray-400 text-base leading-relaxed mb-10 max-w-sm font-inter font-medium">
-              Providing world-class legal excellence with a commitment to justice. Zuma Chambers is at the forefront of Nigerian legal reforms and enterprise legal operations.
+              Providing world-class legal excellence with a commitment to justice. [COMPANY_NAME] is at the forefront of Nigerian legal reforms and enterprise legal operations.
             </p>
             <div className="flex gap-4">
               {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
@@ -98,7 +98,7 @@ const Footer = () => {
           </div>
           <div className="flex flex-col items-center lg:items-end gap-2">
             <p className="text-gray-600 text-[10px] tracking-[0.2em] uppercase font-bold">
-              &copy; {currentYear} Zuma Chambers. All Rights Reserved.
+              &copy; {currentYear} [COMPANY_NAME]. All Rights Reserved.
             </p>
             <p className="text-[9px] text-gray-700 tracking-widest uppercase">
               Designed by Craftwave Systems

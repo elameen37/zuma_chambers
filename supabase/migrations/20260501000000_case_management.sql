@@ -1,4 +1,4 @@
--- Case Management Schema for Zuma Chambers
+-- Case Management Schema for [COMPANY_NAME]
 
 -- Enum for Matter Stages
 CREATE TYPE matter_stage AS ENUM ('Intake', 'Discovery', 'Pre-Trial', 'Hearing', 'Judgment', 'Closed');

@@ -14,8 +14,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Zuma Chambers | Rooted in Strength. Driven by Justice.",
-  description: "Secure, scalable, modern legal workspace for Zuma Chambers. Premium legal services in Litigation, Corporate Law, Property Law, and more.",
+  title: "[COMPANY_NAME] | Rooted in Strength. Driven by Justice.",
+  description: "Secure, scalable, modern legal workspace for [COMPANY_NAME]. Premium legal services in Litigation, Corporate Law, Property Law, and more.",
 };
 
 export default function RootLayout({

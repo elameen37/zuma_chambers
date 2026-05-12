@@ -23,8 +23,8 @@ export default function LegalResearchPage() {
           </div>
           <h1 className="text-4xl font-bold text-white font-playfair tracking-tight">Legal Research & <span className="gold-text italic">Knowledge Base</span></h1>
           <p className="text-gray-400 text-sm font-inter max-w-2xl leading-relaxed">
-            Access the Zuma Chambers enterprise library of statutes, Supreme Court decisions, and curated precedents. 
-            Integrated citation intelligence for precise litigation preparation.
+            Access the [COMPANY_NAME] enterprise library of statutes, Supreme Court decisions, and curated precedents. 
+            Leverage semantic search to find winning legal strategies.e litigation preparation.
           </p>
         </motion.div>
         

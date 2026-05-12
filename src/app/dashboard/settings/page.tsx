@@ -214,8 +214,8 @@ export default function SettingsPage() {
             </h3>
             <div className="space-y-3">
               {[
-                { ip: '102.89.45.0/24', label: 'Zuma Chambers HQ (Lagos)', status: 'whitelisted' },
-                { ip: '102.89.46.0/24', label: 'Zuma Chambers (Abuja)', status: 'whitelisted' },
+                { ip: '102.89.45.0/24', label: '[COMPANY_NAME] HQ (Lagos)', status: 'whitelisted' },
+                { ip: '102.89.46.0/24', label: '[COMPANY_NAME] (Abuja)', status: 'whitelisted' },
                 { ip: '41.203.67.89', label: 'Blocked — Brute force', status: 'blocked' },
               ].map((entry, i) => (
                 <div key={i} className="flex justify-between items-center p-3 bg-white/[0.02] rounded-lg border border-gold-dark/10">

@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-// ─── Zuma Chambers Route Protection Middleware ─────────────────────────────
+// ─── [COMPANY_NAME] Route Protection Middleware ─────────────────────────────
 // Runs on every request — refreshes session and guards /dashboard routes
 
 export async function middleware(request: NextRequest) {

@@ -232,7 +232,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         mappedUser.pin = generatedPin;
         console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
         if (typeof window !== 'undefined') {
-          window.alert(`[Zuma Chambers] Your 2FA Verification Code is: ${generatedPin}`);
+          window.alert(`[[COMPANY_NAME]] Your 2FA Verification Code is: ${generatedPin}`);
         }
         
         setState(prev => ({
@@ -266,7 +266,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
         console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
         if (typeof window !== 'undefined') {
-          window.alert(`[Zuma Chambers] Your 2FA Verification Code is: ${generatedPin}`);
+          window.alert(`[[COMPANY_NAME]] Your 2FA Verification Code is: ${generatedPin}`);
         }
         
         const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString(), pin: generatedPin };
