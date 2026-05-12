@@ -18,7 +18,7 @@ function LoginContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [twoFactorCode, setTwoFactorCode] = useState<string[]>(Array(6).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -50,10 +50,11 @@ function LoginContent() {
     e.preventDefault();
     setError('');
 
-    if (verify2FA(twoFactorCode)) {
+    const code = twoFactorCode.join('');
+    if (verify2FA(code)) {
       router.replace('/dashboard');
     } else {
-      setError('Invalid verification code. Enter any 6 digits.');
+      setError('Invalid verification code.');
     }
   };
 
@@ -228,15 +229,21 @@ function LoginContent() {
                         key={i}
                         type="text"
                         maxLength={1}
-                        value={twoFactorCode[i] || ''}
+                        value={twoFactorCode[i]}
                         onChange={e => {
                           const val = e.target.value.replace(/\D/g, '');
-                          const newCode = twoFactorCode.split('');
+                          const newCode = [...twoFactorCode];
                           newCode[i] = val;
-                          setTwoFactorCode(newCode.join(''));
+                          setTwoFactorCode(newCode);
                           if (val && i < 5) {
                             const next = e.target.nextElementSibling as HTMLInputElement;
                             next?.focus();
+                          }
+                        }}
+                        onKeyDown={e => {
+                          if (e.key === 'Backspace' && !twoFactorCode[i] && i > 0) {
+                            const prev = (e.target as HTMLInputElement).previousElementSibling as HTMLInputElement;
+                            prev?.focus();
                           }
                         }}
                         className="w-12 h-14 bg-white/5 border border-gold-dark/20 rounded-lg text-center text-xl text-white font-bold outline-none focus:border-gold-primary transition-colors font-inter"
@@ -254,7 +261,7 @@ function LoginContent() {
 
                   <button
                     type="button"
-                    onClick={() => { setStep(1); setTwoFactorCode(''); }}
+                    onClick={() => { setStep(1); setTwoFactorCode(Array(6).fill('')); }}
                     className="w-full text-center text-xs text-gray-500 hover:text-gold-primary transition-colors font-inter"
                   >
                     Back to Sign In

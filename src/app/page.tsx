@@ -5,6 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import { Scale, Shield, Briefcase, ArrowRight } from '@/components/shared/Icons';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import Link from 'next/link';
 
 const FeatureCard = ({ icon: Icon, title, description, delay }: { icon: React.ElementType, title: string, description: string, delay: number }) => (
   <motion.div 
@@ -116,9 +117,9 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6">
-                <button className="btn-modern !py-4 !px-10 !text-[11px]">
+                <Link href="/login" className="btn-modern !py-4 !px-10 !text-[11px] inline-flex items-center justify-center">
                   Secure a Consultation
-                </button>
+                </Link>
                 <button className="btn-modern-outline !py-4 !px-10 !text-[11px]">
                   Our Practice Areas <ArrowRight size={18} />
                 </button>
@@ -201,9 +202,9 @@ export default function Home() {
             <p className="text-base text-gray-400 mb-12 max-w-xl mx-auto font-inter font-medium leading-relaxed">
               Experience the pinnacle of legal operations. Join Zuma Chambers and transform how your organization handles legal complexity.
             </p>
-            <button className="btn-modern !py-5 !px-12 !text-[11px]">
+            <Link href="/login" className="btn-modern !py-5 !px-12 !text-[11px] inline-flex items-center justify-center mx-auto w-fit">
               Secure Your Consultation
-            </button>
+            </Link>
           </div>
         </div>
       </section>
