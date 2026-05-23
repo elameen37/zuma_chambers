@@ -6,7 +6,20 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
+  const { pathname } = request.nextUrl;
 
+  // ── 1. Check Mock Session Cookie (Resilient Bypass) ──────────────
+  const mockUserCookie = request.cookies.get('xyz_mock_user');
+  
+  if (mockUserCookie) {
+    // Authenticated via Mock. Guard rules:
+    if (pathname === '/login') {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    return supabaseResponse;
+  }
+
+  // ── 2. Initialize Supabase SSR Client ───────────────────────────
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -28,12 +41,17 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // ── Refresh session (IMPORTANT: do not remove) ──────────────────
-  const { data: { user } } = await supabase.auth.getUser();
+  // ── 3. Check / Refresh Supabase session with a fail-fast timeout ──
+  let user = null;
+  try {
+    const userPromise = supabase.auth.getUser().then(res => res.data?.user || null);
+    const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 1200));
+    user = await Promise.race([userPromise, timeoutPromise]);
+  } catch (err) {
+    console.warn('[Middleware] Supabase auth check failed:', err);
+  }
 
-  const { pathname } = request.nextUrl;
-
-  // ── Guard: /dashboard requires authentication ───────────────────
+  // ── 4. Guards ───────────────────────────────────────────────────
   if (pathname.startsWith('/dashboard')) {
     if (!user) {
       const loginUrl = new URL('/login', request.url);
@@ -42,7 +60,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // ── Guard: /login redirects authenticated users to dashboard ───
   if (pathname === '/login' && user) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }

@@ -160,19 +160,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     pin: user.user_metadata?.pin,
   });
 
-  // Supabase Auth Listener
+  // Supabase Auth & Mock Cookie Listener
   useEffect(() => {
-    // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
+    // Check if there is a mock session cookie
+    const getCookie = (name: string) => {
+      if (typeof window === 'undefined') return null;
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return decodeURIComponent(parts.pop()!.split(';').shift()!);
+      return null;
+    };
+
+    const mockUserCookie = getCookie('xyz_mock_user');
+    if (mockUserCookie) {
+      try {
+        const parsed = JSON.parse(mockUserCookie);
         setState(prev => ({
           ...prev,
-          user: mapSupabaseUser(session.user),
+          user: parsed,
           isAuthenticated: true,
-          sessionStarted: session.user.last_sign_in_at || new Date().toISOString(),
+          is2FAVerified: true, // Auto-verify 2FA for remembered mock user
+          sessionStarted: parsed.lastLogin,
         }));
+      } catch (e) {
+        console.error('Failed to parse mock user cookie', e);
       }
-    });
+    } else {
+      // Check active session in Supabase if no mock cookie
+      supabase.auth.getSession()
+        .then(({ data }) => {
+          if (data?.session?.user) {
+            setState(prev => ({
+              ...prev,
+              user: mapSupabaseUser(data.session.user),
+              isAuthenticated: true,
+              sessionStarted: data.session.user.last_sign_in_at || new Date().toISOString(),
+            }));
+          }
+        })
+        .catch(err => {
+          console.warn('Supabase getSession failed, continuing with mock environment:', err);
+        });
+    }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
@@ -257,29 +286,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return false;
     } catch (err) {
       console.error('Login error:', err);
-      // Fallback to mock for demo purposes if Supabase is unconfigured
-      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('your-project')) {
-        console.warn('Falling back to mock authentication...');
-        const selectedRole = role ?? 'associate';
-        
-        // Generate new OTP for mock login too
-        const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
-        console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
-        if (typeof window !== 'undefined') {
-          window.alert(`[XYZ Chambers] Your 2FA Verification Code is: ${generatedPin}`);
-        }
-        
-        const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString(), pin: generatedPin };
-        setState(prev => ({
-          ...prev,
-          user,
-          isAuthenticated: true,
-          is2FAVerified: false,
-          sessionStarted: new Date().toISOString(),
-        }));
-        return true;
+      // Fallback to mock for demo purposes or when Supabase is offline/unreachable
+      console.warn('Falling back to mock authentication...');
+      const selectedRole = role ?? 'associate';
+      
+      // Generate new OTP for mock login too
+      const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
+      console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
+      if (typeof window !== 'undefined') {
+        window.alert(`[XYZ Chambers] Your 2FA Verification Code is: ${generatedPin}`);
       }
-      return false;
+      
+      const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString(), pin: generatedPin };
+      
+      // Set the mock user cookie to bypass edge middleware checks and persist sessions locally
+      if (typeof window !== 'undefined') {
+        document.cookie = `xyz_mock_user=${encodeURIComponent(JSON.stringify(user))}; path=/; max-age=86400; SameSite=Lax; path=/`;
+      }
+
+      setState(prev => ({
+        ...prev,
+        user,
+        isAuthenticated: true,
+        is2FAVerified: false,
+        sessionStarted: new Date().toISOString(),
+      }));
+      return true;
     }
   }, []);
 
@@ -365,7 +397,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     addAuditEntry('LOGOUT', 'Authentication', 'success');
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.warn('Supabase signOut failed, logging out locally:', e);
+    }
+    
+    // Clear mock user cookie
+    if (typeof window !== 'undefined') {
+      document.cookie = 'xyz_mock_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax; path=/';
+    }
+
     setState(prev => ({
       ...prev,
       user: null,

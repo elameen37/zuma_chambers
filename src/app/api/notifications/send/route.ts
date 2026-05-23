@@ -46,7 +46,7 @@ async function sendEmail(payload: NotificationPayload) {
   const resend = new Resend(process.env.RESEND_API_KEY!);
 
   const { data, error } = await resend.emails.send({
-    from: '[COMPANY_NAME] <notifications@company.ng>',
+    from: 'XYZ Chambers <notifications@company.ng>',
     to: payload.recipient.email ? [payload.recipient.email] : [],
     subject: payload.subject,
     text: payload.body,
@@ -77,7 +77,7 @@ function buildEmailHTML(payload: NotificationPayload): string {
 <body>
   <div class="container">
     <div class="header">
-      <div class="logo">⚖ [COMPANY_NAME]</div>
+      <div class="logo">⚖ XYZ Chambers</div>
       <div class="tagline">Enterprise Legal Intelligence</div>
     </div>
     <div class="body">
@@ -86,7 +86,7 @@ function buildEmailHTML(payload: NotificationPayload): string {
     </div>
     <div class="footer">
       This communication is strictly confidential and intended solely for the named recipient.<br/>
-      © ${new Date().getFullYear()} [COMPANY_NAME]. All rights reserved.
+      © ${new Date().getFullYear()} XYZ Chambers. All rights reserved.
     </div>
   </div>
 </body>
@@ -103,7 +103,7 @@ async function sendSMS(payload: NotificationPayload) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       to: phone,
-      from: '[COMPANY_NAME]',
+      from: 'XYZ Chambers',
       sms: payload.body.substring(0, 160), // SMS character limit
       type: 'plain',
       channel: 'generic',
