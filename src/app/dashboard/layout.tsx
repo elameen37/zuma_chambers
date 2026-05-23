@@ -9,7 +9,7 @@ import { hasPermission, PERMISSIONS, ROLE_LABELS, ROLE_COLORS } from '@/lib/perm
 import RouteGuard from '@/components/guards/RouteGuard';
 import {
   LayoutDashboard, Briefcase, FileText, BarChart3, ShieldCheck, Users,
-  Settings, LogOut, Menu, X, Bell, Search, Gavel, ScrollText, CalendarDays,
+  Settings, LogOut, Menu, Bell, Search, Gavel, ScrollText, CalendarDays,
   MessageSquare, BookOpen, Sparkles, ChevronLeft, ChevronRight
 } from '@/components/shared/Icons';
 

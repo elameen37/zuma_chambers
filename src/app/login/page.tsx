@@ -4,8 +4,8 @@ import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
-import { Role, ROLE_LABELS, ROLE_COLORS } from '@/lib/permissions';
-import { Gavel, Lock, Key, Fingerprint, Eye, EyeOff, ShieldCheck, Globe, ChevronDown, Home } from '@/components/shared/Icons';
+import { Role } from '@/lib/permissions';
+import { Gavel, Lock, Key, Fingerprint, Eye, EyeOff, ShieldCheck, Globe, Home } from '@/components/shared/Icons';
 import Link from 'next/link';
 
 function LoginContent() {
@@ -18,7 +18,7 @@ function LoginContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [twoFactorCode, setTwoFactorCode] = useState<string[]>(Array(6).fill(''));
+  const [twoFactorCode, setTwoFactorCode] = useState<string[]>(Array(8).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -58,7 +58,7 @@ function LoginContent() {
     }
   };
 
-  const roles: Role[] = ['partner', 'associate', 'admin', 'clerk', 'finance', 'client'];
+
 
   return (
     <div className="min-h-screen bg-black flex">
@@ -218,13 +218,13 @@ function LoginContent() {
                 </div>
                 <h2 className="text-3xl font-bold text-white font-playfair mb-2 text-center">Two-Factor<br />Verification</h2>
                 <p className="text-gray-400 text-sm font-inter mb-10 text-center">
-                  Enter the 6-digit code sent to your device.<br />
-                  <span className="text-[10px] text-gold-primary">(Check the popup alert for your demo OTP)</span>
+                  Enter the 8-digit secure code sent to your email.<br />
+                  <span className="text-[10px] text-gold-primary">(Sent to: {email || 'your registered account'})</span>
                 </p>
 
                 <form onSubmit={handle2FA} className="space-y-6">
-                  <div className="flex justify-center gap-3">
-                    {[0, 1, 2, 3, 4, 5].map(i => (
+                  <div className="flex justify-center gap-2">
+                    {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (
                       <input
                         key={i}
                         type="text"
@@ -235,7 +235,7 @@ function LoginContent() {
                           const newCode = [...twoFactorCode];
                           newCode[i] = val;
                           setTwoFactorCode(newCode);
-                          if (val && i < 5) {
+                          if (val && i < 7) {
                             const next = e.target.nextElementSibling as HTMLInputElement;
                             next?.focus();
                           }
@@ -246,7 +246,7 @@ function LoginContent() {
                             prev?.focus();
                           }
                         }}
-                        className="w-12 h-14 bg-white/5 border border-gold-dark/20 rounded-lg text-center text-xl text-white font-bold outline-none focus:border-gold-primary transition-colors font-inter"
+                        className="w-9 h-11 bg-white/5 border border-gold-dark/20 rounded-lg text-center text-lg text-white font-bold outline-none focus:border-gold-primary transition-colors font-inter"
                       />
                     ))}
                   </div>
@@ -261,7 +261,7 @@ function LoginContent() {
 
                   <button
                     type="button"
-                    onClick={() => { setStep(1); setTwoFactorCode(Array(6).fill('')); }}
+                    onClick={() => { setStep(1); setTwoFactorCode(Array(8).fill('')); }}
                     className="w-full text-center text-xs text-gray-500 hover:text-gold-primary transition-colors font-inter"
                   >
                     Back to Sign In

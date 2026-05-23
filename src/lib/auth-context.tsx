@@ -134,6 +134,43 @@ const INITIAL_AUDIT_LOG: AuditEntry[] = [
 
 import { supabase } from './supabase';
 
+// ─── Send OTP Secure Code via Email ────────────────────────────
+const sendOTPToEmail = async (email: string, pin: string) => {
+  try {
+    const res = await fetch('/api/notifications/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        channel: 'email',
+        payload: {
+          recipient: { email },
+          subject: 'XYZ Chambers Secure 2FA Verification Code',
+          body: `Dear User,
+
+Your XYZ Chambers Secure Verification Code is:
+
+${pin}
+
+Please enter this 8-digit code in your browser window to authenticate and access the XYZ Chambers Legal ERP Workspace.
+
+This is a secure automated notification. Do not share this verification code with anyone. If you did not request this login attempt, please notify IT Security immediately.
+
+Best regards,
+XYZ Chambers IT Security Desk
+Enterprise Legal Operations Platform`
+        }
+      })
+    });
+    if (!res.ok) {
+      console.warn('Failed to dispatch 2FA email notification:', await res.text());
+    } else {
+      console.log('2FA secure code successfully sent to email:', email);
+    }
+  } catch (err) {
+    console.error('Failed to send 2FA email:', err);
+  }
+};
+
 // ─── Context ───────────────────────────────────────────────────
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -256,13 +293,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.user) {
         const mappedUser = mapSupabaseUser(data.user);
         
-        // Generate new OTP for every login
-        const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
+        // Generate new 8-digit OTP for every login
+        const generatedPin = Math.floor(10000000 + Math.random() * 90000000).toString();
         mappedUser.pin = generatedPin;
         console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
-        if (typeof window !== 'undefined') {
-          window.alert(`[XYZ Chambers] Your 2FA Verification Code is: ${generatedPin}`);
-        }
+        sendOTPToEmail(mappedUser.email, generatedPin);
         
         setState(prev => ({
           ...prev,
@@ -290,12 +325,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.warn('Falling back to mock authentication...');
       const selectedRole = role ?? 'associate';
       
-      // Generate new OTP for mock login too
-      const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
+      // Generate new 8-digit OTP for mock login too
+      const generatedPin = Math.floor(10000000 + Math.random() * 90000000).toString();
       console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
-      if (typeof window !== 'undefined') {
-        window.alert(`[XYZ Chambers] Your 2FA Verification Code is: ${generatedPin}`);
-      }
+      sendOTPToEmail(email, generatedPin);
       
       const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString(), pin: generatedPin };
       
@@ -318,7 +351,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = useCallback(async (email: string, password: string, name: string, role: Role): Promise<{ success: boolean; error?: string; message?: string; pin?: string }> => {
     try {
       const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || email.substring(0, 2).toUpperCase();
-      const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
+      const generatedPin = Math.floor(10000000 + Math.random() * 90000000).toString();
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -373,8 +406,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return false;
     }
     
-    // Fallback: mock accept any 6-digit code for 2FA (for old accounts)
-    if (code.length === 6) {
+    // Fallback: mock accept any 8-digit code for 2FA (for old accounts)
+    if (code.length === 8) {
       setState(prev => ({
         ...prev,
         is2FAVerified: true,
