@@ -64,7 +64,7 @@ export default function InsightsPage() {
       excerpt: "A landmark judgment regarding jurisdictional challenges in decentralized finance litigation."
     },
     {
-      title: "[COMPANY_NAME] Quarterly Legal Excellence Newsletter",
+      title: "XYZ Chambers Quarterly Legal Excellence Newsletter",
       category: "Newsletters",
       date: "March 1, 2026",
       excerpt: "Inside our recent successful interventions and a look ahead at the Nigerian constitutional reform movement."

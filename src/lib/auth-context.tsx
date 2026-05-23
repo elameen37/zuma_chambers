@@ -50,10 +50,10 @@ interface AuthContextType extends AuthState {
 const MOCK_USERS: Record<Role, UserProfile> = {
   partner: {
     id: 'usr_001',
-    name: 'Chief Olumide Zuma',
-    email: 'olumide.zuma@company.com',
+    name: 'Chief Olumide XYZ',
+    email: 'olumide.xyz@company.com',
     role: 'partner',
-    initials: 'OZ',
+    initials: 'OX',
     title: 'Senior Advocate of Nigeria (SAN)',
     department: 'Litigation & Dispute Resolution',
     lastLogin: new Date().toISOString(),
@@ -118,18 +118,18 @@ const MOCK_USERS: Record<Role, UserProfile> = {
 
 // ─── Initial Audit Log ─────────────────────────────────────────
 const INITIAL_AUDIT_LOG: AuditEntry[] = [
-  { id: 'aud_001', timestamp: '2026-04-15T18:42:00Z', userId: 'usr_001', userName: 'Chief Olumide Zuma', action: 'LOGIN', resource: 'Authentication', ip: '102.89.45.121', status: 'success' },
+  { id: 'aud_001', timestamp: '2026-04-15T18:42:00Z', userId: 'usr_001', userName: 'Chief Olumide XYZ', action: 'LOGIN', resource: 'Authentication', ip: '102.89.45.121', status: 'success' },
   { id: 'aud_002', timestamp: '2026-04-15T18:35:00Z', userId: 'usr_003', userName: 'Fatima Al-Bashir', action: 'MODIFY_ROLE', resource: 'User: Ibrahim Musa', ip: '102.89.45.100', status: 'success', details: 'Role changed from junior_clerk to clerk' },
   { id: 'aud_003', timestamp: '2026-04-15T17:22:00Z', userId: 'unknown', userName: 'Unknown', action: 'LOGIN_FAILED', resource: 'Authentication', ip: '41.203.67.89', status: 'denied', details: 'Invalid credentials - 3rd attempt' },
-  { id: 'aud_004', timestamp: '2026-04-15T16:58:00Z', userId: 'usr_002', userName: 'Adeyemi Cole', action: 'VIEW_DOCUMENT', resource: 'Zuma_vs_FGN_Expert_Report.pdf', ip: '102.89.45.134', status: 'success' },
+  { id: 'aud_004', timestamp: '2026-04-15T16:58:00Z', userId: 'usr_002', userName: 'Adeyemi Cole', action: 'VIEW_DOCUMENT', resource: 'XYZ_vs_FGN_Expert_Report.pdf', ip: '102.89.45.134', status: 'success' },
   { id: 'aud_005', timestamp: '2026-04-15T16:30:00Z', userId: 'usr_006', userName: 'James Wilson', action: 'ACCESS_DENIED', resource: '/dashboard/finance', ip: '197.210.64.22', status: 'denied', details: 'Insufficient permissions for client role' },
   { id: 'aud_006', timestamp: '2026-04-15T15:45:00Z', userId: 'usr_004', userName: 'Ibrahim Musa', action: 'FILE_COURT_DOCUMENT', resource: 'Motion for Stay of Execution', ip: '102.89.45.155', status: 'success' },
   { id: 'aud_007', timestamp: '2026-04-15T14:20:00Z', userId: 'usr_005', userName: 'Sarah Nwosu', action: 'GENERATE_INVOICE', resource: 'INV-2026-0017', ip: '102.89.45.178', status: 'success', details: 'Amount: ₦4,500,000' },
-  { id: 'aud_008', timestamp: '2026-04-15T13:10:00Z', userId: 'usr_001', userName: 'Chief Olumide Zuma', action: 'PRIVILEGE_ESCALATION_CHECK', resource: 'Case: FHC/ABJ/CS/120/24', ip: '102.89.45.121', status: 'warning', details: 'Partner accessing Level 1 classified evidence' },
+  { id: 'aud_008', timestamp: '2026-04-15T13:10:00Z', userId: 'usr_001', userName: 'Chief Olumide XYZ', action: 'PRIVILEGE_ESCALATION_CHECK', resource: 'Case: FHC/ABJ/CS/120/24', ip: '102.89.45.121', status: 'warning', details: 'Partner accessing Level 1 classified evidence' },
   { id: 'aud_009', timestamp: '2026-04-15T12:00:00Z', userId: 'usr_003', userName: 'Fatima Al-Bashir', action: 'EXPORT_DATA', resource: 'Financial Reports Q2', ip: '102.89.45.100', status: 'success' },
   { id: 'aud_010', timestamp: '2026-04-15T10:30:00Z', userId: 'usr_002', userName: 'Adeyemi Cole', action: 'UPDATE_CASE', resource: 'SC/CV/245/2023', ip: '102.89.45.134', status: 'success', details: 'Status changed: Discovery → Hearing' },
   { id: 'aud_011', timestamp: '2026-04-14T22:15:00Z', userId: 'unknown', userName: 'Unknown', action: 'BRUTE_FORCE_DETECTED', resource: 'Authentication', ip: '41.203.67.89', status: 'denied', details: 'IP blocked after 5 failed attempts' },
-  { id: 'aud_012', timestamp: '2026-04-14T18:40:00Z', userId: 'usr_001', userName: 'Chief Olumide Zuma', action: 'APPROVE_SETTLEMENT', resource: 'Case: LD/1024/GCM/24', ip: '102.89.45.121', status: 'success', details: 'Settlement amount: ₦25,000,000' },
+  { id: 'aud_012', timestamp: '2026-04-14T18:40:00Z', userId: 'usr_001', userName: 'Chief Olumide XYZ', action: 'APPROVE_SETTLEMENT', resource: 'Case: LD/1024/GCM/24', ip: '102.89.45.121', status: 'success', details: 'Settlement amount: ₦25,000,000' },
 ];
 
 import { supabase } from './supabase';
@@ -232,7 +232,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         mappedUser.pin = generatedPin;
         console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
         if (typeof window !== 'undefined') {
-          window.alert(`[[COMPANY_NAME]] Your 2FA Verification Code is: ${generatedPin}`);
+          window.alert(`[XYZ Chambers] Your 2FA Verification Code is: ${generatedPin}`);
         }
         
         setState(prev => ({
@@ -266,7 +266,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const generatedPin = Math.floor(100000 + Math.random() * 900000).toString();
         console.log(`[DEV ONLY] Your 2FA OTP is: ${generatedPin}`);
         if (typeof window !== 'undefined') {
-          window.alert(`[[COMPANY_NAME]] Your 2FA Verification Code is: ${generatedPin}`);
+          window.alert(`[XYZ Chambers] Your 2FA Verification Code is: ${generatedPin}`);
         }
         
         const user = { ...MOCK_USERS[selectedRole], email, lastLogin: new Date().toISOString(), pin: generatedPin };

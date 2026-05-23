@@ -18,7 +18,7 @@ const CHANNELS = [
 ];
 
 const DIRECT_MESSAGES = [
-  { id: 'u1', name: 'Olumide Zuma (Partner)', status: 'Online' },
+  { id: 'u1', name: 'Olumide XYZ (Partner)', status: 'Online' },
   { id: 'u2', name: 'Sarah Nwosu', status: 'Away' },
   { id: 'u3', name: 'Adeyemi Cole', status: 'Offline' },
 ];
@@ -30,9 +30,9 @@ const WORKFLOW_ITEMS = [
 ];
 
 const MESSAGES = [
-  { id: 'm1', sender: 'Olumide Zuma', content: 'Has the reply to the counter-affidavit in the Dangote matter been drafted?', time: '10:30 AM', role: 'Partner' },
+  { id: 'm1', sender: 'Olumide XYZ', content: 'Has the reply to the counter-affidavit in the Dangote matter been drafted?', time: '10:30 AM', role: 'Partner' },
   { id: 'm2', sender: 'Adeyemi Cole', content: 'Yes, I am finalizing the citations. Will upload to the strategy room by noon.', time: '10:35 AM', role: 'Associate' },
-  { id: 'm3', sender: 'Olumide Zuma', content: 'Excellent. Please ensure the cross-references to the 2023 Supreme Court ruling are precise.', time: '10:38 AM', role: 'Partner' },
+  { id: 'm3', sender: 'Olumide XYZ', content: 'Excellent. Please ensure the cross-references to the 2023 Supreme Court ruling are precise.', time: '10:38 AM', role: 'Partner' },
 ];
 
 export default function CollaborationPage() {

@@ -69,7 +69,7 @@ const TeamMemberCard = ({ name, role, dept, status, delay }: { name: string, rol
 
 export default function TeamPage() {
   const staff = [
-    { name: 'Olumide Zuma', role: 'Senior Advocate (SAN)', dept: 'LITIGATION', status: 'Available' },
+    { name: 'Olumide XYZ', role: 'Senior Advocate (SAN)', dept: 'LITIGATION', status: 'Available' },
     { name: 'Sarah Nwosu', role: 'Managing Partner', dept: 'CORPORATE', status: 'In Meeting' },
     { name: 'Adeyemi Cole', role: 'Senior Associate', dept: 'IP & TECH', status: 'In Court' },
     { name: 'Ibrahim Musa', role: 'Associate Attorney', dept: 'COMMERCIAL', status: 'Available' },
@@ -85,7 +85,7 @@ export default function TeamPage() {
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold text-white font-playfair mb-2">Chamber Personnel</h1>
-          <p className="text-gray-400 text-sm font-inter">Internal directory and collaboration hub for [COMPANY_NAME] professionals.</p>
+          <p className="text-gray-400 text-sm font-inter">Internal directory and collaboration hub for XYZ Chambers professionals.</p>
         </div>
         <div className="flex gap-4">
           <button className="btn-outline px-6 py-3 flex items-center gap-2 text-xs">
@@ -136,7 +136,7 @@ export default function TeamPage() {
            
            <div className="space-y-6">
               {[
-                { title: 'New Litigation Guidelines for Supreme Court Appearances', author: 'Olumide Zuma (SAN)', date: 'Today, 10:45 AM', type: 'Policy' },
+                { title: 'New Litigation Guidelines for Supreme Court Appearances', author: 'Olumide XYZ (SAN)', date: 'Today, 10:45 AM', type: 'Policy' },
                 { title: 'Easter Vacation Office Closures & Emergency Contacts', author: 'Admin Dept', date: 'Yesterday', type: 'Announcement' },
                 { title: 'Quarterly Performance Reviews - Q2 Schedule', author: 'Sarah Nwosu', date: 'Oct 12, 2026', type: 'HR' },
               ].map((post, i) => (

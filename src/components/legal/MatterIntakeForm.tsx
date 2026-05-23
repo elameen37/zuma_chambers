@@ -55,7 +55,7 @@ export default function MatterIntakeForm() {
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                   className="w-full bg-white/5 border border-gold-dark/20 rounded p-3 text-white focus:border-gold-primary outline-none transition-colors"
-                  placeholder="e.g. Zuma vs Federal Govt"
+                  placeholder="e.g. XYZ vs Federal Govt"
                 />
               </div>
               <div>

@@ -48,16 +48,16 @@ interface ClientStore {
 const initialClients: Client[] = [
   {
     id: 'c1',
-    name: 'Zuma Energy Ltd',
+    name: 'XYZ Energy Ltd',
     type: 'Company',
-    email: 'legal@zumaenergy.com',
+    email: 'legal@xyzenergy.com',
     phone: '+234 801-234-5678',
-    address: '1 Zuma Plaza, Abuja',
+    address: '1 XYZ Plaza, Abuja',
     kycStatus: 'Verified',
     riskProfile: 'Low',
     companyDetails: {
       cacNumber: 'RC123456',
-      directors: ['Alhaji Aliko Zuma', 'Dr. Olumide Smith'],
+      directors: ['Alhaji Aliko XYZ', 'Dr. Olumide Smith'],
       dateOfIncorporation: '2010-05-12',
       industry: 'Oil & Gas'
     },
@@ -112,6 +112,6 @@ export const useClientStore = create<ClientStore>()(
       },
       getClient: (id) => get().clients.find((c) => c.id === id),
     }),
-    { name: 'zuma-client-storage' }
+    { name: 'xyz-client-storage' }
   )
 );

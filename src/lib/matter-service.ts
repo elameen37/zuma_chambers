@@ -87,8 +87,8 @@ const initialMatters: Matter[] = [
   {
     id: '1',
     suitNumber: 'FHC/ABJ/CS/120/24',
-    title: 'Zuma vs Federal Govt of Nigeria',
-    client: 'Zuma Energy Ltd',
+    title: 'XYZ vs Federal Govt of Nigeria',
+    client: 'XYZ Energy Ltd',
     opposingParty: 'Federal Government of Nigeria',
     opposingCounsel: 'Abubakar Malami & Co',
     jurisdiction: 'Abuja',
@@ -176,7 +176,7 @@ export const useMatterStore = create<MatterStore>()(
       addMatter: async (matter) => {
         const year = new Date().getFullYear();
         const randomNum = Math.floor(Math.random() * 9000) + 1000;
-        const generatedSuitNumber = `ZUMA/CV/${randomNum}/${year}`;
+        const generatedSuitNumber = `XYZ/CV/${randomNum}/${year}`;
 
         const newMatter: Matter = {
           id: Math.random().toString(36).substring(7),
@@ -272,7 +272,7 @@ export const useMatterStore = create<MatterStore>()(
       }
     }),
     {
-      name: 'zuma-matter-storage',
+      name: 'xyz-matter-storage',
     }
   )
 );

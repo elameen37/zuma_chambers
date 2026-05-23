@@ -28,7 +28,7 @@ const mockData: AnalyticsData = {
   
   partnerRevenue: [
     { name: 'Chief Elameen SAN', amount: 125000000, color: '#D4AF37' },
-    { name: 'Olumide Zuma', amount: 98000000, color: '#B8860B' },
+    { name: 'Olumide XYZ', amount: 98000000, color: '#B8860B' },
     { name: 'Barr. Aisha Yusuf', amount: 45000000, color: '#DAA520' },
   ],
   

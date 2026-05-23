@@ -67,7 +67,7 @@ export default function PageLoader() {
               transition={{ delay: 0.3 }}
               className="text-center mb-8"
             >
-              <h2 className="text-2xl font-bold tracking-[0.3em] text-white uppercase font-playfair mb-2">[COMPANY_NAME]</h2>
+              <h2 className="text-2xl font-bold tracking-[0.3em] text-white uppercase font-playfair mb-2">XYZ Chambers</h2>
               <p className="text-[10px] text-brand-primary tracking-[0.5em] uppercase font-bold">Elite Legal Counsel</p>
             </motion.div>
 

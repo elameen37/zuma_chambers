@@ -1,4 +1,4 @@
--- ─── [COMPANY_NAME] — Phase 1: Profiles, Finance, Blog, RLS ───────
+-- ─── XYZ Chambers — Phase 1: Profiles, Finance, Blog, RLS ───────
 -- Run after: 20260502000000_hr_notifications_library.sql
 -- Idempotent: All statements use IF NOT EXISTS / CREATE OR REPLACE
 
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS inquiries (
 -- ─── Seed: HQ Branch ──────────────────────────────────────────────
 INSERT INTO branches (name, city, country, address, phone, email, is_headquarters, is_active)
 VALUES
-  ('[COMPANY_NAME] HQ', 'Abuja', 'Nigeria', 'No. 5 Adetokunbo Ademola Crescent, Wuse II, Abuja', '+234 801-234-5678', 'office@company.law', true, true),
+  ('XYZ Chambers HQ', 'Abuja', 'Nigeria', 'No. 5 Adetokunbo Ademola Crescent, Wuse II, Abuja', '+234 801-234-5678', 'office@company.law', true, true),
   ('Lagos Office', 'Lagos', 'Nigeria', '12A Kofo Abayomi Street, Victoria Island, Lagos', '+234 801-234-5678', 'lagos@company.law', false, true),
   ('London Office', 'London', 'United Kingdom', '1 Canada Square, Canary Wharf, London E14 5AB', '+44 20 7946 0958', 'london@company.law', false, true)
 ON CONFLICT DO NOTHING;

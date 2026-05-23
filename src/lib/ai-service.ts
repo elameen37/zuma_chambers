@@ -79,7 +79,7 @@ export const useAIStore = create<AIStore>((set, get) => ({
     await new Promise(r => setTimeout(r, 800));
     return [
       { id: 'r1', title: 'Evidence Act 2011', type: 'Statute', relevance: 0.98, snippet: 'Admissibility of electronic evidence in Nigerian courts...' },
-      { id: 'r2', title: 'Zuma v. Federal Govt', type: 'Matter', relevance: 0.92, snippet: 'Ongoing litigation regarding sovereign immunity...' },
+      { id: 'r2', title: 'XYZ v. Federal Govt', type: 'Matter', relevance: 0.92, snippet: 'Ongoing litigation regarding sovereign immunity...' },
       { id: 'r3', title: 'Retainer Agreement - Pan African', type: 'Document', relevance: 0.85, snippet: 'Clause 4: Dispute resolution through arbitration in Lagos...' }
     ];
   }

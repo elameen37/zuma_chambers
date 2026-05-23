@@ -31,7 +31,7 @@ export function usePDFExport(options: UsePDFExportOptions) {
     setError(null);
     try {
       const { exportElementToPDF } = await import('@/lib/pdf-service');
-      await exportElementToPDF(elementId, options.filename ?? `zuma-${options.type}-${Date.now()}.pdf`);
+      await exportElementToPDF(elementId, options.filename ?? `xyz-${options.type}-${Date.now()}.pdf`);
     } catch (err) {
       setError(String(err));
     } finally {

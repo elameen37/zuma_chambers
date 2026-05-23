@@ -23,7 +23,7 @@ export default function InsightsPage() {
           </div>
           <h1 className="text-4xl font-bold text-white font-playfair tracking-tight">Executive <span className="gold-text italic">Insights</span></h1>
           <p className="text-gray-400 text-sm font-inter max-w-2xl leading-relaxed">
-            High-fidelity analytics and performance metrics across [COMPANY_NAME]. 
+            High-fidelity analytics and performance metrics across XYZ Chambers. 
             Monitor billables, matter progress, and operational efficiency in real-time. success rates, and organizational KPIs.
           </p>
         </motion.div>

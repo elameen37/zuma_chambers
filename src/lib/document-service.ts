@@ -83,6 +83,6 @@ export const useDocumentStore = create<DocumentStore>()(
         }));
       },
     }),
-    { name: 'zuma-document-storage' }
+    { name: 'xyz-document-storage' }
   )
 );

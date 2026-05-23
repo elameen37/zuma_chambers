@@ -71,15 +71,15 @@ interface HRStore {
 }
 
 const initialStaff: StaffMember[] = [
-  { id: '1', name: 'Chief Elameen SAN', role: 'Partner', email: 'elameen@zuma.com', phone: '+234 801 000 0001', department: 'Litigation', workload: 85, status: 'Active' },
-  { id: '2', name: 'Barr. Aisha Yusuf', role: 'Associate', email: 'aisha@zuma.com', phone: '+234 801 000 0002', department: 'Corporate', workload: 60, status: 'Active' },
-  { id: '3', name: 'John Okoro', role: 'Clerk', email: 'john@zuma.com', phone: '+234 801 000 0003', department: 'Operations', workload: 40, status: 'Field' },
-  { id: '4', name: 'Sarah Ahmed', role: 'Associate', email: 'sarah@zuma.com', phone: '+234 801 000 0004', department: 'Energy', workload: 75, status: 'Active' },
+  { id: '1', name: 'Chief Elameen SAN', role: 'Partner', email: 'elameen@xyzchambers.com', phone: '+234 801 000 0001', department: 'Litigation', workload: 85, status: 'Active' },
+  { id: '2', name: 'Barr. Aisha Yusuf', role: 'Associate', email: 'aisha@xyzchambers.com', phone: '+234 801 000 0002', department: 'Corporate', workload: 60, status: 'Active' },
+  { id: '3', name: 'John Okoro', role: 'Clerk', email: 'john@xyzchambers.com', phone: '+234 801 000 0003', department: 'Operations', workload: 40, status: 'Field' },
+  { id: '4', name: 'Sarah Ahmed', role: 'Associate', email: 'sarah@xyzchambers.com', phone: '+234 801 000 0004', department: 'Energy', workload: 75, status: 'Active' },
 ];
 
 const initialAssets: OfficeAsset[] = [
   { id: 'a1', name: 'MacBook Pro M3 - Senior Partner', category: 'Electronics', assignedTo: 'Chief Elameen SAN', status: 'Assigned' },
-  { id: 'a2', name: 'Zuma Mobile Unit 01 (Toyota Prado)', category: 'Equipment', status: 'Available' },
+  { id: 'a2', name: 'XYZ Mobile Unit 01 (Toyota Prado)', category: 'Equipment', status: 'Available' },
   { id: 'a3', name: 'Canon Enterprise Scanner', category: 'Electronics', status: 'Available' },
 ];
 
@@ -109,7 +109,7 @@ export const useHRStore = create<HRStore>()(
       })),
     }),
     {
-      name: 'zuma-hr-storage',
+      name: 'xyz-hr-storage',
     }
   )
 );

@@ -1,4 +1,4 @@
--- Case Management Schema for [COMPANY_NAME]
+-- Case Management Schema for XYZ Chambers
 
 -- Enum for Matter Stages
 CREATE TYPE matter_stage AS ENUM ('Intake', 'Discovery', 'Pre-Trial', 'Hearing', 'Judgment', 'Closed');

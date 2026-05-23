@@ -1,4 +1,4 @@
--- ─── [COMPANY_NAME] Supabase Schema — v2 ─────────────────────────
+-- ─── XYZ Chambers Supabase Schema — v2 ─────────────────────────
 -- Notifications, HR, Research & Extended Tables
 -- Run after: 20260501000000_case_management.sql
 

@@ -1,4 +1,4 @@
-// ─── [COMPANY_NAME] RBAC Permission System ────────────────────
+// ─── XYZ Chambers RBAC Permission System ────────────────────
 // Zero-trust, role-based access control for enterprise legal operations
 
 export type Role = 'partner' | 'associate' | 'admin' | 'clerk' | 'finance' | 'client';

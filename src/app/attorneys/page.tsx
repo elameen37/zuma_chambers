@@ -60,7 +60,7 @@ const AttorneyCard = ({ name, rank, specialization, years, wins, delay }: { name
 export default function AttorneysPage() {
   const attorneys = [
     {
-      name: "Chief Olumide Zuma",
+      name: "Chief Olumide XYZ",
       rank: "Senior Advocate (SAN)",
       specialization: "Constitutional & Enterprise Law",
       years: 30,
@@ -167,7 +167,7 @@ export default function AttorneysPage() {
           </div>
           <h2 className="heading-premium text-4xl md:text-6xl text-white mb-10">Expert Counsel, <span className="italic text-brand-primary">Always Ready</span></h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto font-inter font-medium mb-12 leading-relaxed">
-            [COMPANY_NAME] maintains a rapid-response team for emergency legal interventions and time-sensitive corporate transactions.
+            XYZ Chambers maintains a rapid-response team for emergency legal interventions and time-sensitive corporate transactions.
           </p>
           <button className="btn-modern !py-5 !px-12 !text-[11px] mx-auto">
             Book Priority Access

@@ -44,7 +44,7 @@ const Navbar = () => {
             <Gavel className="w-5 h-5 text-brand-primary group-hover:text-onyx" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-widest text-white uppercase font-playfair">[COMPANY_NAME]</span>
+            <span className="text-lg font-bold tracking-widest text-white uppercase font-playfair">XYZ Chambers</span>
             <span className="text-[8px] text-brand-primary tracking-[0.3em] font-bold uppercase font-inter leading-tight">Elite Legal Counsel</span>
           </div>
         </Link>

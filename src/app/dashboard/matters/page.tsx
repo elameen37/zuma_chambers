@@ -79,13 +79,13 @@ export default function MattersPage() {
   const [search, setSearch] = useState('');
   
   const matters = [
-    { suitNo: 'FHC/ABJ/CS/120/24', court: 'Federal High Court, Abuja', title: 'Zuma vs Federal Govt of Nigeria', client: 'Zuma Energy Ltd', status: 'Hearing', dept: 'LITIGATION', leadCounsel: 'Olumide Zuma, SAN', nextDate: 'Apr 25, 2026' },
+    { suitNo: 'FHC/ABJ/CS/120/24', court: 'Federal High Court, Abuja', title: 'XYZ vs Federal Govt of Nigeria', client: 'XYZ Energy Ltd', status: 'Hearing', dept: 'LITIGATION', leadCounsel: 'Olumide XYZ, SAN', nextDate: 'Apr 25, 2026' },
     { suitNo: 'SC/CV/245/2023', court: 'Supreme Court of Nigeria', title: 'Acme Corp Intellectual Property Dispute', client: 'Acme International', status: 'Judgment', dept: 'IP & TECH', leadCounsel: 'Adeyemi Cole', nextDate: 'May 02, 2026' },
     { suitNo: 'LD/1024/GCM/24', court: 'High Court of Lagos State', title: 'Lagos State Maritime Jurisdiction', client: 'Maritime Board', status: 'Discovery', dept: 'COMMERCIAL', leadCounsel: 'Ibrahim Musa', nextDate: 'Apr 28, 2026' },
     { suitNo: 'FCT/HC/CV/09/24', court: 'FCT High Court', title: 'Global Tech Compliance Audit', client: 'Global Tech Inc', status: 'Closed', dept: 'COMPLIANCE', leadCounsel: 'Sarah Nwosu', nextDate: 'Completed' },
-    { suitNo: 'FHC/L/CS/88/24', court: 'Federal High Court, Lagos', title: 'Bank vs Telecom Aggregator', client: 'First National Bank', status: 'Pre-Trial', dept: 'LITIGATION', leadCounsel: 'Olumide Zuma, SAN', nextDate: 'May 12, 2026' },
+    { suitNo: 'FHC/L/CS/88/24', court: 'Federal High Court, Lagos', title: 'Bank vs Telecom Aggregator', client: 'First National Bank', status: 'Pre-Trial', dept: 'LITIGATION', leadCounsel: 'Olumide XYZ, SAN', nextDate: 'May 12, 2026' },
     { suitNo: 'NICN/ABJ/12/24', court: 'National Industrial Court', title: 'Executive Severance Litigation', client: 'James Wilson', status: 'Hearing', dept: 'LABOUR', leadCounsel: 'Adeyemi Cole', nextDate: 'Apr 30, 2026' },
-    { suitNo: 'CA/A/221/2024', court: 'Court of Appeal, Abuja', title: 'Oil Bloc Revocation Appeal', client: 'Delta Oil Corp', status: 'Discovery', dept: 'ENERGY', leadCounsel: 'Olumide Zuma, SAN', nextDate: 'Jun 15, 2026' },
+    { suitNo: 'CA/A/221/2024', court: 'Court of Appeal, Abuja', title: 'Oil Bloc Revocation Appeal', client: 'Delta Oil Corp', status: 'Discovery', dept: 'ENERGY', leadCounsel: 'Olumide XYZ, SAN', nextDate: 'Jun 15, 2026' },
   ];
 
   return (

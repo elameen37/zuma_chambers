@@ -31,7 +31,7 @@ export async function sendHearingReminder(payload: {
   counselEmail?: string;
   counselPhone?: string;
 }): Promise<NotificationResult[]> {
-  const body = `Dear ${payload.counselName},\n\nThis is a reminder that you have an upcoming court hearing:\n\nSuit: ${payload.suitNumber}\nClient: ${payload.clientName}\nCourt: ${payload.court}\nDate: ${payload.hearingDate}\n\nPlease ensure all filings are in order.\n\nRegards,\n[COMPANY_NAME] Secretariat`;
+  const body = `Dear ${payload.counselName},\n\nThis is a reminder that you have an upcoming court hearing:\n\nSuit: ${payload.suitNumber}\nClient: ${payload.clientName}\nCourt: ${payload.court}\nDate: ${payload.hearingDate}\n\nPlease ensure all filings are in order.\n\nRegards,\nXYZ Chambers Secretariat`;
 
   return sendNotification({
     recipient: {
@@ -52,7 +52,7 @@ export async function sendDeadlineAlert(payload: {
   email?: string;
   phone?: string;
 }): Promise<NotificationResult[]> {
-  const body = `URGENT: Deadline Alert\n\nTask: ${payload.task}\nDeadline: ${payload.deadline}\n\nThis requires your immediate attention.\n— [COMPANY_NAME] AI Risk Engine`;
+  const body = `URGENT: Deadline Alert\n\nTask: ${payload.task}\nDeadline: ${payload.deadline}\n\nThis requires your immediate attention.\n— XYZ Chambers AI Risk Engine`;
 
   return sendNotification({
     recipient: { name: payload.counselName, email: payload.email, phone: payload.phone },
@@ -70,7 +70,7 @@ export async function sendInvoiceNotification(payload: {
   email?: string;
   phone?: string;
 }): Promise<NotificationResult[]> {
-  const body = `Dear ${payload.clientName},\n\nPlease find attached Invoice ${payload.invoiceNumber} for ₦${payload.amount}.\n\nDue Date: ${payload.dueDate}\n\nKindly process payment at your earliest convenience.\n\nThank you,\n[COMPANY_NAME] Billing`;
+  const body = `Dear ${payload.clientName},\n\nPlease find attached Invoice ${payload.invoiceNumber} for ₦${payload.amount}.\n\nDue Date: ${payload.dueDate}\n\nKindly process payment at your earliest convenience.\n\nThank you,\nXYZ Chambers Billing`;
 
   return sendNotification({
     recipient: { name: payload.clientName, email: payload.email, phone: payload.phone },

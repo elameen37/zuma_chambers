@@ -75,7 +75,7 @@ function LoginContent() {
               <Gavel className="w-7 h-7 text-gold-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white font-playfair tracking-wider">[COMPANY_NAME]</h1>
+              <h1 className="text-2xl font-bold text-white font-playfair tracking-wider">XYZ Chambers</h1>
               <p className="text-[9px] text-gold-primary tracking-[0.3em] uppercase font-inter font-bold">Enterprise Legal Workspace</p>
             </div>
           </div>
@@ -107,7 +107,7 @@ function LoginContent() {
             <div className="w-10 h-10 flex items-center justify-center border border-gold-primary rounded-full">
               <Gavel className="w-5 h-5 text-gold-primary" />
             </div>
-            <span className="text-lg font-bold tracking-widest text-white uppercase font-playfair">Zuma ERP</span>
+            <span className="text-lg font-bold tracking-widest text-white uppercase font-playfair">XYZ ERP</span>
           </div>
 
           <AnimatePresence mode="wait">

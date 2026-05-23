@@ -100,7 +100,7 @@ const PagesPanel = () => {
 // ─── Attorneys CMS ────────────────────────────────────────────────────────────
 const AttorneysPanel = () => {
   const attorneys = [
-    { name: 'Chief Olumide Zuma', badge: 'Senior Partner (SAN)', status: true },
+    { name: 'Chief Olumide XYZ', badge: 'Senior Partner (SAN)', status: true },
     { name: 'Barr. Aisha Yakubu', badge: 'Managing Partner', status: true },
     { name: 'Dr. Emeka Okafor', badge: 'Lead Litigator', status: true },
     { name: 'Sarah Adebayo', badge: 'Senior Associate', status: true },
@@ -247,7 +247,7 @@ const BrandingPanel = () => {
     { label: 'Secondary Color', value: '#0A0A0B', type: 'color' },
     { label: 'Primary Font', value: 'Playfair Display', type: 'text' },
     { label: 'Body Font', value: 'Inter', type: 'text' },
-    { label: 'Firm Full Name', value: '[COMPANY_NAME]', type: 'text' },
+    { label: 'Firm Full Name', value: 'XYZ Chambers', type: 'text' },
     { label: 'Tagline', value: 'Elite Legal Counsel', type: 'text' },
     { label: 'Email Domain', value: '@company.law', type: 'text' },
   ];

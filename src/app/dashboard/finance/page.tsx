@@ -156,7 +156,7 @@ export default function FinancePage() {
                         </h3>
                         <div className="space-y-4">
                            {[
-                             { name: 'Olumide Zuma', role: 'Principal', share: '45%', amount: '₦64M' },
+                             { name: 'Olumide XYZ', role: 'Principal', share: '45%', amount: '₦64M' },
                              { name: 'Sarah Nwosu', role: 'Managing Partner', share: '30%', amount: '₦42M' },
                              { name: 'Adeyemi Cole', role: 'Partner', share: '25%', amount: '₦35M' },
                            ].map(partner => (
@@ -259,7 +259,7 @@ export default function FinancePage() {
                          {[
                            { date: 'May 02, 2026', ref: 'TR-1022', client: 'Shell Petroleum', desc: 'Filing fees deposit for Suit ABJ/120', credit: '+₦500,000' },
                            { date: 'Apr 28, 2026', ref: 'TR-1018', client: 'Global Tech', desc: 'Trust disbursement for Arbitration costs', debit: '-₦1,250,500' },
-                           { date: 'Apr 25, 2026', ref: 'TR-1015', client: 'Zuma Energy', desc: 'Refund of excess research fees', debit: '-₦45,000' },
+                           { date: 'Apr 25, 2026', ref: 'TR-1015', client: 'XYZ Energy', desc: 'Refund of excess research fees', debit: '-₦45,000' },
                            { date: 'Apr 20, 2026', ref: 'TR-1012', client: 'First Bank', desc: 'Lien recovery trust deposit', credit: '+₦14,200,000' },
                          ].map((entry, i) => (
                            <div key={i} className="flex flex-col md:flex-row md:items-center justify-between p-5 border-b border-white/5 hover:bg-white/[0.02] transition-colors">

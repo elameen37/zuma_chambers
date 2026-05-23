@@ -170,7 +170,7 @@ export default function CompliancePage() {
               <div className="absolute top-0 right-0 p-4 opacity-5">
                 <ShieldCheck size={120} className="text-gold-primary" />
               </div>
-              <h4 className="text-white font-playfair font-bold text-xl mb-4 leading-tight">Zuma Integrity Engine™</h4>
+              <h4 className="text-white font-playfair font-bold text-xl mb-4 leading-tight">XYZ Integrity Engine™</h4>
               <p className="text-xs text-gray-400 font-inter leading-relaxed mb-8">
                 Your chambers is currently performing at the top **2%** of Nigerian law firms in regulatory transparency and ethical reporting.
               </p>

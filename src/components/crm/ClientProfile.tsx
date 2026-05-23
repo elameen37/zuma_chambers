@@ -97,7 +97,7 @@ export default function ClientProfile({ client }: { client: Client }) {
                 <div className="flex items-center gap-4">
                   <div className="p-2 bg-gold-primary/10 rounded text-gold-primary"><Briefcase size={16} /></div>
                   <div>
-                    <p className="text-sm text-white font-bold">Zuma vs FGN</p>
+                    <p className="text-sm text-white font-bold">XYZ vs FGN</p>
                     <p className="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">Ongoing Litigation</p>
                   </div>
                 </div>

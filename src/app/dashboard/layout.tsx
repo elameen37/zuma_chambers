@@ -104,7 +104,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
                 {!isDesktopCollapsed && (
                   <div className="flex flex-col">
-                    <span className="text-lg font-bold tracking-tight text-white uppercase font-playfair">Zuma ERP</span>
+                    <span className="text-lg font-bold tracking-tight text-white uppercase font-playfair">XYZ ERP</span>
                     <span className="text-[9px] text-brand-primary tracking-[0.2em] uppercase font-bold">Workspace 2.0</span>
                   </div>
                 )}

@@ -132,7 +132,7 @@ export const useResearchStore = create<ResearchStore>()(
       }
     }),
     {
-      name: 'zuma-research-storage',
+      name: 'xyz-research-storage',
     }
   )
 );
