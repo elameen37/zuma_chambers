@@ -50,6 +50,7 @@ const SidebarItem = ({ icon: Icon, label, href, active, locked, collapsed }: { i
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -195,18 +196,68 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               
               <div className="h-8 w-px bg-white/5" />
               
-              <div className="flex items-center gap-4 group cursor-pointer">
-                <div className="flex flex-col items-end hidden xs:flex">
-                  <span className="text-[13px] font-bold text-white group-hover:text-brand-primary transition-colors">{user?.name}</span>
-                  <span className={`text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full border ${ROLE_COLORS[user?.role ?? 'client']}`}>
-                    {ROLE_LABELS[user?.role ?? 'client']}
-                  </span>
-                </div>
-                <div className="w-10 h-10 rounded-full p-[1px] bg-luxury-gradient">
-                  <div className="w-full h-full rounded-full bg-onyx flex items-center justify-center overflow-hidden">
-                    <span className="text-sm font-bold text-brand-primary font-playfair">{user?.initials}</span>
+              <div className="relative">
+                <div 
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  className="flex items-center gap-4 group cursor-pointer select-none"
+                >
+                  <div className="flex flex-col items-end hidden xs:flex">
+                    <span className="text-[13px] font-bold text-white group-hover:text-brand-primary transition-colors">{user?.name}</span>
+                    <span className={`text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full border ${ROLE_COLORS[user?.role ?? 'client']}`}>
+                      {ROLE_LABELS[user?.role ?? 'client']}
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-full p-[1px] bg-luxury-gradient">
+                    <div className="w-full h-full rounded-full bg-onyx flex items-center justify-center overflow-hidden">
+                      <span className="text-sm font-bold text-brand-primary font-playfair">{user?.initials}</span>
+                    </div>
                   </div>
                 </div>
+
+                <AnimatePresence>
+                  {isProfileDropdownOpen && (
+                    <>
+                      {/* Invisible backdrop to detect clicks outside dropdown */}
+                      <div 
+                        className="fixed inset-0 z-40 bg-transparent" 
+                        onClick={() => setIsProfileDropdownOpen(false)}
+                      />
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-3 w-60 z-50 glass-panel border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-onyx/95 backdrop-blur-2xl"
+                      >
+                        <div className="pb-3 border-b border-white/5 mb-3">
+                          <p className="text-[10px] text-gray-500 font-inter font-bold uppercase tracking-wider">Signed in as</p>
+                          <p className="text-sm font-bold text-white truncate font-inter mt-0.5">{user?.name}</p>
+                          <p className="text-[10px] text-brand-primary font-bold truncate mt-0.5 font-inter">{user?.email}</p>
+                        </div>
+                        
+                        <Link 
+                          href="/dashboard/settings" 
+                          onClick={() => setIsProfileDropdownOpen(false)}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 text-xs font-bold font-inter text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                        >
+                          <Settings size={15} />
+                          Account Settings
+                        </Link>
+                        
+                        <button
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            handleLogout();
+                          }}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 mt-1 text-xs font-bold font-inter text-red-400 hover:bg-red-400/10 rounded-xl transition-all text-left"
+                        >
+                          <LogOut size={15} />
+                          Log Out
+                        </button>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </header>
