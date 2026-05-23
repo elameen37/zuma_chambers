@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { hasPermission, PERMISSIONS, ROLE_LABELS, ROLE_COLORS } from '@/lib/permissions';
@@ -52,12 +52,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    // RouteGuard detects isAuthenticated=false and fires router.replace('/login') instantly
   };
 
   const allMenuItems = [

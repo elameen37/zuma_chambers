@@ -33,6 +33,7 @@ interface AuthState {
   user: UserProfile | null;
   isAuthenticated: boolean;
   is2FAVerified: boolean;
+  isLoading: boolean;
   sessionStarted: string | null;
   auditLog: AuditEntry[];
 }
@@ -179,6 +180,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user: null,
     isAuthenticated: false,
     is2FAVerified: false,
+    isLoading: true,
     sessionStarted: null,
     auditLog: INITIAL_AUDIT_LOG,
   });
@@ -216,11 +218,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           ...prev,
           user: parsed,
           isAuthenticated: true,
-          is2FAVerified: true, // Auto-verify 2FA for remembered mock user
+          is2FAVerified: true,
+          isLoading: false,
           sessionStarted: parsed.lastLogin,
         }));
       } catch (e) {
         console.error('Failed to parse mock user cookie', e);
+        setState(prev => ({ ...prev, isLoading: false }));
       }
     } else {
       // Check active session in Supabase if no mock cookie
@@ -231,12 +235,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               ...prev,
               user: mapSupabaseUser(data.session.user),
               isAuthenticated: true,
+              isLoading: false,
               sessionStarted: data.session.user.last_sign_in_at || new Date().toISOString(),
             }));
+          } else {
+            setState(prev => ({ ...prev, isLoading: false }));
           }
         })
         .catch(err => {
           console.warn('Supabase getSession failed, continuing with mock environment:', err);
+          setState(prev => ({ ...prev, isLoading: false }));
         });
     }
 
@@ -430,24 +438,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     addAuditEntry('LOGOUT', 'Authentication', 'success');
-    try {
-      await supabase.auth.signOut();
-    } catch (e) {
-      console.warn('Supabase signOut failed, logging out locally:', e);
-    }
-    
-    // Clear mock user cookie
+
+    // ── Clear cookie immediately so middleware stops blocking ──
     if (typeof window !== 'undefined') {
-      document.cookie = 'xyz_mock_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax; path=/';
+      document.cookie = 'xyz_mock_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     }
 
+    // ── Clear auth state synchronously — triggers RouteGuard redirect instantly ──
     setState(prev => ({
       ...prev,
       user: null,
       isAuthenticated: false,
       is2FAVerified: false,
+      isLoading: false,
       sessionStarted: null,
     }));
+
+    // ── Fire-and-forget Supabase signOut (non-blocking) ──
+    supabase.auth.signOut().catch(e =>
+      console.warn('Supabase signOut failed, already logged out locally:', e)
+    );
   }, [addAuditEntry]);
 
   const switchRole = useCallback(async (role: Role) => {

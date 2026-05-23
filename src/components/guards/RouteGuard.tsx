@@ -4,14 +4,17 @@ import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { canAccessRoute } from '@/lib/permissions';
-import { ShieldAlert, Lock } from '@/components/shared/Icons';
+import { ShieldAlert } from '@/components/shared/Icons';
 
 export default function RouteGuard({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, is2FAVerified, user, addAuditEntry } = useAuth();
+  const { isAuthenticated, is2FAVerified, isLoading, user, addAuditEntry } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
+    // Don't redirect while the initial session check is still running
+    if (isLoading) return;
+
     if (!isAuthenticated) {
       router.replace('/login');
       return;
@@ -25,17 +28,20 @@ export default function RouteGuard({ children }: { children: React.ReactNode }) 
     if (user && !canAccessRoute(user.role, pathname)) {
       addAuditEntry('ACCESS_DENIED', pathname, 'denied', `Role ${user.role} blocked from ${pathname}`);
     }
-  }, [isAuthenticated, is2FAVerified, user, pathname, router, addAuditEntry]);
+  }, [isLoading, isAuthenticated, is2FAVerified, user, pathname, router, addAuditEntry]);
 
-  if (!isAuthenticated || !is2FAVerified) {
+  // ── Initial load: show a minimal spinner, never "Verifying session" ──
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Lock className="text-gold-primary animate-pulse" size={32} />
-          <p className="text-gray-400 text-sm font-inter">Verifying session...</p>
-        </div>
+        <div className="w-10 h-10 rounded-full border-2 border-gold-primary border-t-transparent animate-spin" />
       </div>
     );
+  }
+
+  // ── Not authenticated: render nothing while router.replace fires ──
+  if (!isAuthenticated || !is2FAVerified) {
+    return null;
   }
 
   if (user && !canAccessRoute(user.role, pathname)) {
