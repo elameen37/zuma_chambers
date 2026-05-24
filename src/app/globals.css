@@ -3,24 +3,29 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #F9F5EE; /* Warm parchment — slightly dimmer than pure white */
-  --foreground: #1A1712; /* Rich dark brown-black */
+  --background: #EFEAE0; /* Reduced brightness dim parchment */
+  --foreground: #1F1B15; /* Rich dark brown-black */
   --brand-primary: #C5A059;
   --brand-secondary: #E5D5B3;
   --brand-dark: #8E7341;
-  --onyx: #F9F5EE; /* Onyx becomes the warm parchment */
-  --slate-grey: #EDE9E0; /* Warm light cream for panels */
-  --border-gold: rgba(197, 160, 89, 0.2);
+  --onyx: #EFEAE0; /* Onyx follows dimmer background */
+  --slate-grey: #E5E1D4; /* Dimmer cream for panels */
+  --border-gold: rgba(197, 160, 89, 0.22);
   
   --luxury-gradient-val: linear-gradient(135deg, #C5A059 0%, #E5D5B3 50%, #8E7341 100%);
-  --dark-gradient-val: radial-gradient(circle at top right, #EDE9E0, #F9F5EE);
+  --dark-gradient-val: radial-gradient(circle at top right, #E5E1D4, #EFEAE0);
   
-  --shadow-premium-val: 0 10px 40px rgba(139, 109, 56, 0.08);
-  --shadow-gold-glow-val: 0 0 20px rgba(197, 160, 89, 0.18);
+  --shadow-premium-val: 0 10px 40px rgba(139, 109, 56, 0.1);
+  --shadow-gold-glow-val: 0 0 20px rgba(197, 160, 89, 0.2);
   
   /* Gold-tinted glass for light mode */
-  --glass-bg: rgba(197, 160, 89, 0.06);
-  --glass-border: rgba(197, 160, 89, 0.2);
+  --glass-bg: rgba(197, 160, 89, 0.1);
+  --glass-border: rgba(197, 160, 89, 0.25);
+
+  /* Modal variables */
+  --modal-overlay: rgba(139, 109, 56, 0.18);
+  --modal-bg: linear-gradient(145deg, rgba(253, 251, 247, 0.98) 0%, rgba(244, 237, 224, 0.99) 100%);
+  --modal-shadow: 0 40px 80px rgba(139, 109, 56, 0.15), 0 0 0 1px rgba(197, 160, 89, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 
@@ -42,6 +47,11 @@
   
   --glass-bg: rgba(22, 22, 24, 0.7);
   --glass-border: rgba(197, 160, 89, 0.1);
+
+  /* Modal variables */
+  --modal-overlay: rgba(10, 10, 11, 0.75);
+  --modal-bg: linear-gradient(145deg, rgba(22, 22, 24, 0.95) 0%, rgba(10, 10, 11, 0.98) 100%);
+  --modal-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(197, 160, 89, 0.08), inset 0 1px 0 rgba(197, 160, 89, 0.1);
 }
 
 @theme {
@@ -200,13 +210,19 @@ html:not(.dark) {
   }
 
   /* ─── White overlays → transparent gold tints ─────── */
+  .bg-white           { background-color: rgba(197, 160, 89, 0.12) !important; }
   .bg-white\/\[0\.02\] { background-color: rgba(197, 160, 89, 0.03) !important; }
   .bg-white\/5        { background-color: rgba(197, 160, 89, 0.06) !important; }
-  .bg-white\/10       { background-color: rgba(197, 160, 89, 0.10) !important; }
-  .bg-white\/20       { background-color: rgba(197, 160, 89, 0.14) !important; }
-  .bg-white\/30       { background-color: rgba(197, 160, 89, 0.18) !important; }
+  .bg-white\/10       { background-color: rgba(197, 160, 89, 0.12) !important; }
+  .bg-white\/20       { background-color: rgba(197, 160, 89, 0.22) !important; }
+  .bg-white\/30       { background-color: rgba(197, 160, 89, 0.32) !important; }
+  .bg-white\/40       { background-color: rgba(197, 160, 89, 0.42) !important; }
+  .bg-white\/50       { background-color: rgba(197, 160, 89, 0.52) !important; }
+  .bg-white\/80       { background-color: rgba(197, 160, 89, 0.82) !important; }
+  .bg-white\/90       { background-color: rgba(197, 160, 89, 0.90) !important; }
+  .bg-white\/95       { background-color: rgba(197, 160, 89, 0.95) !important; }
   .hover\:bg-white\/5:hover  { background-color: rgba(197, 160, 89, 0.08) !important; }
-  .hover\:bg-white\/10:hover { background-color: rgba(197, 160, 89, 0.12) !important; }
+  .hover\:bg-white\/10:hover { background-color: rgba(197, 160, 89, 0.14) !important; }
 
   /* ─── White borders → gold tint borders ────────────── */
   .border-white\/5  { border-color: rgba(197, 160, 89, 0.12) !important; }

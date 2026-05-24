@@ -27,6 +27,8 @@ function TokenModal({
     });
   };
 
+  const isEmailVerification = successMsg.toLowerCase().includes('email') || successMsg.toLowerCase().includes('verify');
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -34,7 +36,7 @@ function TokenModal({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35 }}
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ backdropFilter: 'blur(24px)', background: 'rgba(10,10,11,0.75)' }}
+      style={{ backdropFilter: 'blur(24px)', background: 'var(--modal-overlay, rgba(10,10,11,0.75))' }}
     >
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -52,8 +54,8 @@ function TokenModal({
         <div
           className="relative rounded-[2rem] overflow-hidden border border-brand-primary/20"
           style={{
-            background: 'linear-gradient(145deg, rgba(22,22,24,0.95) 0%, rgba(10,10,11,0.98) 100%)',
-            boxShadow: '0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(197,160,89,0.08), inset 0 1px 0 rgba(197,160,89,0.1)',
+            background: 'var(--modal-bg, linear-gradient(145deg, rgba(22,22,24,0.95) 0%, rgba(10,10,11,0.98) 100%))',
+            boxShadow: 'var(--modal-shadow, 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(197,160,89,0.08), inset 0 1px 0 rgba(197,160,89,0.1))',
           }}
         >
           {/* Top gold stripe */}
@@ -167,11 +169,11 @@ function TokenModal({
 
             {/* CTA */}
             <Link
-              href="/login"
+              href={isEmailVerification ? "/login" : "/dashboard"}
               className="btn-modern w-full !py-3.5 !text-[11px]"
               onClick={onClose}
             >
-              Proceed to Sign In
+              {isEmailVerification ? "Proceed to Sign In" : "Proceed to Dashboard"}
             </Link>
           </div>
         </div>
@@ -215,8 +217,11 @@ function SignUpContent() {
       setPassword('');
       setSelectedRole('associate');
 
-      if (generatedPin) setPin(generatedPin);
-      if (message) {
+      if (generatedPin) {
+        setPin(generatedPin);
+        setSuccessMsg(message || 'Your account has been created successfully. Save your 2FA access PIN below.');
+        setShowModal(true);
+      } else if (message) {
         setSuccessMsg(message);
         setShowModal(true);
       } else {
@@ -239,7 +244,12 @@ function SignUpContent() {
             successMsg={successMsg}
             onClose={() => {
               setShowModal(false);
-              router.push('/login');
+              const isEmailVerification = successMsg.toLowerCase().includes('email') || successMsg.toLowerCase().includes('verify');
+              if (isEmailVerification) {
+                router.push('/login');
+              } else {
+                router.push('/dashboard');
+              }
             }}
           />
         )}
