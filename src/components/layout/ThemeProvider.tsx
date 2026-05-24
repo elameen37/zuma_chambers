@@ -17,12 +17,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Check local storage or system preferences on client-side mount
     const savedTheme = localStorage.getItem('theme') as Theme | null;
+    let resolvedTheme: Theme = 'dark';
     if (savedTheme === 'light' || savedTheme === 'dark') {
-      setTheme(savedTheme);
+      resolvedTheme = savedTheme;
     } else {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDark ? 'dark' : 'light');
+      resolvedTheme = prefersDark ? 'dark' : 'light';
     }
+    const timer = setTimeout(() => {
+      setTheme(resolvedTheme);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {

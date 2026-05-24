@@ -14,16 +14,33 @@ import { useMatterStore } from '@/lib/matter-service';
 const STAGES = ['Intake', 'Discovery', 'Pre-Trial', 'Hearing', 'Judgment', 'Closed'] as const;
 
 export default function CasesBoardPage() {
-  const matters = useMatterStore((state) => state.matters);
+  const matters = useMatterStore((state) => state.matters) || [];
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [riskFilter, setRiskFilter] = useState('All');
+  const [mounted, setMounted] = useState(false);
 
-  const filteredMatters = matters.filter(m => {
-    const matchesSearch = m.title.toLowerCase().includes(searchTerm.toLowerCase()) || m.suitNumber.toLowerCase().includes(searchTerm.toLowerCase());
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const filteredMatters = (matters || []).filter(m => {
+    if (!m) return false;
+    const matchesSearch = (m.title || '').toLowerCase().includes(searchTerm.toLowerCase()) || (m.suitNumber || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRisk = riskFilter === 'All' || m.riskLevel === riskFilter;
     return matchesSearch && matchesRisk;
   });
+
+  if (!mounted) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <div className="w-10 h-10 rounded-full border-2 border-gold-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-12">

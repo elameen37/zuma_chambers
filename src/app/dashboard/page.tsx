@@ -49,8 +49,16 @@ import { useMatterStore } from '@/lib/matter-service';
 export default function DashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const matters = useMatterStore((state) => state.matters);
+  const matters = useMatterStore((state) => state.matters) || [];
   const syncWithSupabase = useMatterStore((state) => state.syncWithSupabase);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   React.useEffect(() => {
     if (syncWithSupabase) {
@@ -59,7 +67,15 @@ export default function DashboardPage() {
   }, [syncWithSupabase]);
 
   // Stats logic
-  const activeMatters = matters.filter(m => m.stage !== 'Closed').length;
+  const activeMatters = (matters || []).filter(m => m && m.stage !== 'Closed').length;
+
+  if (!mounted) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <div className="w-10 h-10 rounded-full border-2 border-gold-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-12">
@@ -106,7 +122,7 @@ export default function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gold-dark/5">
-                  {matters.slice(0, 4).map((row, i) => (
+                  {(matters || []).slice(0, 4).map((row, i) => (
                     <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => router.push(`/dashboard/cases/${row.id}`)}>
                       <td className="p-3 sm:p-4 text-[10px] sm:text-xs text-white font-inter font-medium">{row.suitNumber}</td>
                       <td className="p-3 sm:p-4 text-xs sm:text-sm text-gray-300 font-playfair font-bold whitespace-nowrap sm:whitespace-normal">{row.title}</td>
@@ -116,7 +132,7 @@ export default function DashboardPage() {
                       }`}>{row.stage}</td>
                       <td className="p-3 sm:p-4">
                         <div className="flex -space-x-2">
-                          {row.team.map((m, j) => (
+                          {(row.team || []).map((m, j) => (
                             <div key={j} title={m.name} className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-black bg-gray-800 flex items-center justify-center text-[7px] sm:text-[8px] text-gold-primary font-bold">
                               {m.name.split(' ').map(n => n[0]).join('')}
                             </div>

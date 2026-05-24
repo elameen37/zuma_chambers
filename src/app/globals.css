@@ -210,7 +210,8 @@ html:not(.dark) {
   .text-neutral-200,
   .text-neutral-300,
   .text-neutral-400 {
-    color: #000000 !important;
+    color: #0D0E11 !important;
+    text-shadow: 0 0 1px rgba(13, 14, 17, 0.2) !important;
   }
   
   /* Preserve white text on colored/gold backgrounds */
