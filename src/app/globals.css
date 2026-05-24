@@ -3,24 +3,26 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #FAF8F5; /* Premium soft ivory background */
-  --foreground: #111114; /* Dark charcoal text */
+  --background: #F9F5EE; /* Warm parchment — slightly dimmer than pure white */
+  --foreground: #1A1712; /* Rich dark brown-black */
   --brand-primary: #C5A059;
   --brand-secondary: #E5D5B3;
   --brand-dark: #8E7341;
-  --onyx: #FFFFFF; /* Onyx (black) becomes white in light mode */
-  --slate-grey: #F4F4F6; /* Slate-grey becomes very light gray in light mode */
-  --border-gold: rgba(197, 160, 89, 0.15);
+  --onyx: #F9F5EE; /* Onyx becomes the warm parchment */
+  --slate-grey: #EDE9E0; /* Warm light cream for panels */
+  --border-gold: rgba(197, 160, 89, 0.2);
   
   --luxury-gradient-val: linear-gradient(135deg, #C5A059 0%, #E5D5B3 50%, #8E7341 100%);
-  --dark-gradient-val: radial-gradient(circle at top right, #F5F5F7, #FAF8F5);
+  --dark-gradient-val: radial-gradient(circle at top right, #EDE9E0, #F9F5EE);
   
-  --shadow-premium-val: 0 10px 30px rgba(0, 0, 0, 0.05);
-  --shadow-gold-glow-val: 0 0 20px rgba(197, 160, 89, 0.15);
+  --shadow-premium-val: 0 10px 40px rgba(139, 109, 56, 0.08);
+  --shadow-gold-glow-val: 0 0 20px rgba(197, 160, 89, 0.18);
   
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(197, 160, 89, 0.12);
+  /* Gold-tinted glass for light mode */
+  --glass-bg: rgba(197, 160, 89, 0.06);
+  --glass-border: rgba(197, 160, 89, 0.2);
 }
+
 
 .dark {
   --background: #0A0A0B;
@@ -176,59 +178,67 @@ select {
 
 /* Light Mode Utility Overrides */
 html:not(.dark) {
+  /* Text overrides */
   .text-white {
     color: var(--foreground) !important;
   }
   
+  /* Preserve white text on colored/gold backgrounds */
   .btn-luxury,
   .btn-modern,
   .keep-white,
-  .keep-white *,
-  [class*="bg-green-"], [class*="bg-red-"], [class*="bg-blue-"], [class*="bg-amber-"], [class*="bg-gold-"], [class*="bg-brand-"] {
-    &.text-white {
-      color: #FFFFFF !important;
-    }
-    .text-white {
-      color: #FFFFFF !important;
-    }
+  .keep-white * {
+    &.text-white { color: #FFFFFF !important; }
+    .text-white  { color: #FFFFFF !important; }
+  }
+  [class*="bg-green-"] .text-white,
+  [class*="bg-red-"] .text-white,
+  [class*="bg-blue-"] .text-white,
+  [class*="bg-amber-"] .text-white,
+  [class*="bg-brand-"] .text-white {
+    color: #FFFFFF !important;
   }
 
-  /* Overlay and element mappings */
-  .bg-white\/5 {
-    background-color: rgba(0, 0, 0, 0.04) !important;
-  }
-  .bg-white\/10 {
-    background-color: rgba(0, 0, 0, 0.07) !important;
-  }
-  .bg-white\/\[0\.02\] {
-    background-color: rgba(0, 0, 0, 0.015) !important;
-  }
-  .border-white\/5 {
-    border-color: rgba(0, 0, 0, 0.06) !important;
-  }
-  .border-white\/10 {
-    border-color: rgba(0, 0, 0, 0.1) !important;
-  }
-  .border-white\/20 {
-    border-color: rgba(0, 0, 0, 0.15) !important;
-  }
-  
-  /* Text styling for better contrast in light mode */
-  .text-gray-300 {
-    color: #2D2D30 !important;
-  }
-  .text-gray-400 {
-    color: #4B4B52 !important;
-  }
-  .text-gray-500 {
-    color: #6C6C75 !important;
+  /* ─── White overlays → transparent gold tints ─────── */
+  .bg-white\/\[0\.02\] { background-color: rgba(197, 160, 89, 0.03) !important; }
+  .bg-white\/5        { background-color: rgba(197, 160, 89, 0.06) !important; }
+  .bg-white\/10       { background-color: rgba(197, 160, 89, 0.10) !important; }
+  .bg-white\/20       { background-color: rgba(197, 160, 89, 0.14) !important; }
+  .bg-white\/30       { background-color: rgba(197, 160, 89, 0.18) !important; }
+  .hover\:bg-white\/5:hover  { background-color: rgba(197, 160, 89, 0.08) !important; }
+  .hover\:bg-white\/10:hover { background-color: rgba(197, 160, 89, 0.12) !important; }
+
+  /* ─── White borders → gold tint borders ────────────── */
+  .border-white\/5  { border-color: rgba(197, 160, 89, 0.12) !important; }
+  .border-white\/10 { border-color: rgba(197, 160, 89, 0.18) !important; }
+  .border-white\/20 { border-color: rgba(197, 160, 89, 0.25) !important; }
+
+  /* ─── Dividers ──────────────────────────────────────── */
+  .divide-white\/5 > * + *    { border-color: rgba(197, 160, 89, 0.12) !important; }
+  .divide-gold-dark\/5 > * + * { border-color: rgba(197, 160, 89, 0.12) !important; }
+
+  /* ─── Text contrast on warm background ─────────────── */
+  .text-gray-300 { color: #3A3630 !important; }
+  .text-gray-400 { color: #5A5248 !important; }
+  .text-gray-500 { color: #7A7268 !important; }
+  .text-gray-700 { color: #2A2620 !important; }
+
+  /* ─── Onyx backgrounds (sidebar, header) → warm parchment ─── */
+  .bg-onyx\/50  { background-color: rgba(249, 245, 238, 0.85) !important; }
+  .bg-onyx\/98  { background-color: rgba(249, 245, 238, 0.98) !important; }
+
+  /* ─── Backdrop blur overlays on mobile menu ─── */
+  .bg-black\/60 { background-color: rgba(139, 109, 56, 0.2) !important; }
+
+  /* ─── Glass panel on light ──────────────────── */
+  .glass-panel,
+  .glass-card {
+    background: rgba(197, 160, 89, 0.06) !important;
+    border-color: rgba(197, 160, 89, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(139, 109, 56, 0.06) !important;
   }
 
-  .divide-white\/5 > * + * {
-    border-color: rgba(0, 0, 0, 0.06) !important;
-  }
-  
-  .divide-gold-dark\/5 > * + * {
-    border-color: rgba(197, 160, 89, 0.1) !important;
-  }
+  /* ─── Scrollbar warm tones ──────────────────── */
+  ::-webkit-scrollbar-track { background: #EDE9E0; }
 }
+
