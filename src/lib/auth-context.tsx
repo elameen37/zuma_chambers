@@ -383,6 +383,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { success: true, message: 'Please check your email to verify your account.', pin: generatedPin };
       }
 
+      // Mark user as 2FA verified for direct login/auto-confirm setup
+      setState(prev => ({
+        ...prev,
+        is2FAVerified: true
+      }));
+
       return { success: true, pin: generatedPin };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

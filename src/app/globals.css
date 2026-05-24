@@ -188,14 +188,36 @@ select {
 
 /* Light Mode Utility Overrides */
 html:not(.dark) {
-  /* Text overrides */
-  .text-white {
-    color: var(--foreground) !important;
+  /* ─── Neon Black Font Overrides for Light Mode ─────── */
+  .text-white,
+  .text-slate-50,
+  .text-slate-100,
+  .text-slate-200,
+  .text-slate-300,
+  .text-slate-400,
+  .text-zinc-50,
+  .text-zinc-100,
+  .text-zinc-200,
+  .text-zinc-300,
+  .text-zinc-400,
+  .text-gray-50,
+  .text-gray-100,
+  .text-gray-200,
+  .text-gray-300,
+  .text-gray-400,
+  .text-neutral-50,
+  .text-neutral-100,
+  .text-neutral-200,
+  .text-neutral-300,
+  .text-neutral-400 {
+    color: #000000 !important;
   }
   
   /* Preserve white text on colored/gold backgrounds */
   .btn-luxury,
+  .btn-luxury *,
   .btn-modern,
+  .btn-modern *,
   .keep-white,
   .keep-white * {
     &.text-white { color: #FFFFFF !important; }
