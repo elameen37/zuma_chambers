@@ -231,10 +231,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       supabase.auth.getSession()
         .then(({ data }) => {
           if (data?.session?.user) {
+            // Restoring an existing session — 2FA was already verified in the previous login
             setState(prev => ({
               ...prev,
               user: mapSupabaseUser(data.session.user),
               isAuthenticated: true,
+              is2FAVerified: true,
               isLoading: false,
               sessionStarted: data.session.user.last_sign_in_at || new Date().toISOString(),
             }));
@@ -250,10 +252,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
+        // SIGNED_IN from token refresh/restore — treat as 2FA-verified
         setState(prev => ({
           ...prev,
           user: mapSupabaseUser(session.user),
           isAuthenticated: true,
+          is2FAVerified: true,
+          isLoading: false,
           sessionStarted: session.user.last_sign_in_at || new Date().toISOString(),
         }));
       } else if (event === 'SIGNED_OUT') {
@@ -261,6 +266,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           ...prev,
           user: null,
           isAuthenticated: false,
+          is2FAVerified: false,
+          isLoading: false,
           sessionStarted: null,
         }));
       }
