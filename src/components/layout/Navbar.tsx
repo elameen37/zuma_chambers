@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Gavel, ChevronDown } from '@/components/shared/Icons';
+import { Menu, X, Gavel, ChevronDown, Sun, Moon } from '@/components/shared/Icons';
+import { useTheme } from '@/components/layout/ThemeProvider';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +13,7 @@ const Navbar = () => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,22 +38,22 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 py-6 px-4 md:px-8">
-      <div className={`max-w-7xl mx-auto transition-all duration-500 rounded-full pl-3 pr-6 md:pl-6 md:pr-10 py-4 flex justify-between items-center ${
+      <div className={`max-w-7xl mx-auto transition-all duration-500 rounded-full pl-3 pr-4 md:pl-6 md:pr-10 py-4 flex justify-between items-center ${
         isScrolled ? 'glass-panel shadow-premium' : 'bg-transparent border border-transparent'
       }`}>
-        <Link href="/" className="flex items-center gap-4 group">
-          <div className="w-10 h-10 flex items-center justify-center border border-brand-primary rounded-full group-hover:bg-brand-primary transition-all duration-500">
-            <Gavel className="w-5 h-5 text-brand-primary group-hover:text-onyx" />
+        <Link href="/" className="flex items-center gap-2 sm:gap-4 group">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-brand-primary rounded-full group-hover:bg-brand-primary transition-all duration-500 shrink-0">
+            <Gavel className="w-4 h-4 sm:w-5 sm:h-5 text-brand-primary group-hover:text-onyx" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-widest text-white uppercase font-playfair">XYZ Chambers</span>
-            <span className="text-[8px] text-brand-primary tracking-[0.3em] font-bold uppercase font-inter leading-tight">Elite Legal Counsel</span>
+            <span className="text-sm sm:text-lg font-bold tracking-widest text-white uppercase font-playfair">XYZ Chambers</span>
+            <span className="text-[7px] sm:text-[8px] text-brand-primary tracking-[0.3em] font-bold uppercase font-inter leading-tight">Elite Legal Counsel</span>
           </div>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center gap-10">
-          <div className="flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <div className="flex items-center gap-6 xl:gap-8">
             {visibleLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -59,7 +61,7 @@ const Navbar = () => {
                   key={link.name} 
                   href={link.href}
                   className={`text-[11px] font-bold tracking-[0.2em] uppercase transition-all font-inter relative ${
-                    isActive ? 'text-brand-primary' : 'text-gray-400 hover:text-white'
+                    isActive ? 'text-brand-primary' : 'text-gray-400 hover:text-brand-primary'
                   }`}
                 >
                   {link.name}
@@ -81,7 +83,7 @@ const Navbar = () => {
               onMouseLeave={() => setIsMoreOpen(false)}
             >
               <button className={`text-[11px] font-bold tracking-[0.2em] uppercase transition-all font-inter flex items-center gap-2 ${
-                isMoreActive || isMoreOpen ? 'text-brand-primary' : 'text-gray-400 hover:text-white'
+                isMoreActive || isMoreOpen ? 'text-brand-primary' : 'text-gray-400 hover:text-brand-primary'
               }`}>
                 More <ChevronDown size={12} className={`transition-transform duration-300 ${isMoreOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -114,18 +116,39 @@ const Navbar = () => {
             </div>
           </div>
 
+          <div className="h-4 w-px bg-brand-primary/20" />
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="p-2.5 rounded-full hover:bg-brand-primary/10 transition-all text-brand-primary cursor-pointer flex items-center justify-center shrink-0"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+
           <Link href="/login" className="btn-modern !py-2.5 !px-6 !text-[10px]">
             Legal Workspace
           </Link>
         </div>
 
-        {/* Mobile Toggle */}
-        <button 
-          className="lg:hidden text-brand-primary p-2 bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-all border border-brand-primary/10"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        {/* Mobile Toggle & Theme Toggle */}
+        <div className="flex items-center gap-2 sm:gap-3 lg:hidden">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg bg-brand-primary/5 hover:bg-brand-primary/10 transition-all border border-brand-primary/10 text-brand-primary cursor-pointer flex items-center justify-center shrink-0"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
+          <button 
+            className="text-brand-primary p-2 bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-all border border-brand-primary/10"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -140,12 +163,20 @@ const Navbar = () => {
           >
             <div className="flex justify-between items-center mb-12">
               <span className="text-xl font-bold tracking-widest text-white uppercase font-playfair">Menu</span>
-              <button 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white"
-              >
-                <X size={24} />
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={toggleTheme}
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-brand-primary"
+                >
+                  {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                </button>
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white"
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-col gap-6">
@@ -156,7 +187,7 @@ const Navbar = () => {
                     key={link.name}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
+                    transition={{ delay: idx * 0.05 }}
                   >
                     <Link 
                       href={link.href}

@@ -7,11 +7,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { hasPermission, PERMISSIONS, ROLE_LABELS, ROLE_COLORS } from '@/lib/permissions';
 import RouteGuard from '@/components/guards/RouteGuard';
+import { useTheme } from '@/components/layout/ThemeProvider';
 import {
   LayoutDashboard, Briefcase, FileText, BarChart3, ShieldCheck, Users,
   Settings, LogOut, Menu, Bell, Search, Gavel, ScrollText, CalendarDays,
-  MessageSquare, BookOpen, Sparkles, ChevronLeft, ChevronRight
+  MessageSquare, BookOpen, Sparkles, ChevronLeft, ChevronRight, Sun, Moon, X
 } from '@/components/shared/Icons';
+
 
 const SidebarItem = ({ icon: Icon, label, href, active, locked, collapsed }: { icon: React.ElementType, label: string, href: string, active: boolean, locked?: boolean, collapsed?: boolean }) => (
   <Link href={locked ? '#' : href} className="relative block px-3">
@@ -53,6 +55,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     logout();
@@ -98,17 +101,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
               }`}
             >
-              <div className="p-8 flex items-center gap-4">
-                <div className="w-10 h-10 flex items-center justify-center border border-brand-primary rounded-full shrink-0">
-                  <Gavel size={20} className="text-brand-primary" />
-                </div>
-                {!isDesktopCollapsed && (
-                  <div className="flex flex-col">
-                    <span className="text-lg font-bold tracking-tight text-white uppercase font-playfair">XYZ ERP</span>
-                    <span className="text-[9px] text-brand-primary tracking-[0.2em] uppercase font-bold">Workspace 2.0</span>
+              <div className="p-8 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 flex items-center justify-center border border-brand-primary rounded-full shrink-0">
+                    <Gavel size={20} className="text-brand-primary" />
                   </div>
+                  {(!isDesktopCollapsed || isSidebarOpen) && (
+                    <div className="flex flex-col">
+                      <span className="text-lg font-bold tracking-tight text-white uppercase font-playfair">XYZ ERP</span>
+                      <span className="text-[9px] text-brand-primary tracking-[0.2em] uppercase font-bold">Workspace 2.0</span>
+                    </div>
+                  )}
+                </div>
+                {isSidebarOpen && (
+                  <button 
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="lg:hidden text-gray-500 hover:text-white p-1 hover:bg-brand-primary/10 rounded-lg transition-all"
+                  >
+                    <X size={20} />
+                  </button>
                 )}
               </div>
+
 
               <nav className="flex-1 space-y-1.5 py-4 overflow-y-auto no-scrollbar">
                 {menuItems.map((item) => (
@@ -169,11 +183,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
           {/* Header */}
-          <header className="h-20 px-8 flex justify-between items-center bg-onyx/50 backdrop-blur-xl border-b border-white/5 sticky top-0 z-30">
-            <div className="flex items-center gap-6">
+          <header className="h-20 px-4 sm:px-8 flex justify-between items-center bg-onyx/50 backdrop-blur-xl border-b border-white/5 sticky top-0 z-30">
+            <div className="flex items-center gap-4 sm:gap-6">
               <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="lg:hidden text-white"
+                className="lg:hidden text-white p-1"
               >
                 <Menu size={24} />
               </button>
@@ -187,18 +201,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             </div>
 
-            <div className="flex items-center gap-8">
-              <button className="relative text-gray-500 hover:text-white transition-colors">
+            <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="relative text-gray-500 hover:text-brand-primary transition-colors cursor-pointer p-1"
+                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+
+              <button className="relative text-gray-500 hover:text-white transition-colors p-1">
                 <Bell size={20} />
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-primary rounded-full border-2 border-onyx" />
               </button>
               
-              <div className="h-8 w-px bg-white/5" />
+              <div className="h-8 w-px bg-white/5 hidden xs:block" />
               
               <div className="relative">
                 <div 
                   onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                  className="flex items-center gap-4 group cursor-pointer select-none"
+                  className="flex items-center gap-2 sm:gap-4 group cursor-pointer select-none"
                 >
                   <div className="flex flex-col items-end hidden xs:flex">
                     <span className="text-[13px] font-bold text-white group-hover:text-brand-primary transition-colors">{user?.name}</span>
@@ -206,9 +229,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       {ROLE_LABELS[user?.role ?? 'client']}
                     </span>
                   </div>
-                  <div className="w-10 h-10 rounded-full p-[1px] bg-luxury-gradient">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full p-[1px] bg-luxury-gradient shrink-0">
                     <div className="w-full h-full rounded-full bg-onyx flex items-center justify-center overflow-hidden">
-                      <span className="text-sm font-bold text-brand-primary font-playfair">{user?.initials}</span>
+                      <span className="text-xs sm:text-sm font-bold text-brand-primary font-playfair">{user?.initials}</span>
                     </div>
                   </div>
                 </div>
@@ -262,9 +285,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </header>
 
           {/* Page Body */}
-          <main className="flex-1 overflow-y-auto p-8 bg-dark-gradient no-scrollbar">
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-dark-gradient no-scrollbar">
             {children}
           </main>
+
         </div>
       </div>
     </RouteGuard>

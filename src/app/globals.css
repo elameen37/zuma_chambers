@@ -1,30 +1,69 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #FAF8F5; /* Premium soft ivory background */
+  --foreground: #111114; /* Dark charcoal text */
+  --brand-primary: #C5A059;
+  --brand-secondary: #E5D5B3;
+  --brand-dark: #8E7341;
+  --onyx: #FFFFFF; /* Onyx (black) becomes white in light mode */
+  --slate-grey: #F4F4F6; /* Slate-grey becomes very light gray in light mode */
+  --border-gold: rgba(197, 160, 89, 0.15);
+  
+  --luxury-gradient-val: linear-gradient(135deg, #C5A059 0%, #E5D5B3 50%, #8E7341 100%);
+  --dark-gradient-val: radial-gradient(circle at top right, #F5F5F7, #FAF8F5);
+  
+  --shadow-premium-val: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --shadow-gold-glow-val: 0 0 20px rgba(197, 160, 89, 0.15);
+  
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(197, 160, 89, 0.12);
+}
+
+.dark {
+  --background: #0A0A0B;
+  --foreground: #FFFFFF;
+  --brand-primary: #C5A059;
+  --brand-secondary: #E5D5B3;
+  --brand-dark: #8E7341;
+  --onyx: #0A0A0B;
+  --slate-grey: #161618;
+  --border-gold: rgba(197, 160, 89, 0.15);
+  
+  --luxury-gradient-val: linear-gradient(135deg, #C5A059 0%, #E5D5B3 50%, #8E7341 100%);
+  --dark-gradient-val: radial-gradient(circle at top right, #161618, #0A0A0B);
+  
+  --shadow-premium-val: 0 20px 50px rgba(0, 0, 0, 0.5);
+  --shadow-gold-glow-val: 0 0 20px rgba(197, 160, 89, 0.2);
+  
+  --glass-bg: rgba(22, 22, 24, 0.7);
+  --glass-border: rgba(197, 160, 89, 0.1);
+}
+
 @theme {
-  --color-brand-primary: #C5A059;
-  --color-brand-secondary: #E5D5B3;
-  --color-brand-dark: #8E7341;
-  --color-onyx: #0A0A0B;
-  --color-slate-grey: #161618;
-  --color-border-gold: rgba(197, 160, 89, 0.15);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-dark: var(--brand-dark);
+  --color-onyx: var(--onyx);
+  --color-slate-grey: var(--slate-grey);
+  --color-border-gold: var(--border-gold);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
   
   --font-playfair: var(--font-playfair), "Playfair Display", serif;
   --font-inter: var(--font-inter), "Inter", sans-serif;
   
-  --background-image-luxury-gradient: linear-gradient(135deg, #C5A059 0%, #E5D5B3 50%, #8E7341 100%);
-  --background-image-dark-gradient: radial-gradient(circle at top right, #161618, #0A0A0B);
+  --background-image-luxury-gradient: var(--luxury-gradient-val);
+  --background-image-dark-gradient: var(--dark-gradient-val);
   
-  --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.5);
-  --shadow-gold-glow: 0 0 20px rgba(197, 160, 89, 0.2);
+  --shadow-premium: var(--shadow-premium-val);
+  --shadow-gold-glow: var(--shadow-gold-glow-val);
 }
 
 html {
   scroll-behavior: smooth;
-}
-
-:root {
-  --background: #0A0A0B;
-  --foreground: #FFFFFF;
 }
 
 body {
@@ -32,6 +71,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.5s ease, color 0.3s ease;
 }
 
 /* Modern Typography */
@@ -43,16 +83,33 @@ body {
 
 /* Glassmorphism & Sleek Components */
 .glass-panel {
-  background: rgba(22, 22, 24, 0.7);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(197, 160, 89, 0.1);
+  border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-premium);
+  transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-premium);
+  border-radius: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--brand-primary);
+  box-shadow: var(--shadow-gold-glow);
+}
+
+/* Luxury & Modern Buttons */
 .btn-modern {
-  @apply relative overflow-hidden px-8 py-3 rounded-full font-bold tracking-widest uppercase text-xs transition-all duration-500 flex items-center justify-center gap-2;
+  @apply relative overflow-hidden px-8 py-3 rounded-full font-bold tracking-widest uppercase text-xs transition-all duration-500 flex items-center justify-center gap-2 cursor-pointer;
   background: var(--background-image-luxury-gradient);
-  color: #000;
+  color: #000 !important;
+  border: none;
 }
 
 .btn-modern:hover {
@@ -61,11 +118,31 @@ body {
 }
 
 .btn-modern-outline {
-  @apply relative px-8 py-3 rounded-full font-bold tracking-widest uppercase text-xs transition-all duration-500 border border-brand-primary text-brand-primary bg-transparent flex items-center justify-center gap-2;
+  @apply relative px-8 py-3 rounded-full font-bold tracking-widest uppercase text-xs transition-all duration-500 border border-brand-primary text-brand-primary bg-transparent flex items-center justify-center gap-2 cursor-pointer;
 }
 
 .btn-modern-outline:hover {
   @apply bg-brand-primary text-onyx shadow-gold-glow;
+}
+
+.btn-luxury {
+  @apply relative overflow-hidden px-6 py-2.5 rounded-full font-bold tracking-widest uppercase text-[10px] transition-all duration-500 flex items-center justify-center gap-2 cursor-pointer;
+  background: var(--background-image-luxury-gradient);
+  color: #000 !important;
+  border: none;
+}
+
+.btn-luxury:hover {
+  @apply scale-[1.02] shadow-gold-glow;
+  filter: brightness(1.1);
+}
+
+.btn-outline {
+  @apply relative px-6 py-2.5 rounded-full font-bold tracking-widest uppercase text-[10px] transition-all duration-500 border border-brand-primary text-brand-primary bg-transparent flex items-center justify-center gap-2 cursor-pointer;
+}
+
+.btn-outline:hover {
+  @apply bg-brand-primary/10 shadow-gold-glow;
 }
 
 /* Responsive Utilities */
@@ -76,6 +153,7 @@ body {
 /* Custom Scrollbar - Minimalist */
 ::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -91,12 +169,66 @@ body {
   background: var(--brand-primary);
 }
 
-/* Global Select - Modern Dark */
+/* Global Select - Modern */
 select {
-  @apply bg-slate-grey border border-border-gold rounded-lg px-4 py-2 text-sm text-white focus:border-brand-primary outline-none transition-all appearance-none cursor-pointer;
+  @apply bg-slate-grey border border-border-gold rounded-lg px-4 py-2 text-sm text-foreground focus:border-brand-primary outline-none transition-all appearance-none cursor-pointer;
 }
 
-select option {
-  background-color: #161618;
-  color: white;
+/* Light Mode Utility Overrides */
+html:not(.dark) {
+  .text-white {
+    color: var(--foreground) !important;
+  }
+  
+  .btn-luxury,
+  .btn-modern,
+  .keep-white,
+  .keep-white *,
+  [class*="bg-green-"], [class*="bg-red-"], [class*="bg-blue-"], [class*="bg-amber-"], [class*="bg-gold-"], [class*="bg-brand-"] {
+    &.text-white {
+      color: #FFFFFF !important;
+    }
+    .text-white {
+      color: #FFFFFF !important;
+    }
+  }
+
+  /* Overlay and element mappings */
+  .bg-white\/5 {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+  }
+  .bg-white\/10 {
+    background-color: rgba(0, 0, 0, 0.07) !important;
+  }
+  .bg-white\/\[0\.02\] {
+    background-color: rgba(0, 0, 0, 0.015) !important;
+  }
+  .border-white\/5 {
+    border-color: rgba(0, 0, 0, 0.06) !important;
+  }
+  .border-white\/10 {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+  }
+  .border-white\/20 {
+    border-color: rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Text styling for better contrast in light mode */
+  .text-gray-300 {
+    color: #2D2D30 !important;
+  }
+  .text-gray-400 {
+    color: #4B4B52 !important;
+  }
+  .text-gray-500 {
+    color: #6C6C75 !important;
+  }
+
+  .divide-white\/5 > * + * {
+    border-color: rgba(0, 0, 0, 0.06) !important;
+  }
+  
+  .divide-gold-dark\/5 > * + * {
+    border-color: rgba(197, 160, 89, 0.1) !important;
+  }
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
+import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import BackToTop from "@/components/shared/BackToTop";
 import PageLoader from "@/components/shared/PageLoader";
 
@@ -27,13 +28,31 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              var savedTheme = localStorage.getItem('theme');
+              if (savedTheme === 'light' || savedTheme === 'dark') {
+                document.documentElement.className = savedTheme;
+              } else {
+                var systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.className = systemPrefersDark ? 'dark' : 'light';
+              }
+            } catch (e) {}
+          })()
+        ` }} />
+      </head>
       <body>
-        <AuthProvider>
-          <PageLoader />
-          {children}
-          <BackToTop />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <PageLoader />
+            {children}
+            <BackToTop />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+
