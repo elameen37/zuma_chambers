@@ -449,7 +449,6 @@ function LoginContent() {
             )}
           </AnimatePresence>
         </div>
-        </div>
       </div>
     </div>
     </>
