@@ -8,16 +8,9 @@ export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
   const { pathname } = request.nextUrl;
 
-  // ── 1. Check Mock Session Cookie (Resilient Bypass) ──────────────
+  // ── 1. Check Session and 2FA Cookies ───────────────────────────
   const mockUserCookie = request.cookies.get('xyz_mock_user');
-  
-  if (mockUserCookie) {
-    // Authenticated via Mock. Guard rules:
-    if (pathname === '/login') {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-    return supabaseResponse;
-  }
+  const is2faVerified = request.cookies.get('xyz_2fa_verified')?.value === 'true';
 
   // ── 2. Initialize Supabase SSR Client ───────────────────────────
   const supabase = createServerClient(
@@ -51,16 +44,23 @@ export async function middleware(request: NextRequest) {
     console.warn('[Middleware] Supabase auth check failed:', err);
   }
 
+  const isAuth = !!mockUserCookie || !!user;
+  const isFullyAuth = isAuth && is2faVerified;
+
   // ── 4. Guards ───────────────────────────────────────────────────
   if (pathname.startsWith('/dashboard')) {
-    if (!user) {
+    if (!isFullyAuth) {
       const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirected', 'true');
+      if (isAuth) {
+        loginUrl.searchParams.set('step', '2fa');
+      } else {
+        loginUrl.searchParams.set('redirected', 'true');
+      }
       return NextResponse.redirect(loginUrl);
     }
   }
 
-  if (pathname === '/login' && user) {
+  if (pathname === '/login' && isFullyAuth) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

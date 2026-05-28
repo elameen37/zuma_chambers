@@ -211,6 +211,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const mockUserCookie = getCookie('xyz_mock_user');
+    const is2faVerified = getCookie('xyz_2fa_verified') === 'true';
+
     if (mockUserCookie) {
       try {
         const parsed = JSON.parse(mockUserCookie);
@@ -218,7 +220,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           ...prev,
           user: parsed,
           isAuthenticated: true,
-          is2FAVerified: true,
+          is2FAVerified: is2faVerified,
           isLoading: false,
           sessionStarted: parsed.lastLogin,
         }));
@@ -231,12 +233,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       supabase.auth.getSession()
         .then(({ data }) => {
           if (data?.session?.user) {
-            // Restoring an existing session — 2FA was already verified in the previous login
+            // Restoring an existing session — only if 2FA verified
             setState(prev => ({
               ...prev,
               user: mapSupabaseUser(data.session.user),
               isAuthenticated: true,
-              is2FAVerified: true,
+              is2FAVerified: is2faVerified,
               isLoading: false,
               sessionStarted: data.session.user.last_sign_in_at || new Date().toISOString(),
             }));
@@ -252,12 +254,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
-        // SIGNED_IN from token refresh/restore — treat as 2FA-verified
+        const is2faVerifiedNow = getCookie('xyz_2fa_verified') === 'true';
         setState(prev => ({
           ...prev,
           user: mapSupabaseUser(session.user),
           isAuthenticated: true,
-          is2FAVerified: true,
+          is2FAVerified: is2faVerifiedNow,
           isLoading: false,
           sessionStarted: session.user.last_sign_in_at || new Date().toISOString(),
         }));
@@ -408,6 +410,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check if the user has a specific PIN assigned
     if (state.user?.pin) {
       if (code === state.user.pin) {
+        if (typeof window !== 'undefined') {
+          document.cookie = 'xyz_2fa_verified=true; path=/; max-age=86400; SameSite=Lax';
+        }
         setState(prev => ({
           ...prev,
           is2FAVerified: true,
@@ -429,6 +434,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     // Fallback: mock accept any 8-digit code for 2FA (for old accounts)
     if (code.length === 8) {
+      if (typeof window !== 'undefined') {
+        document.cookie = 'xyz_2fa_verified=true; path=/; max-age=86400; SameSite=Lax';
+      }
       setState(prev => ({
         ...prev,
         is2FAVerified: true,
@@ -455,6 +463,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // ── Clear cookie immediately so middleware stops blocking ──
     if (typeof window !== 'undefined') {
       document.cookie = 'xyz_mock_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+      document.cookie = 'xyz_2fa_verified=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     }
 
     // ── Clear auth state synchronously — triggers RouteGuard redirect instantly ──
@@ -471,6 +480,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.signOut().catch(e =>
       console.warn('Supabase signOut failed, already logged out locally:', e)
     );
+
+    // ── Hard redirect instantly ──
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
   }, [addAuditEntry]);
 
   const switchRole = useCallback(async (role: Role) => {
