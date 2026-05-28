@@ -188,34 +188,26 @@ select {
 
 /* Light Mode Utility Overrides */
 html:not(.dark) {
-  /* ─── Neon Black Font Overrides for Light Mode ─────── */
+  /* ─── Elegant Typographic Hierarchy in Light Mode ─────── */
+  
+  /* Primary Text: Headers, Titles, bold labels -> Charcoal Black */
   .text-white,
   [class*="text-white"],
   [class*="text-slate-50"],
   [class*="text-slate-100"],
   [class*="text-slate-200"],
-  [class*="text-slate-300"],
-  [class*="text-slate-400"],
   [class*="text-zinc-50"],
   [class*="text-zinc-100"],
   [class*="text-zinc-200"],
-  [class*="text-zinc-300"],
-  [class*="text-zinc-400"],
   [class*="text-gray-50"],
   [class*="text-gray-100"],
   [class*="text-gray-200"],
-  [class*="text-gray-300"],
-  [class*="text-gray-400"],
   [class*="text-neutral-50"],
   [class*="text-neutral-100"],
   [class*="text-neutral-200"],
-  [class*="text-neutral-300"],
-  [class*="text-neutral-400"],
   [class*="text-stone-50"],
   [class*="text-stone-100"],
   [class*="text-stone-200"],
-  [class*="text-stone-300"],
-  [class*="text-stone-400"],
   [class*="text-red-50"],
   [class*="text-red-100"],
   [class*="text-red-200"],
@@ -234,7 +226,37 @@ html:not(.dark) {
   [class*="text-orange-50"],
   [class*="text-orange-100"],
   [class*="text-orange-200"] {
-    color: #000000 !important;
+    color: #121110 !important;
+    text-shadow: none !important;
+  }
+  
+  /* Secondary Text: Sub-headers, main body text, primary labels -> Deep Charcoal */
+  [class*="text-slate-300"],
+  [class*="text-zinc-300"],
+  [class*="text-gray-300"],
+  [class*="text-neutral-300"],
+  [class*="text-stone-300"] {
+    color: #2D2B28 !important;
+    text-shadow: none !important;
+  }
+  
+  /* Tertiary Text: Descriptions, subtext, captions, help tags -> Charcoal Gray */
+  [class*="text-slate-400"],
+  [class*="text-zinc-400"],
+  [class*="text-gray-400"],
+  [class*="text-neutral-400"],
+  [class*="text-stone-400"] {
+    color: #4A4640 !important;
+    text-shadow: none !important;
+  }
+
+  /* Quaternary Text: Muted timestamps, breadcrumbs -> Muted Charcoal */
+  [class*="text-slate-500"],
+  [class*="text-zinc-500"],
+  [class*="text-gray-500"],
+  [class*="text-neutral-500"],
+  [class*="text-stone-500"] {
+    color: #6C665F !important;
     text-shadow: none !important;
   }
   
@@ -298,10 +320,10 @@ html:not(.dark) {
   .divide-gold-dark\/5 > * + * { border-color: rgba(197, 160, 89, 0.12) !important; }
 
   /* ─── Text contrast on warm background ─────────────── */
-  .text-gray-300 { color: #3A3630 !important; }
-  .text-gray-400 { color: #5A5248 !important; }
-  .text-gray-500 { color: #7A7268 !important; }
-  .text-gray-700 { color: #2A2620 !important; }
+  .text-gray-300 { color: #2D2B28 !important; }
+  .text-gray-400 { color: #4A4640 !important; }
+  .text-gray-500 { color: #6C665F !important; }
+  .text-gray-700 { color: #1E1C1A !important; }
 
   /* ─── Onyx backgrounds (sidebar, header) → warm parchment ─── */
   .bg-onyx\/50  { background-color: rgba(249, 245, 238, 0.85) !important; }
