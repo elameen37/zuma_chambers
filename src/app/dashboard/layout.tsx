@@ -261,7 +261,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-3 w-60 z-50 glass-panel border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-onyx/80 backdrop-blur-2xl"
+                        className="absolute right-0 mt-3 w-60 z-50 glass-panel border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-onyx/90 backdrop-blur-2xl"
                       >
                         <div className="pb-3 border-b border-white/5 mb-3">
                           <p className="text-[10px] text-gray-500 font-inter font-bold uppercase tracking-wider">Signed in as</p>
