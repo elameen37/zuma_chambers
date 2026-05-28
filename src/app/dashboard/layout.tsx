@@ -11,7 +11,8 @@ import { useTheme } from '@/components/layout/ThemeProvider';
 import {
   LayoutDashboard, Briefcase, FileText, BarChart3, ShieldCheck, Users,
   Settings, LogOut, Menu, Bell, Search, Gavel, ScrollText, CalendarDays,
-  MessageSquare, BookOpen, Sparkles, ChevronLeft, ChevronRight, Sun, Moon, X
+  MessageSquare, BookOpen, Sparkles, ChevronLeft, ChevronRight, Sun, Moon, X,
+  PanelLeftOpen, PanelLeftClose
 } from '@/components/shared/Icons';
 
 
@@ -187,10 +188,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center gap-4 sm:gap-6">
               <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="lg:hidden text-white p-1"
+                className="lg:hidden text-white p-1 hover:text-brand-primary transition-colors cursor-pointer"
+                title="Open Mobile Sidebar"
               >
                 <Menu size={24} />
               </button>
+              
+              {/* Desktop Sidebar Toggle Slider */}
+              <button
+                onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
+                className="hidden lg:flex text-gray-500 hover:text-brand-primary p-1 hover:bg-white/5 rounded-lg transition-all cursor-pointer"
+                title={isDesktopCollapsed ? "Open Sidebar Slider" : "Close Sidebar Slider"}
+              >
+                {isDesktopCollapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
+              </button>
+
               <div className="hidden md:flex items-center gap-3 bg-white/5 border border-white/5 rounded-full px-6 py-2.5 w-96 transition-all hover:bg-white/10 group">
                 <Search size={16} className="text-gray-500 group-hover:text-brand-primary transition-colors" />
                 <input
