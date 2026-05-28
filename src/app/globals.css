@@ -4,7 +4,7 @@
 
 :root {
   --background: #EFEAE0; /* Reduced brightness dim parchment */
-  --foreground: #1F1B15; /* Rich dark brown-black */
+  --foreground: #000000; /* Pure black */
   --brand-primary: #C5A059;
   --brand-secondary: #E5D5B3;
   --brand-dark: #8E7341;
@@ -210,8 +210,8 @@ html:not(.dark) {
   .text-neutral-200,
   .text-neutral-300,
   .text-neutral-400 {
-    color: #0D0E11 !important;
-    text-shadow: 0 0 1px rgba(13, 14, 17, 0.2) !important;
+    color: #000000 !important;
+    text-shadow: none !important;
   }
   
   /* Preserve white text on colored/gold backgrounds */

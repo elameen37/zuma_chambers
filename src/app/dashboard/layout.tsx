@@ -59,7 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = () => {
     logout();
-    // RouteGuard detects isAuthenticated=false and fires router.replace('/login') instantly
+    window.location.href = '/login';
   };
 
   const allMenuItems = [
