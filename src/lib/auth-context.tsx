@@ -39,7 +39,7 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string, role?: Role) => Promise<boolean>;
+  login: (email: string, password: string, role?: Role) => Promise<{ success: boolean; pin?: string }>;
   signUp: (email: string, password: string, name: string, role: Role) => Promise<{ success: boolean; error?: string; message?: string; pin?: string }>;
   verify2FA: (code: string) => boolean;
   logout: () => void;
@@ -331,9 +331,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             status: 'success',
           }, ...prev.auditLog],
         }));
-        return true;
+        return { success: true, pin: generatedPin };
       }
-      return false;
+      return { success: false };
     } catch (err) {
       console.error('Login error:', err);
       // Fallback to mock for demo purposes or when Supabase is offline/unreachable
@@ -359,7 +359,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         is2FAVerified: false,
         sessionStarted: new Date().toISOString(),
       }));
-      return true;
+      return { success: true, pin: generatedPin };
     }
   }, []);
 

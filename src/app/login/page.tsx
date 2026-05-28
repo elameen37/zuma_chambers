@@ -5,8 +5,166 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { Role } from '@/lib/permissions';
-import { Gavel, Lock, Key, Fingerprint, Eye, EyeOff, ShieldCheck, Globe, Home } from '@/components/shared/Icons';
+import { Gavel, Lock, Key, Fingerprint, Eye, EyeOff, ShieldCheck, Globe, Home, CheckCircle, X } from '@/components/shared/Icons';
 import Link from 'next/link';
+
+// ─── Token Reveal Modal ──────────────────────────────────────────────
+function TokenModal({
+  pin,
+  successMsg,
+  onClose,
+}: {
+  pin: string;
+  successMsg: string;
+  onClose: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(pin).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.35 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      style={{ backdropFilter: 'blur(24px)', background: 'var(--modal-overlay, rgba(10,10,11,0.75))' }}
+    >
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-gold-primary/10 blur-[120px]" />
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 40, scale: 0.93 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.97 }}
+        transition={{ type: 'spring', damping: 22, stiffness: 280 }}
+        className="relative w-full max-w-md"
+      >
+        <div
+          className="relative rounded-[2rem] overflow-hidden border border-gold-primary/20"
+          style={{
+            background: 'var(--modal-bg, linear-gradient(145deg, rgba(22,22,24,0.95) 0%, rgba(10,10,11,0.98) 100%))',
+            boxShadow: 'var(--modal-shadow, 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,55,0.08), inset 0 1px 0 rgba(212,175,55,0.1))',
+          }}
+        >
+          <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #D4AF37 0%, #F3E5AB 50%, #D4AF37 100%)' }} />
+
+          <button
+            onClick={onClose}
+            className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-all"
+          >
+            <X size={16} />
+          </button>
+
+          <div className="p-10 pt-8">
+            <div className="flex flex-col items-center text-center mb-8">
+              <motion.div
+                initial={{ scale: 0, rotate: -15 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', damping: 14, stiffness: 300, delay: 0.15 }}
+                className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
+                style={{
+                  background: 'radial-gradient(circle, rgba(212,175,55,0.2) 0%, rgba(212,175,55,0.05) 70%)',
+                  border: '1.5px solid rgba(212,175,55,0.3)',
+                  boxShadow: '0 0 40px rgba(212,175,55,0.15)',
+                }}
+              >
+                <ShieldCheck className="w-9 h-9 text-gold-primary" />
+              </motion.div>
+
+              <h2 className="text-2xl font-bold text-white font-playfair mb-2">
+                Verification <span className="text-gold-primary italic">Required</span>
+              </h2>
+              <p className="text-sm text-gray-400 font-inter leading-relaxed max-w-xs">
+                {successMsg}
+              </p>
+            </div>
+
+            {pin && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                className="mb-8"
+              >
+                <p className="text-[10px] text-gold-primary font-bold tracking-[0.4em] uppercase text-center mb-4 font-inter">
+                  Your 2FA Access PIN
+                </p>
+
+                <div className="flex justify-center gap-3 mb-4">
+                  {pin.split('').map((digit, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 + i * 0.06 }}
+                      className="w-12 h-14 rounded-xl flex items-center justify-center text-2xl font-bold text-gold-primary font-playfair"
+                      style={{
+                        background: 'rgba(212,175,55,0.07)',
+                        border: '1px solid rgba(212,175,55,0.25)',
+                        boxShadow: 'inset 0 1px 0 rgba(212,175,55,0.1)',
+                      }}
+                    >
+                      {digit}
+                    </motion.div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleCopy}
+                  className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl text-xs font-bold tracking-widest uppercase font-inter transition-all duration-300"
+                  style={{
+                    background: copied ? 'rgba(34,197,94,0.1)' : 'rgba(212,175,55,0.08)',
+                    border: `1px solid ${copied ? 'rgba(34,197,94,0.3)' : 'rgba(212,175,55,0.2)'}`,
+                    color: copied ? '#22c55e' : '#D4AF37',
+                  }}
+                >
+                  <AnimatePresence mode="wait">
+                    {copied ? (
+                      <motion.span
+                        key="copied"
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="flex items-center gap-2"
+                      >
+                        <CheckCircle size={14} /> PIN Copied to Clipboard
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="copy"
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="flex items-center gap-2"
+                      >
+                        <Key size={14} /> Copy PIN
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </button>
+              </motion.div>
+            )}
+
+            <button
+              className="btn-luxury w-full py-3.5 text-[11px]"
+              onClick={onClose}
+            >
+              Continue to Verification
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 function LoginContent() {
   const router = useRouter();
@@ -21,6 +179,8 @@ function LoginContent() {
   const [twoFactorCode, setTwoFactorCode] = useState<string[]>(Array(8).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [pin, setPin] = useState('');
 
   // Redirect if already fully authenticated
   React.useEffect(() => {
@@ -36,11 +196,16 @@ function LoginContent() {
     setError('');
     setLoading(true);
 
-    const success = await login(email, password);
+    const { success, pin: generatedPin } = await login(email, password);
     setLoading(false);
 
     if (success) {
-      setStep(2);
+      if (generatedPin) {
+        setPin(generatedPin);
+        setShowModal(true);
+      } else {
+        setStep(2);
+      }
     } else {
       setError('Invalid credentials. Please verify your email and password.');
     }
@@ -61,7 +226,20 @@ function LoginContent() {
 
 
   return (
-    <div className="min-h-screen bg-black flex">
+    <>
+      <AnimatePresence>
+        {showModal && (
+          <TokenModal
+            pin={pin}
+            successMsg="Please use the PIN below for your 2FA verification step."
+            onClose={() => {
+              setShowModal(false);
+              setStep(2);
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <div className="min-h-screen bg-black flex">
       {/* Left Panel — Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center">
         <div
@@ -271,8 +449,10 @@ function LoginContent() {
             )}
           </AnimatePresence>
         </div>
+        </div>
       </div>
     </div>
+    </>
   );
 }
 
