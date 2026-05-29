@@ -186,10 +186,10 @@ function LoginContent() {
   React.useEffect(() => {
     if (isAuthenticated && is2FAVerified) {
       router.replace('/dashboard');
-    } else if (isAuthenticated && !is2FAVerified) {
+    } else if (isAuthenticated && !is2FAVerified && searchParams.get('step') === '2fa') {
       setStep(2);
     }
-  }, [isAuthenticated, is2FAVerified, router]);
+  }, [isAuthenticated, is2FAVerified, router, searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
