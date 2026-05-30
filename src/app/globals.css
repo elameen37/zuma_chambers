@@ -349,11 +349,25 @@ html:not(.dark) {
   select {
     background-color: #FFFFFF !important;
     color: #000000 !important;
+    border: 1px solid rgba(142, 115, 65, 0.25) !important;
+  }
+  
+  input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):focus,
+  textarea:focus,
+  select:focus {
+    border-color: #C5A059 !important;
+    box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.2) !important;
+    outline: none !important;
   }
   
   input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"])::placeholder,
   textarea::placeholder {
     color: #6C665F !important;
+  }
+
+  select option {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
   }
 }
 
