@@ -17,7 +17,19 @@ export default function MatterDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const matter = useMatterStore((state) => state.getMatter(id as string));
+  const subscribeToRealtime = useMatterStore((state) => state.subscribeToRealtime);
   const [activeTab, setActiveTab] = useState<'overview' | 'timeline' | 'evidence' | 'intelligence'>('overview');
+
+  React.useEffect(() => {
+    if (subscribeToRealtime) {
+      console.log('[Realtime] Case detail page subscribing to matters...');
+      const unsubscribe = subscribeToRealtime();
+      return () => {
+        console.log('[Realtime] Case detail page unsubscribing from matters...');
+        unsubscribe();
+      };
+    }
+  }, [subscribeToRealtime]);
 
   if (!matter) {
     return (
@@ -49,6 +61,10 @@ export default function MatterDetailPage() {
             <span className="text-xs font-bold tracking-widest uppercase font-mono text-gold-primary">{matter.suitNumber}</span>
             <span className="px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest uppercase border border-gold-dark/20 text-gray-400">
               {matter.stage}
+            </span>
+            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-[8px] font-bold tracking-widest uppercase text-green-400 select-none shadow-[0_0_10px_rgba(34,197,94,0.1)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              Live Connected
             </span>
           </div>
           <h1 className="text-4xl font-bold text-white font-playfair mb-2 leading-tight">{matter.title}</h1>

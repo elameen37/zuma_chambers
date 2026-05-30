@@ -81,6 +81,7 @@ interface MatterStore {
   updateMatter: (id: string, updates: Partial<Matter>) => void;
   getMatter: (id: string) => Matter | undefined;
   syncWithSupabase: () => Promise<void>;
+  subscribeToRealtime: () => () => void;
 }
 
 const initialMatters: Matter[] = [
@@ -269,6 +270,85 @@ export const useMatterStore = create<MatterStore>()(
         } catch (e) {
           console.error('Failed to sync matters from Supabase', e);
         }
+      },
+      subscribeToRealtime: () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const channel = (supabase as any)
+          .channel('matters-realtime')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'matters' },
+            (payload: any) => {
+              console.log('Realtime change received for matters:', payload);
+              const { eventType, new: newRow, old: oldRow } = payload;
+              
+              if (eventType === 'INSERT') {
+                const mapped: Matter = {
+                  id: newRow.id,
+                  suitNumber: newRow.suit_number,
+                  title: newRow.title,
+                  client: newRow.client_name || 'Unknown Client',
+                  opposingParty: newRow.opposing_party || 'Opposing Party',
+                  opposingCounsel: newRow.opposing_counsel || 'Unknown',
+                  jurisdiction: newRow.jurisdiction || 'Unknown',
+                  court: newRow.court || 'High Court',
+                  judge: newRow.judge || 'Unknown',
+                  stage: newRow.stage as MatterStage,
+                  riskLevel: (newRow.risk_level || 'Low') as RiskLevel,
+                  riskScore: newRow.risk_score || 10,
+                  leadCounsel: newRow.assigned_counsel || 'Unassigned',
+                  type: newRow.type || 'General',
+                  nextHearing: newRow.next_hearing || null,
+                  team: [],
+                  events: [],
+                  evidence: [],
+                  notes: [],
+                  statutes: [],
+                  lastUpdated: 'Just now',
+                  createdAt: newRow.created_at || new Date().toISOString(),
+                };
+                
+                set((state) => {
+                  if (state.matters.some((m) => m.id === mapped.id)) return state;
+                  return { matters: [mapped, ...state.matters] };
+                });
+              } else if (eventType === 'UPDATE') {
+                set((state) => ({
+                  matters: state.matters.map((m) => {
+                    if (m.id === newRow.id) {
+                      return {
+                        ...m,
+                        suitNumber: newRow.suit_number ?? m.suitNumber,
+                        title: newRow.title ?? m.title,
+                        opposingParty: newRow.opposing_party ?? m.opposingParty,
+                        opposingCounsel: newRow.opposing_counsel ?? m.opposingCounsel,
+                        jurisdiction: newRow.jurisdiction ?? m.jurisdiction,
+                        court: newRow.court ?? m.court,
+                        judge: newRow.judge ?? m.judge,
+                        stage: (newRow.stage as MatterStage) ?? m.stage,
+                        riskLevel: (newRow.risk_level as RiskLevel) ?? m.riskLevel,
+                        riskScore: newRow.risk_score ?? m.riskScore,
+                        leadCounsel: newRow.assigned_counsel ?? m.leadCounsel,
+                        type: newRow.type ?? m.type,
+                        nextHearing: newRow.next_hearing ?? m.nextHearing,
+                        lastUpdated: 'Just now',
+                      };
+                    }
+                    return m;
+                  }),
+                }));
+              } else if (eventType === 'DELETE') {
+                set((state) => ({
+                  matters: state.matters.filter((m) => m.id !== oldRow.id),
+                }));
+              }
+            }
+          )
+          .subscribe();
+
+        return () => {
+          supabase.removeChannel(channel);
+        };
       }
     }),
     {

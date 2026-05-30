@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import {
   Briefcase, TrendingUp, Clock, Users, Scale, FileText, AlertCircle,
@@ -9,6 +9,8 @@ import {
 } from '@/components/shared/Icons';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useMatterStore } from '@/lib/matter-service';
+import { supabase } from '@/lib/supabase';
 
 const DashboardStat = ({ icon: Icon, label, value, trend, trendType, delay }: { icon: React.ElementType, label: string, value: string, trend: string, trendType: 'up' | 'down', delay: number }) => (
   <motion.div
@@ -44,14 +46,15 @@ const ActivityItem = ({ title, time, type }: { title: string, time: string, type
   </div>
 );
 
-import { useMatterStore } from '@/lib/matter-service';
-
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, auditLog } = useAuth();
   const router = useRouter();
   const matters = useMatterStore((state) => state.matters) || [];
   const syncWithSupabase = useMatterStore((state) => state.syncWithSupabase);
+  const subscribeToRealtime = useMatterStore((state) => state.subscribeToRealtime);
   const [mounted, setMounted] = React.useState(false);
+  const [activities, setActivities] = React.useState<any[]>([]);
+  const [isLiveConnected, setIsLiveConnected] = React.useState(false);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -60,11 +63,63 @@ export default function DashboardPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Sync matters from Supabase on mount
   React.useEffect(() => {
     if (syncWithSupabase) {
       syncWithSupabase();
     }
   }, [syncWithSupabase]);
+
+  // Subscribe to matters real-time changes
+  React.useEffect(() => {
+    if (subscribeToRealtime) {
+      console.log('[Realtime] Subscribing to matters channel...');
+      const unsubscribe = subscribeToRealtime();
+      setIsLiveConnected(true);
+      return () => {
+        console.log('[Realtime] Unsubscribing from matters channel...');
+        unsubscribe();
+      };
+    }
+  }, [subscribeToRealtime]);
+
+  // Sync activities from local auditLog and subscribe to Supabase audit_logs real-time inserts
+  React.useEffect(() => {
+    // Populate initial activities from auditLog context
+    const initialActivities = (auditLog || []).slice(0, 5).map((entry) => ({
+      id: entry.id,
+      title: entry.details ? `${entry.action.replace(/_/g, ' ')}: ${entry.details}` : entry.action.replace(/_/g, ' '),
+      time: new Date(entry.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      type: entry.resource,
+    }));
+    setActivities(initialActivities);
+
+    // Subscribe to new entries on public.audit_logs
+    console.log('[Realtime] Subscribing to audit_logs inserts...');
+    const channel = supabase
+      .channel('dashboard-audit-logs')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'audit_logs' },
+        (payload: any) => {
+          console.log('[Realtime] New audit log received:', payload);
+          const newRow = payload.new;
+          const newActivity = {
+            id: newRow.id,
+            title: newRow.details ? `${newRow.action.replace(/_/g, ' ')}: ${newRow.details}` : newRow.action.replace(/_/g, ' '),
+            time: new Date(newRow.created_at || new Date()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            type: newRow.resource_type || 'System',
+          };
+          setActivities((prev) => [newActivity, ...prev.slice(0, 4)]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      console.log('[Realtime] Unsubscribing from audit_logs inserts...');
+      supabase.removeChannel(channel);
+    };
+  }, [auditLog]);
 
   // Stats logic
   const activeMatters = (matters || []).filter(m => m && m.stage !== 'Closed').length;
@@ -82,7 +137,15 @@ export default function DashboardPage() {
       {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white font-playfair mb-2">Chamber Intelligence</h1>
+          <div className="flex flex-wrap items-center gap-3 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white font-playfair">Chamber Intelligence</h1>
+            {isLiveConnected && (
+              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-[8px] font-bold tracking-widest uppercase text-green-400 select-none shadow-[0_0_10px_rgba(34,197,94,0.1)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                Live Connected
+              </span>
+            )}
+          </div>
           <p className="text-gray-400 text-xs sm:text-sm font-inter">Welcome back, {user?.name ?? 'Counsellor'}. Here is an overview of today&apos;s legal pulse.</p>
         </div>
         <div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
@@ -170,11 +233,22 @@ export default function DashboardPage() {
               <AlertCircle className="text-gold-primary" size={20} /> Real-time Activity
             </h3>
             <div className="space-y-2">
-              <ActivityItem title="Motion for Stay of Execution Filed" time="15m ago" type="Litigation" />
-              <ActivityItem title="New Client: Pan-African Bank" time="1h ago" type="Corporate" />
-              <ActivityItem title="Internal Meeting: IP Reform Advisory" time="3h ago" type="Meeting" />
-              <ActivityItem title="Invoice #8849 Generated" time="5h ago" type="Billing" />
-              <ActivityItem title="Court Appearance Logged" time="Yesterday" type="Clerk" />
+              <AnimatePresence initial={false}>
+                {activities.map((act) => (
+                  <motion.div
+                    key={act.id}
+                    initial={{ opacity: 0, x: -20, height: 0 }}
+                    animate={{ opacity: 1, x: 0, height: 'auto' }}
+                    exit={{ opacity: 0, x: 20, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ActivityItem title={act.title} time={act.time} type={act.type} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              {activities.length === 0 && (
+                <p className="text-xs text-gray-500 italic text-center py-4">No recent activity detected.</p>
+              )}
             </div>
           </section>
 
