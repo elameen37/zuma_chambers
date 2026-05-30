@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, BookOpen, Scale, Gavel, 
@@ -14,15 +14,18 @@ export default function KnowledgeBase() {
   const { resources, searchResources, savedAuthorities } = useResearchStore();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'all' | 'statutes' | 'cases' | 'precedents'>('all');
-  const [searchTerm, setSearchTerm] = useState(() => searchParams.get('q') ?? '');
+  
+  const queryParam = searchParams.get('q') ?? '';
+  const [prevQueryParam, setPrevQueryParam] = useState(queryParam);
+  const [searchTerm, setSearchTerm] = useState(queryParam);
+
+  if (queryParam !== prevQueryParam) {
+    setPrevQueryParam(queryParam);
+    setSearchTerm(queryParam);
+  }
+
   const [selectedResource, setSelectedResource] = useState<LegalResource | null>(null);
   const [showSavedOnly, setShowSavedOnly] = useState(false);
-
-  // Sync searchTerm whenever the global search redirects with ?q=
-  useEffect(() => {
-    const q = searchParams.get('q') ?? '';
-    if (q) setSearchTerm(q);
-  }, [searchParams]);
 
   const filteredResources = resources.filter(r => {
     const matchesSearch = r.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
