@@ -342,5 +342,18 @@ html:not(.dark) {
 
   /* ─── Scrollbar warm tones ──────────────────── */
   ::-webkit-scrollbar-track { background: #EDE9E0; }
+
+  /* ─── Form Fields in Light Mode ───────────────────── */
+  input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  
+  input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"])::placeholder,
+  textarea::placeholder {
+    color: #6C665F !important;
+  }
 }
 
