@@ -186,6 +186,37 @@ select {
   @apply bg-slate-grey border border-border-gold rounded-lg px-4 py-2 text-sm text-foreground focus:border-brand-primary outline-none transition-all appearance-none cursor-pointer;
 }
 
+/* Shared form input utility */
+.form-input {
+  @apply w-full rounded-lg px-4 py-3 text-sm outline-none transition-all font-inter;
+  background-color: rgba(255,255,255,0.04);
+  border: 1px solid rgba(197, 160, 89, 0.15);
+  color: #ffffff;
+}
+.form-input:focus {
+  border-color: #C5A059;
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.15);
+}
+.form-input::placeholder {
+  color: rgba(255,255,255,0.25);
+  font-size: 0.75rem;
+}
+
+/* Light mode overrides for .form-input */
+html:not(.dark) .form-input {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  border: 1px solid rgba(142, 115, 65, 0.25) !important;
+}
+html:not(.dark) .form-input:focus {
+  border-color: #C5A059 !important;
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.2) !important;
+}
+html:not(.dark) .form-input::placeholder {
+  color: #6C665F !important;
+}
+
+
 /* Light Mode Utility Overrides */
 html:not(.dark) {
   /* ─── Elegant Typographic Hierarchy in Light Mode ─────── */
