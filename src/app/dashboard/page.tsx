@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import {
   Briefcase, TrendingUp, Clock, Users, Scale, FileText, AlertCircle,
-  ChevronRight, ArrowUpRight, ArrowDownRight, Download
+  ChevronRight, ArrowUpRight, ArrowDownRight, Download, ChevronDown
 } from '@/components/shared/Icons';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -62,6 +62,8 @@ export default function DashboardPage() {
   const [isLiveConnected, setIsLiveConnected] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportToast, setExportToast] = React.useState(false);
+  const [showExportDropdown, setShowExportDropdown] = React.useState(false);
+  const exportDropdownRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -121,6 +123,17 @@ export default function DashboardPage() {
     };
   }, [auditLog]);
 
+  // Handle click outside export dropdown
+  React.useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (exportDropdownRef.current && !exportDropdownRef.current.contains(e.target as Node)) {
+        setShowExportDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Stats logic
   const activeMatters = (matters || []).filter(m => m && m.stage !== 'Closed').length;
 
@@ -128,6 +141,7 @@ export default function DashboardPage() {
   const handleExportReport = () => {
     if (isExporting || !matters.length) return;
     setIsExporting(true);
+    setShowExportDropdown(false);
 
     try {
       const headers = ['Suit Number', 'Title', 'Client', 'Stage', 'Risk Level', 'Risk Score', 'Court', 'Judge', 'Lead Counsel', 'Last Updated', 'Created At'];
@@ -158,6 +172,48 @@ export default function DashboardPage() {
 
       setExportToast(true);
       setTimeout(() => setExportToast(false), 3000);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // ── Export Report as PDF ──────────────────────────────────────────────
+  const handleExportPDF = async () => {
+    if (isExporting || !matters.length) return;
+    setIsExporting(true);
+    setShowExportDropdown(false);
+
+    try {
+      const { exportToPDF } = await import('@/lib/pdf-service');
+      
+      const pdfData = {
+        'Summary': 'Chamber Executive Intelligence Briefing',
+        'Active_Matters_Count': activeMatters.toString(),
+        'Revenue_MTD': '₦24.8M',
+        'Billable_Hours': '1,240',
+        'Client_Retention_Rate': '98.5%',
+        'Litigation_Capacity': '85%',
+        'Corporate_Capacity': '62%',
+        'Intellectual_Property_Capacity': '40%',
+        'Active_Matters_Docket': matters
+          .map((m) => `${m.suitNumber} - ${m.title} [${m.stage}] (Risk: ${m.riskLevel})`)
+          .join('\n\n'),
+        'Recent_Chamber_Activities': activities
+          .map((act) => `[${act.type}] ${act.title} at ${act.time}`)
+          .join('\n\n'),
+      };
+
+      await exportToPDF({
+        type: 'annual-report',
+        title: 'Chamber Executive Report',
+        data: pdfData,
+        filename: `chamber-report-${new Date().toISOString().slice(0, 10)}.pdf`,
+      });
+
+      setExportToast(true);
+      setTimeout(() => setExportToast(false), 3000);
+    } catch (err) {
+      console.error('PDF export failed:', err);
     } finally {
       setIsExporting(false);
     }
@@ -202,20 +258,54 @@ export default function DashboardPage() {
           </div>
           <p className="text-gray-400 text-xs sm:text-sm font-inter">Welcome back, {user?.name ?? 'Counsellor'}. Here is an overview of today&apos;s legal pulse.</p>
         </div>
-        <div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
-          <button
-            id="export-report-btn"
-            onClick={handleExportReport}
-            disabled={isExporting}
-            className="flex-1 sm:flex-none btn-outline py-2 px-4 sm:px-6 text-[10px] sm:text-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isExporting ? (
-              <span className="w-3 h-3 rounded-full border border-gold-primary border-t-transparent animate-spin" />
-            ) : (
-              <Download size={12} />
-            )}
-            Export Report
-          </button>
+        <div className="flex gap-2 sm:gap-4 w-full sm:w-auto relative" ref={exportDropdownRef}>
+          <div className="relative">
+            <button
+              id="export-report-btn"
+              onClick={() => setShowExportDropdown(!showExportDropdown)}
+              disabled={isExporting}
+              className="flex-1 sm:flex-none btn-outline py-2 px-4 sm:px-6 text-[10px] sm:text-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isExporting ? (
+                <span className="w-3 h-3 rounded-full border border-gold-primary border-t-transparent animate-spin" />
+              ) : (
+                <Download size={12} />
+              )}
+              Export Report
+              <ChevronDown size={12} className={`transition-transform duration-200 ${showExportDropdown ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {showExportDropdown && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-0 sm:right-0 sm:left-auto top-full mt-2 w-56 z-50 glass-panel border border-white/10 rounded-2xl py-2 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-[#0c0c0c]/90 backdrop-blur-2xl"
+                >
+                  <button
+                    onClick={handleExportReport}
+                    className="w-full flex flex-col items-start gap-1 px-4 py-2.5 text-left hover:bg-white/5 transition-colors group"
+                  >
+                    <span className="text-[11px] font-bold text-gray-300 group-hover:text-gold-primary transition-colors flex items-center gap-2">
+                      <Download size={12} /> CSV Spreadsheet (.csv)
+                    </span>
+                    <span className="text-[9px] text-gray-500 font-inter">Full matter ledger docket report</span>
+                  </button>
+                  <button
+                    onClick={handleExportPDF}
+                    className="w-full flex flex-col items-start gap-1 px-4 py-2.5 text-left hover:bg-white/5 transition-colors group border-t border-white/5"
+                  >
+                    <span className="text-[11px] font-bold text-gray-300 group-hover:text-gold-primary transition-colors flex items-center gap-2">
+                      <FileText size={12} /> PDF Brief Briefing (.pdf)
+                    </span>
+                    <span className="text-[9px] text-gray-500 font-inter">Chamber Executive Summary</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
           <Link href="/dashboard/cases/new" className="flex-1 sm:flex-none btn-luxury py-2 px-4 sm:px-6 text-[10px] sm:text-xs font-bold text-center">New Matter</Link>
         </div>
       </div>
