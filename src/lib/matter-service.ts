@@ -272,21 +272,40 @@ export const useMatterStore = create<MatterStore>()(
         }
       },
       subscribeToRealtime: () => {
+        interface DBRow {
+          id: string;
+          suit_number?: string;
+          title?: string;
+          client_name?: string;
+          opposing_party?: string;
+          opposing_counsel?: string;
+          jurisdiction?: string;
+          court?: string;
+          judge?: string;
+          stage?: string;
+          risk_level?: string;
+          risk_score?: number;
+          assigned_counsel?: string;
+          type?: string;
+          next_hearing?: string;
+          created_at?: string;
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const channel = (supabase as any)
           .channel('matters-realtime')
           .on(
             'postgres_changes',
             { event: '*', schema: 'public', table: 'matters' },
-            (payload: any) => {
+            (payload: { eventType: string; new: DBRow; old: DBRow }) => {
               console.log('Realtime change received for matters:', payload);
               const { eventType, new: newRow, old: oldRow } = payload;
               
               if (eventType === 'INSERT') {
                 const mapped: Matter = {
                   id: newRow.id,
-                  suitNumber: newRow.suit_number,
-                  title: newRow.title,
+                  suitNumber: newRow.suit_number || '',
+                  title: newRow.title || '',
                   client: newRow.client_name || 'Unknown Client',
                   opposingParty: newRow.opposing_party || 'Opposing Party',
                   opposingCounsel: newRow.opposing_counsel || 'Unknown',

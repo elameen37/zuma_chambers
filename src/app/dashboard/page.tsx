@@ -51,6 +51,13 @@ const ActivityItem = ({ title, time, type, onClick }: { title: string, time: str
   </div>
 );
 
+interface DashboardActivity {
+  id: string;
+  title: string;
+  time: string;
+  type: string;
+}
+
 export default function DashboardPage() {
   const { user, auditLog } = useAuth();
   const router = useRouter();
@@ -58,7 +65,7 @@ export default function DashboardPage() {
   const syncWithSupabase = useMatterStore((state) => state.syncWithSupabase);
   const subscribeToRealtime = useMatterStore((state) => state.subscribeToRealtime);
   const [mounted, setMounted] = React.useState(false);
-  const [activities, setActivities] = React.useState<any[]>([]);
+  const [activities, setActivities] = React.useState<DashboardActivity[]>([]);
   const [isLiveConnected, setIsLiveConnected] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportToast, setExportToast] = React.useState(false);
@@ -105,7 +112,15 @@ export default function DashboardPage() {
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'audit_logs' },
-        (payload: any) => {
+        (payload: {
+          new: {
+            id: string;
+            action: string;
+            details?: string;
+            created_at?: string;
+            resource_type?: string;
+          };
+        }) => {
           const newRow = payload.new;
           const newActivity = {
             id: newRow.id,

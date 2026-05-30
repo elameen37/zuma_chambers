@@ -9,14 +9,14 @@ import {
   Calendar, MapPin, Gavel, UserCheck,
   Copy, Printer, Archive, X, Check, UserPlus, ChevronDown
 } from 'lucide-react';
-import { useMatterStore } from '@/lib/matter-service';
+import { useMatterStore, Matter, Participant } from '@/lib/matter-service';
 import { useHRStore } from '@/lib/hr-service';
 import MatterTimeline from '@/components/legal/MatterTimeline';
 import EvidenceTracker from '@/components/legal/EvidenceTracker';
 import IntelligencePanel from '@/components/legal/IntelligencePanel';
 
 // ── Options Dropdown ───────────────────────────────────────────────────────
-function OptionsDropdown({ matter, onArchive }: { matter: any; onArchive: () => void }) {
+function OptionsDropdown({ matter, onArchive }: { matter: Matter; onArchive: () => void }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -108,10 +108,10 @@ function OptionsDropdown({ matter, onArchive }: { matter: any; onArchive: () => 
 }
 
 // ── Assign Team Modal ──────────────────────────────────────────────────────
-function AssignTeamModal({ matter, onClose, onAssign }: { matter: any; onClose: () => void; onAssign: (name: string, role: string) => void }) {
+function AssignTeamModal({ matter, onClose, onAssign }: { matter: Matter; onClose: () => void; onAssign: (name: string, role: string) => void }) {
   const staff = useHRStore((state) => state.staff);
   const [selectedIds, setSelectedIds] = useState<string[]>(
-    matter.team.map((m: any) => m.id)
+    matter.team.map((m) => m.id)
   );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -280,7 +280,7 @@ export default function MatterDetailPage() {
     const existing = matter.team.some((m) => m.name === name);
     if (!existing) {
       updateMatter(matter.id, {
-        team: [...matter.team, { id: `t-${Date.now()}`, name, role: role as any }],
+        team: [...matter.team, { id: `t-${Date.now()}`, name, role: role as Participant['role'] }],
       });
     }
   };
@@ -435,7 +435,7 @@ export default function MatterDetailPage() {
                             </button>
                           </div>
                         ) : (
-                          matter.team.map((member: any) => (
+                          matter.team.map((member) => (
                             <div key={member.id} className="flex items-center gap-4 p-4 hover:bg-white/5 rounded-lg transition-colors border border-gold-dark/5">
                               <div className="w-10 h-10 rounded-full bg-gold-primary/10 border border-gold-primary/30 flex items-center justify-center text-gold-primary font-bold">
                                 {member.name.split(' ').map((n: string) => n[0]).join('')}
@@ -481,7 +481,7 @@ export default function MatterDetailPage() {
                           onClick={() => setActiveTab('timeline')}
                         >
                           <span className="text-gray-500 group-hover:text-gold-primary transition-colors">Upcoming Hearings</span>
-                          <span className="text-amber-500 font-bold">{matter.events.filter((e: any) => e.type === 'Hearing' && !e.isCompleted).length}</span>
+                          <span className="text-amber-500 font-bold">{matter.events.filter((e) => e.type === 'Hearing' && !e.isCompleted).length}</span>
                         </div>
                         <div
                           className="flex justify-between items-center text-xs cursor-pointer hover:text-gold-primary transition-colors group"
