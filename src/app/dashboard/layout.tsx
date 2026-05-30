@@ -1,18 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { hasPermission, PERMISSIONS, ROLE_LABELS, ROLE_COLORS } from '@/lib/permissions';
 import RouteGuard from '@/components/guards/RouteGuard';
 import { useTheme } from '@/components/layout/ThemeProvider';
+import { useMatterStore } from '@/lib/matter-service';
+import { useClientStore } from '@/lib/client-service';
+import { useHRStore } from '@/lib/hr-service';
+import { useDocumentStore } from '@/lib/document-service';
+import { useResearchStore } from '@/lib/research-service';
 import {
   LayoutDashboard, Briefcase, FileText, BarChart3, ShieldCheck, Users,
   Settings, LogOut, Menu, Bell, Search, Gavel, ScrollText, CalendarDays,
   MessageSquare, BookOpen, Sparkles, ChevronLeft, ChevronRight, Sun, Moon, X,
-  PanelLeftOpen, PanelLeftClose
+  PanelLeftOpen, PanelLeftClose, ArrowRight, Command
 } from '@/components/shared/Icons';
 
 
@@ -50,13 +55,193 @@ const SidebarItem = ({ icon: Icon, label, href, active, locked, collapsed }: { i
   </Link>
 );
 
+// ─── Search Result Types ────────────────────────────────────────────────────
+interface SearchResult {
+  id: string;
+  label: string;
+  sub: string;
+  href: string;
+  category: 'Matters' | 'Clients' | 'Staff' | 'Documents' | 'Research';
+  icon: React.ElementType;
+}
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  // ── Global Search State ─────────────────────────────────────────────────
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+
+  // ── Store Data ──────────────────────────────────────────────────────────
+  const { matters } = useMatterStore();
+  const { clients } = useClientStore();
+  const { staff } = useHRStore();
+  const { documents } = useDocumentStore();
+  const { resources } = useResearchStore();
+
+  // ── Real-time Search Computation ────────────────────────────────────────
+  const computeResults = useCallback((q: string): SearchResult[] => {
+    if (!q.trim()) return [];
+    const lq = q.toLowerCase();
+    const results: SearchResult[] = [];
+
+    // Matters
+    matters
+      .filter(m =>
+        m.suitNumber.toLowerCase().includes(lq) ||
+        m.title.toLowerCase().includes(lq) ||
+        m.client.toLowerCase().includes(lq) ||
+        m.judge.toLowerCase().includes(lq)
+      )
+      .slice(0, 4)
+      .forEach(m =>
+        results.push({
+          id: `m-${m.id}`,
+          label: m.title,
+          sub: `${m.suitNumber} · ${m.stage}`,
+          href: `/dashboard/cases/${m.id}`,
+          category: 'Matters',
+          icon: Briefcase,
+        })
+      );
+
+    // Clients
+    clients
+      .filter(c =>
+        c.name.toLowerCase().includes(lq) ||
+        c.email.toLowerCase().includes(lq) ||
+        (c.companyDetails?.industry ?? '').toLowerCase().includes(lq)
+      )
+      .slice(0, 3)
+      .forEach(c =>
+        results.push({
+          id: `c-${c.id}`,
+          label: c.name,
+          sub: `${c.type} · ${c.kycStatus}`,
+          href: `/dashboard/clients`,
+          category: 'Clients',
+          icon: Users,
+        })
+      );
+
+    // Staff
+    staff
+      .filter(s =>
+        s.name.toLowerCase().includes(lq) ||
+        s.role.toLowerCase().includes(lq) ||
+        s.department.toLowerCase().includes(lq)
+      )
+      .slice(0, 3)
+      .forEach(s =>
+        results.push({
+          id: `s-${s.id}`,
+          label: s.name,
+          sub: `${s.role} · ${s.department}`,
+          href: `/dashboard/team`,
+          category: 'Staff',
+          icon: Users,
+        })
+      );
+
+    // Documents
+    documents
+      .filter(d =>
+        d.title.toLowerCase().includes(lq) ||
+        d.category.toLowerCase().includes(lq) ||
+        d.status.toLowerCase().includes(lq)
+      )
+      .slice(0, 3)
+      .forEach(d =>
+        results.push({
+          id: `d-${d.id}`,
+          label: d.title,
+          sub: `${d.category} · ${d.status}`,
+          href: `/dashboard/documents`,
+          category: 'Documents',
+          icon: FileText,
+        })
+      );
+
+    // Research
+    resources
+      .filter(r =>
+        r.title.toLowerCase().includes(lq) ||
+        (r.citation ?? '').toLowerCase().includes(lq) ||
+        r.type.toLowerCase().includes(lq)
+      )
+      .slice(0, 3)
+      .forEach(r =>
+        results.push({
+          id: `r-${r.id}`,
+          label: r.title,
+          sub: `${r.type} · ${r.year}`,
+          href: `/dashboard/research`,
+          category: 'Research',
+          icon: BookOpen,
+        })
+      );
+
+    return results;
+  }, [matters, clients, staff, documents, resources]);
+
+  useEffect(() => {
+    setSearchResults(computeResults(searchQuery));
+  }, [searchQuery, computeResults]);
+
+  // ── Keyboard Shortcut Listener (Ctrl+K / ⌘K / /) ────────────────────────
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isSlash = e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName);
+      const isCmdK = (e.metaKey || e.ctrlKey) && e.key === 'k';
+      if (isSlash || isCmdK) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        setIsSearchFocused(true);
+      }
+      if (e.key === 'Escape') {
+        searchInputRef.current?.blur();
+        setIsSearchFocused(false);
+        setSearchQuery('');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // ── Click-outside closes dropdown ───────────────────────────────────────
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    setIsSearchFocused(false);
+    setSearchQuery('');
+    router.push(`/dashboard/research?q=${encodeURIComponent(searchQuery.trim())}`);
+  };
+
+  const handleResultClick = (href: string) => {
+    setIsSearchFocused(false);
+    setSearchQuery('');
+    router.push(href);
+  };
 
   const handleLogout = () => {
     logout();
@@ -197,13 +382,157 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {isDesktopCollapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
               </button>
 
-              <div className="hidden md:flex items-center gap-3 bg-white/5 border border-white/5 rounded-full px-6 py-2.5 w-96 transition-all hover:bg-white/10 group">
-                <Search size={16} className="text-gray-500 group-hover:text-brand-primary transition-colors" />
-                <input
-                  type="text"
-                  placeholder="Search legal intelligence..."
-                  className="bg-transparent border-none outline-none text-xs text-white w-full font-inter"
-                />
+              {/* ── Global Search Command Palette ──────────────────────── */}
+              <div ref={searchContainerRef} className="hidden md:block relative w-96">
+                <form onSubmit={handleSearchSubmit}>
+                  <div className={`flex items-center gap-3 rounded-full px-5 py-2.5 transition-all duration-300 border ${
+                    isSearchFocused
+                      ? 'bg-white/8 border-brand-primary/40 shadow-[0_0_0_3px_rgba(212,175,55,0.08)]'
+                      : 'bg-white/5 border-white/5 hover:bg-white/8 hover:border-white/10'
+                  }`}>
+                    <Search size={15} className={`shrink-0 transition-colors ${isSearchFocused ? 'text-brand-primary' : 'text-gray-500'}`} />
+                    <input
+                      ref={searchInputRef}
+                      id="global-search-input"
+                      type="text"
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      onFocus={() => setIsSearchFocused(true)}
+                      placeholder="Search matters, clients, documents..."
+                      autoComplete="off"
+                      className="bg-transparent border-none outline-none text-xs text-white w-full font-inter placeholder:text-gray-600"
+                    />
+                    <AnimatePresence>
+                      {!isSearchFocused ? (
+                        <motion.div
+                          key="kbd-badge"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          className="flex items-center gap-1 shrink-0"
+                        >
+                          <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] text-gray-500 font-mono">
+                            <Command size={8} />
+                            K
+                          </kbd>
+                        </motion.div>
+                      ) : searchQuery && (
+                        <motion.button
+                          key="clear-btn"
+                          type="button"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          onClick={() => setSearchQuery('')}
+                          className="text-gray-500 hover:text-white shrink-0 transition-colors"
+                        >
+                          <X size={13} />
+                        </motion.button>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </form>
+
+                {/* ── Search Results Dropdown ────────────────────────────── */}
+                <AnimatePresence>
+                  {isSearchFocused && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                      className="absolute top-[calc(100%+10px)] left-0 right-0 z-[100] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/8"
+                      style={{ background: 'rgba(10,10,14,0.92)', backdropFilter: 'blur(24px)' }}
+                    >
+                      {/* Empty state — no query */}
+                      {!searchQuery.trim() && (
+                        <div className="p-5">
+                          <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-gray-600 mb-3">Quick Access</p>
+                          <div className="space-y-1">
+                            {[
+                              { label: 'Active Matters', href: '/dashboard/cases', icon: Briefcase },
+                              { label: 'Client Registry', href: '/dashboard/clients', icon: Users },
+                              { label: 'Law Library', href: '/dashboard/research', icon: BookOpen },
+                              { label: 'Documents Vault', href: '/dashboard/documents', icon: FileText },
+                            ].map(item => (
+                              <button
+                                key={item.href}
+                                onClick={() => handleResultClick(item.href)}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-white/5 transition-all group"
+                              >
+                                <item.icon size={14} className="text-gray-600 group-hover:text-brand-primary transition-colors shrink-0" />
+                                <span className="text-xs font-inter font-medium text-gray-400 group-hover:text-white transition-colors">{item.label}</span>
+                              </button>
+                            ))}
+                          </div>
+                          <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-2">
+                            <Sparkles size={11} className="text-brand-primary/60" />
+                            <p className="text-[9px] text-gray-600 font-inter">Type to search · <kbd className="font-mono">Esc</kbd> to close</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Results */}
+                      {searchQuery.trim() && (
+                        <div className="p-3 max-h-[420px] overflow-y-auto no-scrollbar">
+                          {searchResults.length === 0 ? (
+                            <div className="flex flex-col items-center py-8 text-center">
+                              <Search size={28} className="text-gray-700 mb-3" />
+                              <p className="text-sm font-bold text-gray-400 font-inter">No matches found</p>
+                              <p className="text-[10px] text-gray-600 mt-1 font-inter">Try the AI Knowledge Base for semantic search</p>
+                            </div>
+                          ) : (
+                            (() => {
+                              const categories = ['Matters', 'Clients', 'Staff', 'Documents', 'Research'] as const;
+                              return categories.map(cat => {
+                                const catResults = searchResults.filter(r => r.category === cat);
+                                if (catResults.length === 0) return null;
+                                return (
+                                  <div key={cat} className="mb-3">
+                                    <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-brand-primary/70 px-3 mb-1.5">{cat}</p>
+                                    <div className="space-y-0.5">
+                                      {catResults.map(result => (
+                                        <button
+                                          key={result.id}
+                                          onClick={() => handleResultClick(result.href)}
+                                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-white/5 transition-all group"
+                                        >
+                                          <result.icon size={14} className="text-gray-600 group-hover:text-brand-primary shrink-0 transition-colors" />
+                                          <div className="flex-1 min-w-0">
+                                            <p className="text-xs font-bold text-white truncate font-inter group-hover:text-brand-primary transition-colors">{result.label}</p>
+                                            <p className="text-[9px] text-gray-600 truncate font-mono mt-0.5">{result.sub}</p>
+                                          </div>
+                                          <ArrowRight size={12} className="text-gray-700 group-hover:text-brand-primary shrink-0 opacity-0 group-hover:opacity-100 transition-all" />
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              });
+                            })()
+                          )}
+
+                          {/* AI Redirect CTA */}
+                          <div className="mt-2 pt-2 border-t border-white/5">
+                            <button
+                              onClick={handleSearchSubmit as unknown as React.MouseEventHandler}
+                              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-brand-primary/10 transition-all group border border-transparent hover:border-brand-primary/20"
+                            >
+                              <div className="w-7 h-7 rounded-lg bg-brand-primary/10 flex items-center justify-center shrink-0 group-hover:bg-brand-primary/20 transition-all">
+                                <Sparkles size={13} className="text-brand-primary" />
+                              </div>
+                              <div className="flex-1 text-left">
+                                <p className="text-xs font-bold text-white font-inter">AI Search Intelligence</p>
+                                <p className="text-[9px] text-gray-500 font-inter mt-0.5">Search &quot;{searchQuery}&quot; across the full Knowledge Base</p>
+                              </div>
+                              <ArrowRight size={13} className="text-brand-primary shrink-0" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import KnowledgeBase from '@/components/legal/KnowledgeBase';
 import { motion } from 'framer-motion';
 import { BookMarked, Sparkles } from 'lucide-react';
@@ -50,7 +50,13 @@ export default function LegalResearchPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <KnowledgeBase />
+        <Suspense fallback={
+          <div className="flex items-center justify-center py-32">
+            <div className="w-8 h-8 border-2 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
+          </div>
+        }>
+          <KnowledgeBase />
+        </Suspense>
       </motion.div>
     </div>
   );

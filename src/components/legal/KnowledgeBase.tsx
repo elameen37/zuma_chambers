@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, BookOpen, Scale, Gavel, 
@@ -8,13 +8,21 @@ import {
 import { useResearchStore, LegalResource } from '@/lib/research-service';
 import ResourceCard from './ResourceCard';
 import MemoStorage from './MemoStorage';
+import { useSearchParams } from 'next/navigation';
 
 export default function KnowledgeBase() {
   const { resources, searchResources, savedAuthorities } = useResearchStore();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'all' | 'statutes' | 'cases' | 'precedents'>('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(() => searchParams.get('q') ?? '');
   const [selectedResource, setSelectedResource] = useState<LegalResource | null>(null);
   const [showSavedOnly, setShowSavedOnly] = useState(false);
+
+  // Sync searchTerm whenever the global search redirects with ?q=
+  useEffect(() => {
+    const q = searchParams.get('q') ?? '';
+    if (q) setSearchTerm(q);
+  }, [searchParams]);
 
   const filteredResources = resources.filter(r => {
     const matchesSearch = r.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
