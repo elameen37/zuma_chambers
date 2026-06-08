@@ -36,6 +36,9 @@ export default function TemplateGeneratorModal({ isOpen, onClose, template }: Te
     setIsSaving(true);
     try {
       const matter = matters.find(m => m.id === matterId);
+      
+      const file = new File([previewText], `${template.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`, { type: 'text/plain' });
+
       await addDocument({
         title: `${template.title}${matter ? ` — ${matter.title}` : ''}`,
         category: template.category,
@@ -44,7 +47,7 @@ export default function TemplateGeneratorModal({ isOpen, onClose, template }: Te
         matterId: matterId || undefined,
         currentVersion: 1,
         versions: [],
-      });
+      }, file);
       onClose();
     } finally {
       setIsSaving(false);

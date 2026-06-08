@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldAlert, Clock, History,
   Download, Eye, Filter, Lock, FileStack, X, Search,
-  ChevronDown
+  ChevronDown, BrainCircuit, RefreshCw, CheckCircle2, AlertTriangle, Info
 } from 'lucide-react';
 import { useDocumentStore, LegalDocument, TemplateCategory } from '@/lib/document-service';
 
@@ -13,6 +13,8 @@ export default function DocumentVault() {
   const documents = useDocumentStore((state) => state.documents);
   const syncWithSupabase = useDocumentStore((s) => s.syncWithSupabase);
   const subscribeToRealtime = useDocumentStore((s) => s.subscribeToRealtime);
+
+  const analyzeDocument = useDocumentStore((s) => s.analyzeDocument);
 
   // Bootstrap: sync once then subscribe for live updates
   useEffect(() => {
@@ -29,8 +31,10 @@ export default function DocumentVault() {
   const [showFilters, setShowFilters] = useState(false);
 
   // ── Preview + History ────────────────────────────────────────
-  const [previewDoc, setPreviewDoc] = useState<LegalDocument | null>(null);
+  const [previewDocId, setPreviewDocId] = useState<string | null>(null);
+  const previewDoc = documents.find(d => d.id === previewDocId) || null;
   const [showHistory, setShowHistory] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const filtered = documents.filter((d) => {
     const matchSearch = d.title.toLowerCase().includes(search.toLowerCase()) || d.category.toLowerCase().includes(search.toLowerCase());
@@ -156,8 +160,8 @@ export default function DocumentVault() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: idx * 0.04 }}
-                    className={`hover:bg-white/[0.02] transition-colors group cursor-pointer ${previewDoc?.id === doc.id ? 'bg-gold-primary/5' : ''}`}
-                    onClick={() => { setPreviewDoc(previewDoc?.id === doc.id ? null : doc); setShowHistory(false); }}
+                    className={`hover:bg-white/[0.02] transition-colors group cursor-pointer ${previewDocId === doc.id ? 'bg-gold-primary/5' : ''}`}
+                    onClick={() => { setPreviewDocId(previewDocId === doc.id ? null : doc.id); setShowHistory(false); }}
                   >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
@@ -194,7 +198,7 @@ export default function DocumentVault() {
                     <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex justify-end gap-3">
                         <button
-                          onClick={() => { setPreviewDoc(previewDoc?.id === doc.id ? null : doc); setShowHistory(true); }}
+                          onClick={() => { setPreviewDocId(previewDocId === doc.id ? null : doc.id); setShowHistory(true); }}
                           className="p-2 hover:text-gold-primary transition-colors text-gray-500" title="Version History"
                         ><History size={14} /></button>
                         <button
@@ -202,8 +206,8 @@ export default function DocumentVault() {
                           className="p-2 hover:text-gold-primary transition-colors text-gray-500" title="Download"
                         ><Download size={14} /></button>
                         <button
-                          onClick={() => { setPreviewDoc(previewDoc?.id === doc.id ? null : doc); setShowHistory(false); }}
-                          className={`p-2 transition-colors ${previewDoc?.id === doc.id ? 'text-gold-primary' : 'text-gray-500 hover:text-gold-primary'}`} title="Preview"
+                          onClick={() => { setPreviewDocId(previewDocId === doc.id ? null : doc.id); setShowHistory(false); }}
+                          className={`p-2 transition-colors ${previewDocId === doc.id ? 'text-gold-primary' : 'text-gray-500 hover:text-gold-primary'}`} title="Preview"
                         ><Eye size={14} /></button>
                       </div>
                     </td>
@@ -230,7 +234,7 @@ export default function DocumentVault() {
                   <button onClick={() => setShowHistory(false)} className={`text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded transition-colors ${!showHistory ? 'bg-gold-primary text-black' : 'text-gray-400 hover:text-white'}`}>Preview</button>
                   <button onClick={() => setShowHistory(true)} className={`text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded transition-colors ${showHistory ? 'bg-gold-primary text-black' : 'text-gray-400 hover:text-white'}`}>History</button>
                 </div>
-                <button onClick={() => setPreviewDoc(null)} className="text-gray-500 hover:text-white transition-colors"><X size={14} /></button>
+                <button onClick={() => setPreviewDocId(null)} className="text-gray-500 hover:text-white transition-colors"><X size={14} /></button>
               </div>
 
               {/* Panel body */}
@@ -254,10 +258,101 @@ export default function DocumentVault() {
                         <span className="text-xs text-white font-medium">{val}</span>
                       </div>
                     ))}
-                    <div className="pt-4 p-4 rounded-lg bg-white/[0.02] border border-white/5 text-center">
-                      <FileStack size={32} className="text-gold-dark/30 mx-auto mb-2" />
-                      <p className="text-[10px] text-gray-500">Document preview available after upload integration</p>
+
+                    {/* Intelligence Section */}
+                    <div className="pt-4 border-t border-white/5">
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="text-[10px] text-gray-500 uppercase font-bold tracking-widest flex items-center gap-1.5">
+                          <BrainCircuit size={14} className="text-gold-primary" /> Document Intelligence
+                        </h4>
+                        {!previewDoc.analysis && (
+                          <button
+                            onClick={async () => {
+                              setIsAnalyzing(true);
+                              await analyzeDocument(previewDoc.id);
+                              setIsAnalyzing(false);
+                            }}
+                            disabled={isAnalyzing}
+                            className="text-[9px] font-bold uppercase tracking-widest bg-gold-primary/10 text-gold-primary hover:bg-gold-primary/20 transition-colors px-2 py-1 rounded border border-gold-primary/20 disabled:opacity-50 flex items-center gap-1"
+                          >
+                            {isAnalyzing ? <><RefreshCw size={10} className="animate-spin" /> Analyzing...</> : 'Analyze Document'}
+                          </button>
+                        )}
+                      </div>
+
+                      {previewDoc.analysis ? (
+                        <div className="space-y-3">
+                          <div className="p-3 rounded bg-black/40 border border-white/5">
+                            <p className="text-xs text-gray-300 leading-relaxed font-inter">{previewDoc.analysis.summary}</p>
+                          </div>
+                          
+                          <div className="flex justify-between gap-3">
+                            <div className="flex-1 p-3 rounded bg-black/40 border border-white/5">
+                              <span className="text-[9px] text-gray-500 uppercase font-bold tracking-widest block mb-2">Risk Level</span>
+                              <div className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest ${
+                                previewDoc.analysis.riskLevel === 'Low' ? 'text-green-500' :
+                                previewDoc.analysis.riskLevel === 'Medium' ? 'text-amber-500' : 'text-red-500'
+                              }`}>
+                                {previewDoc.analysis.riskLevel === 'Low' ? <CheckCircle2 size={14} /> :
+                                 previewDoc.analysis.riskLevel === 'Medium' ? <Info size={14} /> : <AlertTriangle size={14} />}
+                                {previewDoc.analysis.riskLevel}
+                              </div>
+                            </div>
+                            <div className="flex-1 p-3 rounded bg-black/40 border border-white/5">
+                              <span className="text-[9px] text-gray-500 uppercase font-bold tracking-widest block mb-2">Key Terms</span>
+                              <div className="flex flex-wrap gap-1">
+                                {previewDoc.analysis.keyTerms.map((term, i) => (
+                                  <span key={i} className="text-[8px] bg-white/5 text-gray-400 px-1.5 py-0.5 rounded border border-white/10 uppercase tracking-widest font-bold">
+                                    {term}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {previewDoc.analysis.clauses.map((clause, i) => (
+                            <div key={i} className="p-3 rounded bg-gold-primary/5 border border-gold-primary/10">
+                              <span className="text-[10px] text-gold-primary uppercase font-bold tracking-widest block mb-1">{clause.title}</span>
+                              <p className="text-[10px] text-gray-400 font-inter leading-relaxed">{clause.content}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-4 rounded-lg bg-white/[0.02] border border-white/5 text-center">
+                          <BrainCircuit size={24} className="text-gold-dark/30 mx-auto mb-2" />
+                          <p className="text-[10px] text-gray-500">Run document analysis to extract insights, key terms, and risk levels automatically.</p>
+                        </div>
+                      )}
                     </div>
+
+                    {/* Preview Section */}
+                    {previewDoc.versions[0]?.fileUrl ? (
+                      <div className="pt-4 border-t border-white/5">
+                        <h4 className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-3 flex items-center gap-1.5">
+                          <Eye size={14} className="text-gold-primary" /> File Preview
+                        </h4>
+                        <div className="rounded-lg overflow-hidden border border-white/5 bg-black/60 h-64 relative">
+                           {previewDoc.versions[0].fileUrl.toLowerCase().endsWith('.pdf') ? (
+                             <iframe src={previewDoc.versions[0].fileUrl} className="w-full h-full border-none" />
+                           ) : (
+                             <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                                <FileStack size={32} className="text-gold-primary/50 mb-3" />
+                                <p className="text-xs text-white mb-2">Document is available</p>
+                                <a href={previewDoc.versions[0].fileUrl} target="_blank" rel="noreferrer" className="btn-outline px-4 py-1.5 text-[10px]">
+                                  Download / Open File
+                                </a>
+                             </div>
+                           )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="pt-4 border-t border-white/5">
+                        <div className="p-4 rounded-lg bg-white/[0.02] border border-white/5 text-center">
+                          <FileStack size={24} className="text-gold-dark/30 mx-auto mb-2" />
+                          <p className="text-[10px] text-gray-500">No file uploaded for this document.</p>
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>

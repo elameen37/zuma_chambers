@@ -59,7 +59,7 @@ export default function UploadDocumentModal({ isOpen, onClose }: UploadDocumentM
         matterId: form.matterId || undefined,
         currentVersion: 1,
         versions: [],
-      });
+      }, selectedFile || undefined);
       onClose();
       setForm({ title: '', category: 'Contracts', status: 'Draft', privilege: 'Confidential', expiryDate: '', matterId: '' });
       setSelectedFile(null);

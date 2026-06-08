@@ -96,13 +96,13 @@ export default function IntelligenceReportModal({ isOpen, onClose, date }: Intel
                   <ShieldAlert size={16} className="text-gold-primary" /> Executive Threat Assessment
                 </h4>
                 <p className="text-sm text-gray-300 leading-relaxed font-inter">
-                  Today's schedule involves <strong className="text-white">{todaysHearings.length} court appearances</strong> and <strong className="text-white">{todaysDeadlines.length} critical deadlines</strong>. 
+                  Today&apos;s schedule involves <strong className="text-white">{todaysHearings.length} court appearances</strong> and <strong className="text-white">{todaysDeadlines.length} critical deadlines</strong>. 
                   {criticalMatters.length > 0 ? (
                     <span className="text-red-400"> Heightened risk detected in {criticalMatters.length} matter(s) requiring senior partner oversight.</span>
                   ) : (
                     <span className="text-green-400"> All listed matters are currently within acceptable risk parameters.</span>
                   )}
-                  {" "}Ensure all supporting documentation for today's hearings are digitally verified and physical copies are bound.
+                  {" "}Ensure all supporting documentation for today&apos;s hearings are digitally verified and physical copies are bound.
                 </p>
               </section>
 

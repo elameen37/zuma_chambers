@@ -23,6 +23,13 @@ export interface DocumentVersion {
   createdAt: string;
 }
 
+export interface DocumentAnalysis {
+  summary: string;
+  keyTerms: string[];
+  riskLevel: 'Low' | 'Medium' | 'High' | 'Critical';
+  clauses: { title: string; content: string }[];
+}
+
 export interface LegalDocument {
   id: string;
   matterId?: string;
@@ -34,15 +41,17 @@ export interface LegalDocument {
   privilege: 'Public' | 'Confidential' | 'Privileged';
   expiryDate?: string;
   versions: DocumentVersion[];
+  analysis?: DocumentAnalysis;
   createdAt: string;
 }
 
 interface DocumentStore {
   templates: DocumentTemplate[];
   documents: LegalDocument[];
-  addDocument: (doc: Partial<LegalDocument>) => Promise<void>;
+  addDocument: (doc: Partial<LegalDocument>, file?: File | Blob, fileName?: string) => Promise<void>;
   addVersion: (docId: string, version: DocumentVersion) => void;
   updateDocument: (id: string, updates: Partial<LegalDocument>) => void;
+  analyzeDocument: (docId: string) => Promise<void>;
   syncWithSupabase: () => Promise<void>;
   subscribeToRealtime: () => () => void;
 }
@@ -60,7 +69,7 @@ export const useDocumentStore = create<DocumentStore>()(
       templates: initialTemplates,
       documents: [],
 
-      addDocument: async (doc) => {
+      addDocument: async (doc, file, fileName) => {
         const newDoc: LegalDocument = {
           id: crypto.randomUUID(),
           title: '',
@@ -72,6 +81,43 @@ export const useDocumentStore = create<DocumentStore>()(
           createdAt: new Date().toISOString(),
           ...doc,
         } as LegalDocument;
+
+        let fileUrl = '';
+        const finalFileName = fileName || (file && 'name' in file ? file.name : 'document.pdf');
+
+        if (file) {
+          try {
+            const filePath = `${newDoc.id}/v1_${finalFileName}`;
+            const { error: uploadError } = await supabase.storage
+              .from('legal_documents')
+              .upload(filePath, file);
+              
+            if (uploadError) throw uploadError;
+
+            const { data: publicUrlData } = supabase.storage
+              .from('legal_documents')
+              .getPublicUrl(filePath);
+            
+            fileUrl = publicUrlData.publicUrl;
+
+            // Create first version
+            const newVersion: DocumentVersion = {
+              id: crypto.randomUUID(),
+              documentId: newDoc.id,
+              version: 1,
+              fileName: finalFileName,
+              fileUrl: fileUrl,
+              changes: 'Initial upload',
+              author: 'System', // In a real app, this would be the current user
+              createdAt: new Date().toISOString()
+            };
+            
+            newDoc.versions = [newVersion];
+
+          } catch (e) {
+            console.warn('Failed to upload file to Supabase Storage', e);
+          }
+        }
 
         // Optimistic update
         set((state) => ({ documents: [newDoc, ...state.documents] }));
@@ -89,6 +135,18 @@ export const useDocumentStore = create<DocumentStore>()(
             matter_id: newDoc.matterId ?? null,
             client_id: newDoc.clientId ?? null,
           });
+
+          if (newDoc.versions.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            await (supabase.from('document_versions') as any).insert({
+              id: newDoc.versions[0].id,
+              document_id: newDoc.versions[0].documentId,
+              version: newDoc.versions[0].version,
+              file_name: newDoc.versions[0].fileName,
+              file_path: fileUrl, // Storing full URL for simplicity here
+              changes: newDoc.versions[0].changes,
+            });
+          }
         } catch (e) {
           console.warn('Failed to persist document to Supabase', e);
         }
@@ -118,6 +176,28 @@ export const useDocumentStore = create<DocumentStore>()(
         }
       },
 
+      analyzeDocument: async (docId) => {
+        // Simulate an AI summarization and analysis delay
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        
+        const doc = get().documents.find(d => d.id === docId);
+        if (!doc) return;
+
+        const simulatedAnalysis: DocumentAnalysis = {
+          summary: `This is an AI-generated summary of ${doc.title}. The document outlines the standard legal agreements between the involved parties, with specific provisions covering confidentiality, term length, and dispute resolution mechanisms.`,
+          keyTerms: ['Confidentiality', 'Dispute Resolution', 'Term Length', 'Liability'],
+          riskLevel: doc.category === 'Contracts' ? 'Medium' : 'Low',
+          clauses: [
+            { title: 'Indemnification Clause', content: 'Identified standard indemnification requiring Party A to hold harmless Party B.' },
+            { title: 'Termination Clause', content: 'Allows termination with 30 days written notice.' }
+          ]
+        };
+
+        set((state) => ({
+          documents: state.documents.map((d) => (d.id === docId ? { ...d, analysis: simulatedAnalysis } : d)),
+        }));
+      },
+
       syncWithSupabase: async () => {
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,9 +206,27 @@ export const useDocumentStore = create<DocumentStore>()(
             .order('created_at', { ascending: false });
 
           if (!error && data && data.length > 0) {
+            // Also fetch all versions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { data: versionsData } = await (supabase.from('document_versions') as any)
+              .select('*')
+              .order('version', { ascending: false });
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const mapped: LegalDocument[] = data.map((row: any) => {
               const existing = get().documents.find((d) => d.id === row.id);
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const docVersions = versionsData ? versionsData.filter((v: any) => v.document_id === row.id).map((v: any) => ({
+                id: v.id,
+                documentId: v.document_id,
+                version: v.version,
+                fileName: v.file_name,
+                fileUrl: v.file_path,
+                changes: v.changes,
+                author: v.author_id ?? 'System',
+                createdAt: v.created_at
+              })) : [];
+
               return {
                 id: row.id,
                 matterId: row.matter_id ?? undefined,
@@ -139,7 +237,8 @@ export const useDocumentStore = create<DocumentStore>()(
                 status: (row.status ?? 'Draft') as LegalDocument['status'],
                 privilege: (row.privilege ?? 'Confidential') as LegalDocument['privilege'],
                 expiryDate: row.expiry_date ?? undefined,
-                versions: existing?.versions ?? [],
+                versions: docVersions.length > 0 ? docVersions : (existing?.versions ?? []),
+                analysis: existing?.analysis,
                 createdAt: row.created_at,
               };
             });
