@@ -7,12 +7,14 @@ import {
   ArrowUpRight, Zap,
   Gavel, ScrollText, Scale
 } from 'lucide-react';
-import { useDocumentStore, TemplateCategory } from '@/lib/document-service';
+import { useDocumentStore, TemplateCategory, DocumentTemplate } from '@/lib/document-service';
+import TemplateGeneratorModal from '@/components/legal/TemplateGeneratorModal';
 
 export default function DraftingLibrary() {
   const templates = useDocumentStore((state) => state.templates);
   const [selectedCategory, setSelectedCategory] = useState<TemplateCategory | 'All'>('All');
   const [search, setSearch] = useState('');
+  const [activeTemplate, setActiveTemplate] = useState<DocumentTemplate | null>(null);
 
   const filteredTemplates = templates.filter(t => 
     (selectedCategory === 'All' || t.category === selectedCategory) &&
@@ -82,12 +84,21 @@ export default function DraftingLibrary() {
               <p className="text-[10px] text-gray-500 font-inter line-clamp-2 leading-relaxed">{template.description}</p>
             </div>
             
-            <button className="w-full mt-4 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gold-primary border-t border-gold-dark/10 pt-4 hover:gap-2 transition-all">
+            <button
+              onClick={() => setActiveTemplate(template)}
+              className="w-full mt-4 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gold-primary border-t border-gold-dark/10 pt-4 hover:gap-2 transition-all"
+            >
               Launch Generator <ArrowUpRight size={14} />
             </button>
           </motion.div>
         ))}
       </div>
+
+      <TemplateGeneratorModal
+        isOpen={!!activeTemplate}
+        onClose={() => setActiveTemplate(null)}
+        template={activeTemplate}
+      />
     </div>
   );
 }

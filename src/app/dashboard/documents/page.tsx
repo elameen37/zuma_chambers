@@ -1,13 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import DraftingLibrary from '@/components/legal/DraftingLibrary';
 import DocumentVault from '@/components/legal/DocumentVault';
+import UploadDocumentModal from '@/components/legal/UploadDocumentModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileStack, Plus, Zap } from 'lucide-react';
+import { useDocumentStore } from '@/lib/document-service';
 
 export default function DocumentsIntelligencePage() {
   const [activeTab, setActiveTab] = React.useState<'library' | 'vault'>('library');
+  const [isUploadOpen, setIsUploadOpen] = React.useState(false);
+  const syncWithSupabase = useDocumentStore((s) => s.syncWithSupabase);
+  const subscribeToRealtime = useDocumentStore((s) => s.subscribeToRealtime);
+
+  // Bootstrap once at page level (DocumentVault also does this, but this ensures
+  // the count in the tab label stays accurate even on the library tab)
+  useEffect(() => {
+    syncWithSupabase();
+    const unsub = subscribeToRealtime();
+    return unsub;
+  }, [syncWithSupabase, subscribeToRealtime]);
+
+  const documents = useDocumentStore((s) => s.documents);
 
   return (
     <div className="space-y-8 pb-12">
@@ -16,7 +31,10 @@ export default function DocumentsIntelligencePage() {
           <h1 className="text-3xl font-bold text-white font-playfair mb-2">Document Intelligence</h1>
           <p className="text-gray-400 text-sm font-inter">Automated legal drafting, version control, and secure archive management.</p>
         </div>
-        <button className="btn-luxury py-2.5 px-6 text-xs flex items-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+        <button
+          onClick={() => setIsUploadOpen(true)}
+          className="btn-luxury py-2.5 px-6 text-xs flex items-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.2)]"
+        >
           <Plus size={16} /> Upload New File
         </button>
       </div>
@@ -40,6 +58,9 @@ export default function DocumentsIntelligencePage() {
           }`}
         >
           <FileStack size={14} /> Document Vault
+          {documents.length > 0 && (
+            <span className="ml-2 bg-gold-primary text-black text-[8px] font-bold px-1.5 py-0.5 rounded-full">{documents.length}</span>
+          )}
           {activeTab === 'vault' && (
             <motion.div layoutId="docTabLine" className="absolute bottom-0 left-0 right-0 h-[2px] bg-gold-primary" />
           )}
@@ -59,6 +80,9 @@ export default function DocumentsIntelligencePage() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <UploadDocumentModal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} />
     </div>
   );
 }
+
