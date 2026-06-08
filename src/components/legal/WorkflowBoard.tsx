@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion, Reorder } from 'framer-motion';
-import { useMatterStore, MatterStage, Matter } from '@/lib/matter-service';
+import { useMatterStore, MatterStage } from '@/lib/matter-service';
 import MatterCard from './MatterCard';
 import { ChevronRight, Filter, LayoutGrid } from 'lucide-react';
 

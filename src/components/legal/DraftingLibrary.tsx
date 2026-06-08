@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-  FileText, Plus, Search, Filter, 
-  ChevronRight, ArrowUpRight, Zap, BookOpen,
+  FileText, Search, 
+  ArrowUpRight, Zap,
   Gavel, ScrollText, Scale
 } from 'lucide-react';
 import { useDocumentStore, TemplateCategory } from '@/lib/document-service';

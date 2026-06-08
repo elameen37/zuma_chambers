@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, AlertCircle, CheckCircle2, ChevronRight, Briefcase, Gavel } from 'lucide-react';
+import { Calendar, AlertCircle, CheckCircle2, Briefcase, Gavel } from 'lucide-react';
 import { MatterEvent, EventType } from '@/lib/matter-service';
 
 const getEventIcon = (type: EventType) => {

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Briefcase, Search, Filter, Plus, LayoutDashboard, Grid,
-  AlertCircle
+  AlertCircle, Download
 } from '@/components/shared/Icons';
 import MatterCard from '@/components/legal/MatterCard';
 
@@ -19,6 +19,28 @@ export default function CasesBoardPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [riskFilter, setRiskFilter] = useState('All');
   const [mounted, setMounted] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportToast, setExportToast] = useState(false);
+
+  const handleExportDocket = async () => {
+    if (isExporting || !filteredMatters.length) return;
+    setIsExporting(true);
+    try {
+      const { exportToPDF } = await import('@/lib/pdf-service');
+      await exportToPDF({
+        type: 'docket',
+        title: 'Active Matter Docket',
+        data: { matters: filteredMatters },
+        filename: `chambers-docket-${new Date().toISOString().slice(0, 10)}.pdf`,
+      });
+      setExportToast(true);
+      setTimeout(() => setExportToast(false), 3000);
+    } catch (err) {
+      console.error('Failed to export docket:', err);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -44,6 +66,21 @@ export default function CasesBoardPage() {
 
   return (
     <div className="space-y-8 pb-12">
+      {/* Export Success Toast */}
+      <AnimatePresence>
+        {exportToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-24 right-8 z-[100] bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-bold px-6 py-3 rounded-xl backdrop-blur-lg flex items-center gap-3 shadow-[0_8px_32px_rgba(34,197,94,0.15)]"
+          >
+            <Download size={14} className="text-gold-primary" />
+            Chambers docket exported successfully
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
@@ -68,7 +105,16 @@ export default function CasesBoardPage() {
                <Grid size={18} />
              </button>
           </div>
-          <button className="btn-outline px-4 py-2 flex items-center gap-2 text-xs">
+          <button 
+            onClick={handleExportDocket}
+            disabled={isExporting}
+            className="btn-outline px-4 py-2 flex items-center gap-2 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isExporting ? (
+              <span className="w-3 h-3 rounded-full border border-gold-primary border-t-transparent animate-spin" />
+            ) : (
+              <Download size={14} className="text-gold-primary" />
+            )}
             Export Docket
           </button>
           <Link href="/dashboard/cases/new" className="btn-luxury px-6 py-2 flex items-center gap-2 text-xs font-bold">

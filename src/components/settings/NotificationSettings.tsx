@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Bell, Mail, MessageSquare, Smartphone, 
-  Check, X, Zap, ShieldCheck, Activity,
-  Send, ChevronRight
+  Check, X, Zap, Activity,
+  Send
 } from 'lucide-react';
-import { sendHearingReminder, sendDeadlineAlert } from '@/lib/notification-service';
+import { sendHearingReminder } from '@/lib/notification-service';
 
 interface Channel {
   id: 'email' | 'sms' | 'whatsapp';

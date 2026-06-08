@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   ShieldAlert, BookOpen, Scale, ArrowUpRight, 
-  ChevronRight, AlertTriangle, Zap, Info
+  ChevronRight, AlertTriangle, Zap
 } from 'lucide-react';
 import { Statute, RiskLevel } from '@/lib/matter-service';
 

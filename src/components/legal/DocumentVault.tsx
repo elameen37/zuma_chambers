@@ -3,11 +3,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  ShieldCheck, ShieldAlert, Clock, History, 
-  Download, Eye, Filter, Lock, FileStack, 
-  ChevronRight, AlertTriangle, CheckCircle2
+  ShieldAlert, Clock, History, 
+  Download, Eye, Filter, Lock, FileStack
 } from 'lucide-react';
-import { useDocumentStore, LegalDocument } from '@/lib/document-service';
+import { useDocumentStore } from '@/lib/document-service';
 
 export default function DocumentVault() {
   const documents = useDocumentStore((state) => state.documents);

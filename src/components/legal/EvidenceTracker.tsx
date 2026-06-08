@@ -3,8 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  FileText, ShieldCheck, ShieldAlert, Clock, 
-  Download, Eye, Filter, Plus, Database, Lock
+  FileText, Clock, 
+  Download, Eye, Plus, Database, Lock
 } from 'lucide-react';
 import { Evidence } from '@/lib/matter-service';
 

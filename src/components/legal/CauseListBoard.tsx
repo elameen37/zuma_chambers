@@ -3,10 +3,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Gavel, Clock, MapPin, Users, UserCheck, 
-  ChevronRight, AlertCircle, Calendar, Briefcase
+  Gavel, Clock, MapPin, UserCheck, 
+  ChevronRight, Calendar, Briefcase
 } from 'lucide-react';
-import { useMatterStore, MatterEvent, Matter } from '@/lib/matter-service';
+import { useMatterStore } from '@/lib/matter-service';
 import Link from 'next/link';
 
 export default function CauseListBoard({ date }: { date: string }) {

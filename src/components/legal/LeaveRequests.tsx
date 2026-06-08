@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plane, Calendar, User, Clock, CheckCircle, XCircle, MoreVertical } from 'lucide-react';
-import { useHRStore, LeaveRequest } from '@/lib/hr-service';
+import { Plane, CheckCircle, XCircle, MoreVertical } from 'lucide-react';
+import { useHRStore } from '@/lib/hr-service';
 
 export default function LeaveRequests() {
   const { leaveRequests, staff, updateLeaveStatus } = useHRStore();

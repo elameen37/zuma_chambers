@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Search, Filter, BookOpen, Scale, Gavel, 
+  Search, BookOpen, Scale, Gavel, 
   FileText, Bookmark, Sparkles, Copy, Share2,
-  X, History, MessageSquare, Plus, Download
+  X, History, Plus, Download
 } from 'lucide-react';
 import { useResearchStore, LegalResource } from '@/lib/research-service';
 import ResourceCard from './ResourceCard';
@@ -11,7 +11,7 @@ import MemoStorage from './MemoStorage';
 import { useSearchParams } from 'next/navigation';
 
 export default function KnowledgeBase() {
-  const { resources, searchResources, savedAuthorities } = useResearchStore();
+  const { resources, savedAuthorities } = useResearchStore();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'all' | 'statutes' | 'cases' | 'precedents'>('all');
   

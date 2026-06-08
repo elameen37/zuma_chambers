@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Book, FileText, Plus, Search, Calendar, User, ArrowRight } from 'lucide-react';
-import { useResearchStore, LegalMemo } from '@/lib/research-service';
+import { FileText, Search, Calendar, User, ArrowRight } from 'lucide-react';
+import { useResearchStore } from '@/lib/research-service';
 
 export default function MemoStorage() {
   const { memos } = useResearchStore();

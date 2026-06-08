@@ -1,7 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { 
-  Truck, Package, ClipboardList, MapPin, 
+  Truck, MapPin, 
   Clock, CheckCircle2, AlertCircle, ShoppingCart,
   HardDrive, Monitor, Briefcase, Plus
 } from 'lucide-react';
@@ -32,7 +31,7 @@ export default function OperationsManager() {
               </tr>
             </thead>
             <tbody>
-              {dispatchLogs.map((log, i) => (
+              {dispatchLogs.map((log) => (
                 <tr key={log.id} className="border-b border-gold-dark/5 hover:bg-white/[0.02] transition-colors group">
                   <td className="p-4">
                     <div className="flex items-center gap-3">

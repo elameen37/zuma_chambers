@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-  FileText, Users, Scale, Calendar, CheckCircle2, 
-  ChevronRight, ChevronLeft, Save, Briefcase, Gavel
+  FileText, Users, Scale, CheckCircle2, 
+  ChevronRight, ChevronLeft, Save
 } from 'lucide-react';
 import { useMatterStore, MatterStage, RiskLevel } from '@/lib/matter-service';
 import { useRouter } from 'next/navigation';

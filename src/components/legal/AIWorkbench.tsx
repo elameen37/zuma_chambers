@@ -8,7 +8,7 @@ import {
 import { useAIStore } from '@/lib/ai-service';
 
 export default function AIWorkbench() {
-  const { generateDraft, isAnalyzing } = useAIStore();
+  const { generateDraft } = useAIStore();
   const [draftType, setDraftType] = useState('Statement of Claim');
   const [context, setContext] = useState('');
   const [generatedDraft, setGeneratedDraft] = useState('');

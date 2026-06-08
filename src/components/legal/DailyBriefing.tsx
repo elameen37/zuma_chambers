@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { 
   Zap, AlertCircle, CheckCircle2, Users, 
-  ChevronRight, ArrowUpRight, Megaphone, Info
+  ArrowUpRight, Megaphone, Info
 } from 'lucide-react';
 import { useMatterStore } from '@/lib/matter-service';
 

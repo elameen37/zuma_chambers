@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Scale, Gavel, FileText, Bookmark, Share2, ArrowRight } from 'lucide-react';
+import { BookOpen, Scale, Gavel, FileText, Bookmark, ArrowRight } from 'lucide-react';
 import { LegalResource, useResearchStore } from '@/lib/research-service';
 
 interface ResourceCardProps {

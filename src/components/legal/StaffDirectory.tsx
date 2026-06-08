@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Phone, Briefcase, Activity, MoreVertical, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, Activity, MoreVertical } from 'lucide-react';
 import { useHRStore, StaffMember } from '@/lib/hr-service';
 
 export default function StaffDirectory() {

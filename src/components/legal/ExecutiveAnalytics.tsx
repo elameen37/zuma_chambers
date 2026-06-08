@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  TrendingUp, TrendingDown, Activity, 
+  Activity, 
   BarChart3, PieChart, Calendar, AlertCircle,
   Briefcase, DollarSign, Target, Clock,
   ArrowUpRight, ArrowDownRight, Users

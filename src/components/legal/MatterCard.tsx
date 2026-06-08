@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Briefcase, Clock, ShieldAlert, ArrowRight, Gavel, Scale } from '@/components/shared/Icons';
+import { Briefcase, Clock, ShieldAlert, ArrowRight, Scale } from '@/components/shared/Icons';
 import { Matter, MatterStage } from '@/lib/matter-service';
 
 

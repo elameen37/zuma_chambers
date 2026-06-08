@@ -454,7 +454,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return true;
     }
     return false;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.user?.pin]);
 
   const logout = useCallback(async () => {

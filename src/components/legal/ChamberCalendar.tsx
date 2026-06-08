@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronLeft, ChevronRight, Calendar as CalendarIcon, 
-  Gavel, AlertCircle, FileText, X 
+  X 
 } from 'lucide-react';
 import { useMatterStore, EventType } from '@/lib/matter-service';
 
