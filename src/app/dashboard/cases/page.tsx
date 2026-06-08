@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Briefcase, Search, Filter, Plus, LayoutDashboard, Grid,
@@ -9,18 +9,22 @@ import {
 import MatterCard from '@/components/legal/MatterCard';
 
 import Link from 'next/link';
-import { useMatterStore } from '@/lib/matter-service';
+import { useMatterStore, MatterStage } from '@/lib/matter-service';
 
 const STAGES = ['Intake', 'Discovery', 'Pre-Trial', 'Hearing', 'Judgment', 'Closed'] as const;
 
 export default function CasesBoardPage() {
   const matters = useMatterStore((state) => state.matters) || [];
+  const updateMatter = useMatterStore((state) => state.updateMatter);
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [riskFilter, setRiskFilter] = useState('All');
   const [mounted, setMounted] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportToast, setExportToast] = useState(false);
+  // Drag-and-drop state
+  const [activeDropStage, setActiveDropStage] = useState<MatterStage | null>(null);
+  const dragMatterId = useRef<string | null>(null);
 
   const handleExportDocket = async () => {
     if (isExporting || !filteredMatters.length) return;
@@ -180,20 +184,78 @@ export default function CasesBoardPage() {
           >
              {STAGES.map((stage) => {
                const stageMatters = filteredMatters.filter(m => m.stage === stage);
+               const isDropTarget = activeDropStage === stage;
                return (
                  <div key={stage} className="min-w-[320px] max-w-[320px] flex flex-col snap-center">
-                    <div className="flex justify-between items-center mb-4 p-3 border-b-2 border-gold-primary/30">
-                       <h3 className="text-white font-playfair font-bold text-lg uppercase tracking-wide">{stage}</h3>
-                       <span className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs text-gold-primary font-bold">{stageMatters.length}</span>
+                    {/* Column header */}
+                    <div className={`flex justify-between items-center mb-4 p-3 border-b-2 transition-colors duration-200 ${
+                      isDropTarget ? 'border-gold-primary' : 'border-gold-primary/30'
+                    }`}>
+                       <h3 className={`font-playfair font-bold text-lg uppercase tracking-wide transition-colors duration-200 ${
+                         isDropTarget ? 'text-gold-primary' : 'text-white'
+                       }`}>{stage}</h3>
+                       <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-200 ${
+                         isDropTarget ? 'bg-gold-primary/30 text-gold-primary' : 'bg-white/10 text-gold-primary'
+                       }`}>{stageMatters.length}</span>
                     </div>
-                    <div className="flex-1 space-y-4 min-h-[500px] p-2 bg-black/50 rounded-xl border border-gold-dark/5">
+
+                    {/* Drop zone */}
+                    <div
+                      className={`flex-1 space-y-4 min-h-[500px] p-2 rounded-xl border transition-all duration-200 ${
+                        isDropTarget
+                          ? 'bg-gold-primary/5 border-gold-primary/40 shadow-[0_0_24px_rgba(212,175,55,0.12)]'
+                          : 'bg-black/50 border-gold-dark/5'
+                      }`}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        setActiveDropStage(stage);
+                      }}
+                      onDragLeave={(e) => {
+                        // Only clear if leaving the column entirely (not entering a child)
+                        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                          setActiveDropStage(null);
+                        }
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const id = e.dataTransfer.getData('text/plain') || dragMatterId.current;
+                        if (id) updateMatter(id, { stage });
+                        setActiveDropStage(null);
+                        dragMatterId.current = null;
+                      }}
+                    >
                        {stageMatters.map((matter, i) => (
-                         <MatterCard key={matter.id} matter={matter} delay={i * 0.1} compact />
+                         <div
+                           key={matter.id}
+                           draggable
+                           onDragStart={(e) => {
+                             dragMatterId.current = matter.id;
+                             e.dataTransfer.setData('text/plain', matter.id);
+                             e.dataTransfer.effectAllowed = 'move';
+                             // Briefly reduce opacity of the dragged element
+                             (e.currentTarget as HTMLElement).style.opacity = '0.45';
+                           }}
+                           onDragEnd={(e) => {
+                             (e.currentTarget as HTMLElement).style.opacity = '1';
+                             dragMatterId.current = null;
+                             setActiveDropStage(null);
+                           }}
+                           className="cursor-grab active:cursor-grabbing"
+                         >
+                           <MatterCard matter={matter} delay={i * 0.05} compact />
+                         </div>
                        ))}
                        {stageMatters.length === 0 && (
-                         <div className="h-full flex flex-col items-center justify-center text-gray-600 p-8 text-center border-2 border-dashed border-gold-dark/10 rounded-xl">
-                            <AlertCircle size={24} className="mb-2 opacity-20" />
-                            <p className="text-[10px] uppercase tracking-widest font-bold">No Matters</p>
+                         <div className={`h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed rounded-xl transition-colors duration-200 ${
+                           isDropTarget
+                             ? 'border-gold-primary/40 text-gold-primary/60'
+                             : 'border-gold-dark/10 text-gray-600'
+                         }`}>
+                            <AlertCircle size={24} className="mb-2 opacity-30" />
+                            <p className="text-[10px] uppercase tracking-widest font-bold">
+                              {isDropTarget ? 'Drop here' : 'No Matters'}
+                            </p>
                          </div>
                        )}
                     </div>
