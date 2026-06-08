@@ -4,6 +4,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShieldAlert, Sparkles, Clock, Gavel, FileText, AlertTriangle, UserCheck } from 'lucide-react';
 import { useMatterStore } from '@/lib/matter-service';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 interface IntelligenceReportModalProps {
   isOpen: boolean;
@@ -27,6 +29,26 @@ export default function IntelligenceReportModal({ isOpen, onClose, date }: Intel
   // Find high risk matters for today
   const criticalMatters = todaysEvents.filter(e => ['High', 'Critical'].includes(e.matter.riskLevel));
 
+  const handleExportPDF = async () => {
+    const element = document.getElementById('intelligence-report-content');
+    if (!element) return;
+    try {
+      const canvas = await html2canvas(element, { 
+        scale: 2,
+        backgroundColor: '#0F0F0F' // Onyx background to match theme
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Intelligence_Report_${date}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF', error);
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -43,6 +65,7 @@ export default function IntelligenceReportModal({ isOpen, onClose, date }: Intel
             exit={{ scale: 0.95, y: 20 }}
             className="relative w-full max-w-4xl my-auto rounded-2xl overflow-hidden border border-gold-primary/30 bg-onyx shadow-premium"
             onClick={(e) => e.stopPropagation()}
+            id="intelligence-report-content"
           >
             <div className="h-1.5 w-full bg-luxury-gradient" />
 
@@ -59,6 +82,7 @@ export default function IntelligenceReportModal({ isOpen, onClose, date }: Intel
               <button
                 onClick={onClose}
                 className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+                data-html2canvas-ignore="true"
               >
                 <X size={20} />
               </button>
@@ -174,7 +198,7 @@ export default function IntelligenceReportModal({ isOpen, onClose, date }: Intel
 
             </div>
 
-            <div className="p-6 border-t border-white/5 bg-black/40 flex justify-end gap-4">
+            <div className="p-6 border-t border-white/5 bg-black/40 flex justify-end gap-4" data-html2canvas-ignore="true">
               <button
                 onClick={onClose}
                 className="px-6 py-2.5 rounded text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
@@ -182,6 +206,7 @@ export default function IntelligenceReportModal({ isOpen, onClose, date }: Intel
                 Close Report
               </button>
               <button
+                onClick={handleExportPDF}
                 className="btn-luxury px-6 py-2.5 text-xs font-bold uppercase tracking-widest"
               >
                 Export as PDF
