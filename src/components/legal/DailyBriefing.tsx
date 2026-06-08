@@ -1,13 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Zap, AlertCircle, CheckCircle2, Users, 
   ArrowUpRight, Megaphone, Info
 } from 'lucide-react';
 import { useMatterStore } from '@/lib/matter-service';
+import IntelligenceReportModal from '@/components/legal/IntelligenceReportModal';
 
 export default function DailyBriefing({ date }: { date: string }) {
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const matters = useMatterStore((state) => state.matters);
   
   const todaysHearings = matters.flatMap(m => m.events.filter(e => e.date === date && e.type === 'Hearing'));
@@ -66,10 +68,19 @@ export default function DailyBriefing({ date }: { date: string }) {
           </div>
         </div>
 
-        <button className="w-full mt-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-primary border border-gold-primary/30 rounded hover:bg-gold-primary hover:text-black transition-all flex items-center justify-center gap-2">
+        <button 
+          onClick={() => setIsReportOpen(true)}
+          className="w-full mt-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-primary border border-gold-primary/30 rounded hover:bg-gold-primary hover:text-black transition-all flex items-center justify-center gap-2"
+        >
           View Full Intelligence Report <ArrowUpRight size={14} />
         </button>
       </section>
+
+      <IntelligenceReportModal 
+        isOpen={isReportOpen} 
+        onClose={() => setIsReportOpen(false)} 
+        date={date} 
+      />
     </div>
   );
 }
