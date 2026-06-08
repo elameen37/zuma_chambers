@@ -79,6 +79,7 @@ interface MatterStore {
   matters: Matter[];
   addMatter: (matter: Partial<Matter>) => Promise<void> | void;
   updateMatter: (id: string, updates: Partial<Matter>) => void;
+  addMatterEvent: (matterId: string, event: Partial<MatterEvent>) => Promise<void> | void;
   getMatter: (id: string) => Matter | undefined;
   syncWithSupabase: () => Promise<void>;
   subscribeToRealtime: () => () => void;
@@ -354,16 +355,75 @@ export const useMatterStore = create<MatterStore>()(
           matters: state.matters.map((m) => (m.id === id ? { ...m, ...updates, lastUpdated: 'Just now' } : m)),
         }));
       },
+      addMatterEvent: async (matterId, event) => {
+        const eventId = crypto.randomUUID();
+        const newEvent: MatterEvent = {
+          id: eventId,
+          type: 'Hearing',
+          title: '',
+          date: new Date().toISOString().split('T')[0],
+          isCompleted: false,
+          ...event,
+        } as MatterEvent;
+
+        set((state) => ({
+          matters: state.matters.map((m) => {
+            if (m.id === matterId) {
+              return { ...m, events: [...m.events, newEvent], lastUpdated: 'Just now' };
+            }
+            return m;
+          }),
+        }));
+
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (supabase.from('matter_events') as any).insert({
+            id: eventId,
+            matter_id: matterId,
+            type: newEvent.type,
+            title: newEvent.title,
+            description: newEvent.description || null,
+            event_date: new Date(newEvent.date).toISOString(),
+            is_completed: newEvent.isCompleted,
+            courtroom: newEvent.courtroom || null,
+            assigned_counsel: newEvent.assignedCounsel || [],
+            assigned_clerk: newEvent.assignedClerk || null,
+            attendance_status: newEvent.attendanceStatus || 'Pending',
+          });
+        } catch (e) {
+          console.warn('Failed to insert event into Supabase', e);
+        }
+      },
       getMatter: (id) => get().matters.find((m) => m.id === id),
       syncWithSupabase: async () => {
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { data, error } = await (supabase.from('matters') as any).select('*');
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { data: eventsData } = await (supabase.from('matter_events') as any).select('*');
+
           if (!error && data && data.length > 0) {
             // Map Supabase rows to Matter interface with defensive merging to protect offline/local fields
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const mappedMatters = data.map((row: any) => {
               const existingMatter = get().matters.find((m) => m.id === row.id || m.suitNumber === row.suit_number);
+              
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const dbEvents = eventsData?.filter((e: any) => e.matter_id === row.id).map((e: any) => ({
+                id: e.id,
+                type: e.type,
+                title: e.title,
+                description: e.description,
+                date: e.event_date ? e.event_date.split('T')[0] : new Date().toISOString().split('T')[0],
+                isCompleted: e.is_completed,
+                courtroom: e.courtroom,
+                assignedCounsel: e.assigned_counsel || [],
+                assignedClerk: e.assigned_clerk,
+                attendanceStatus: e.attendance_status,
+                outcome: e.outcome,
+                nextHearingDate: e.next_hearing_date ? e.next_hearing_date.split('T')[0] : undefined
+              })) || [];
+
               return {
                 id: row.id,
                 suitNumber: row.suit_number,
@@ -381,7 +441,7 @@ export const useMatterStore = create<MatterStore>()(
                 type: row.type || existingMatter?.type || 'General',
                 nextHearing: row.next_hearing || existingMatter?.nextHearing || null,
                 team: existingMatter?.team || [],
-                events: existingMatter?.events || [],
+                events: dbEvents.length > 0 ? dbEvents : (existingMatter?.events || []),
                 evidence: existingMatter?.evidence || [],
                 notes: existingMatter?.notes || [],
                 statutes: existingMatter?.statutes || [],
@@ -491,8 +551,84 @@ export const useMatterStore = create<MatterStore>()(
           )
           .subscribe();
 
+        // Channel for matter_events
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const eventsChannel = (supabase as any)
+          .channel('matter-events-realtime')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'matter_events' },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (payload: any) => {
+              console.log('Realtime change received for matter_events:', payload);
+              const { eventType, new: newRow, old: oldRow } = payload;
+              
+              if (eventType === 'INSERT') {
+                const mappedEvent: MatterEvent = {
+                  id: newRow.id,
+                  type: newRow.type,
+                  title: newRow.title,
+                  description: newRow.description,
+                  date: newRow.event_date ? newRow.event_date.split('T')[0] : new Date().toISOString().split('T')[0],
+                  isCompleted: newRow.is_completed,
+                  courtroom: newRow.courtroom,
+                  assignedCounsel: newRow.assigned_counsel || [],
+                  assignedClerk: newRow.assigned_clerk,
+                  attendanceStatus: newRow.attendance_status,
+                };
+
+                set((state) => ({
+                  matters: state.matters.map((m) => {
+                    if (m.id === newRow.matter_id) {
+                      if (m.events.some(e => e.id === mappedEvent.id)) return m;
+                      return { ...m, events: [...m.events, mappedEvent] };
+                    }
+                    return m;
+                  })
+                }));
+              } else if (eventType === 'UPDATE') {
+                set((state) => ({
+                  matters: state.matters.map((m) => {
+                    if (m.id === newRow.matter_id) {
+                      return {
+                        ...m,
+                        events: m.events.map((e) => {
+                          if (e.id === newRow.id) {
+                            return {
+                              ...e,
+                              type: newRow.type ?? e.type,
+                              title: newRow.title ?? e.title,
+                              description: newRow.description ?? e.description,
+                              date: newRow.event_date ? newRow.event_date.split('T')[0] : e.date,
+                              isCompleted: newRow.is_completed ?? e.isCompleted,
+                              courtroom: newRow.courtroom ?? e.courtroom,
+                              assignedCounsel: newRow.assigned_counsel ?? e.assignedCounsel,
+                              assignedClerk: newRow.assigned_clerk ?? e.assignedClerk,
+                              attendanceStatus: newRow.attendance_status ?? e.attendanceStatus,
+                            };
+                          }
+                          return e;
+                        })
+                      };
+                    }
+                    return m;
+                  })
+                }));
+              } else if (eventType === 'DELETE') {
+                set((state) => ({
+                  matters: state.matters.map((m) => ({
+                    ...m,
+                    events: m.events.filter(e => e.id !== oldRow.id)
+                  }))
+                }));
+              }
+            }
+          )
+          .subscribe();
+
         return () => {
           supabase.removeChannel(channel);
+          supabase.removeChannel(eventsChannel);
         };
       }
     }),
