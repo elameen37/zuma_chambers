@@ -8,8 +8,10 @@ import {
 } from 'lucide-react';
 import { useMatterStore } from '@/lib/matter-service';
 import Link from 'next/link';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
-export default function CauseListBoard({ date }: { date: string }) {
+export default function CauseListBoard({ date, onDateChange }: { date: string, onDateChange?: (date: string) => void }) {
   const matters = useMatterStore((state) => state.matters);
 
   // Extract all hearings for the given date
@@ -18,6 +20,23 @@ export default function CauseListBoard({ date }: { date: string }) {
       .filter(e => e.date === date && e.type === 'Hearing')
       .map(e => ({ ...e, matter: m }))
   ).sort((a, b) => a.date.localeCompare(b.date));
+
+  const handleDownload = async () => {
+    const element = document.getElementById('cause-list-section');
+    if (!element) return;
+    try {
+      const canvas = await html2canvas(element, { scale: 2 });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Cause_List_${date}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -28,11 +47,19 @@ export default function CauseListBoard({ date }: { date: string }) {
           </h3>
           <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-1">Court Appearance Schedule • {date}</p>
         </div>
-        <div className="flex gap-3">
-          <button className="btn-outline py-2 px-4 text-[10px] flex items-center gap-2">
-            <Calendar size={14} /> Change Date
-          </button>
-          <button className="btn-luxury py-2 px-4 text-[10px] flex items-center gap-2">
+        <div className="flex gap-3 print:hidden">
+          <div className="relative">
+            <button className="btn-outline py-2 px-4 text-[10px] flex items-center gap-2">
+              <Calendar size={14} /> Change Date
+            </button>
+            <input 
+              type="date" 
+              value={date}
+              onChange={(e) => onDateChange?.(e.target.value)}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            />
+          </div>
+          <button onClick={handleDownload} className="btn-luxury py-2 px-4 text-[10px] flex items-center gap-2">
             Download List
           </button>
         </div>
@@ -42,7 +69,7 @@ export default function CauseListBoard({ date }: { date: string }) {
         {todaysHearings.length === 0 ? (
           <div className="glass-card p-12 text-center flex flex-col items-center justify-center">
             <Clock size={40} className="text-gold-dark/20 mb-4" />
-            <p className="text-gray-500 text-sm font-inter">No matters listed for court appearance today.</p>
+            <p className="text-gray-500 text-sm font-inter">No matters listed for court appearance on {date}.</p>
           </div>
         ) : (
           todaysHearings.map((hearing, idx) => (
@@ -103,7 +130,7 @@ export default function CauseListBoard({ date }: { date: string }) {
                 </div>
 
                 {/* Action */}
-                <div className="lg:w-32 shrink-0 flex items-center justify-end">
+                <div className="lg:w-32 shrink-0 flex items-center justify-end print:hidden">
                   <Link 
                     href={`/dashboard/cases/${hearing.matter.id}`}
                     className="p-3 rounded-full border border-gold-dark/20 text-gray-500 hover:text-gold-primary hover:border-gold-primary transition-all"
